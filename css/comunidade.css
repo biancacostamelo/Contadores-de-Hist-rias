@@ -1,0 +1,302 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+.dark-theme {
+  --bg: #170404;
+  --marromSec: #240F10;
+  --txtFundoInv: #FDFDFD;
+  --bgCardComunidade: #291818;
+  transition: 0.1s ease-in-out;
+}
+
+.light-theme {
+  --bg: #F5EBE1;
+  --marromSec: #5D3C1B;
+  --txtFundoInv: #331D05;
+  --bgCardComunidade: #ffffff;
+  transition: 0.1s ease-in-out;
+}
+
+* {
+  font-family: "Plus Jakarta Sans", arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+}
+
+body {
+  background-color: var(--bg);
+}
+
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100;
+  height: 90px;
+  display: flex;
+  background-color: var(--marromSec);
+}
+
+.home-header {
+  background-color: var(--marromSec);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.logo {
+  padding: 11px 0px;
+}
+
+
+.input-pesquisa input {
+  background-color: #F5EBE1;
+}
+
+.input-pesquisa {
+  position: relative;
+  width: 400px;
+  height: 50px;
+}
+
+.input-pesquisa img {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  opacity: 45%;
+  color: #5d3c1b;
+}
+
+.input-pesquisa input {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  text-indent: 45px;
+  /* Move a barra de digitação '|'*/
+}
+
+.input-pesquisa input::placeholder {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 450;
+  color: #5d3c1b;
+  opacity: 45%;
+}
+
+.navbar {
+  display: flex;
+  gap: 50px;
+}
+
+.navbar a {
+  font-weight: bold;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  color: #ffe5b5;
+  transition: 0.3s;
+}
+
+.navbar a:hover {
+  text-decoration: underline 2px #ffe5b5;
+}
+
+.display {
+  display: flex;
+  align-items: center;
+}
+
+.apertar {
+  width: 40px;
+  height: 20px;
+  border: 2px solid #8b4513;
+  border-radius: 10px;
+  background-color: #ffe5b5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.circulo {
+  width: 14px;
+  height: 14px;
+  background-color: #5d3c1b;
+  border-radius: 50%;
+}
+
+.btn {
+  display: flex;
+  width: 320px;
+  height: 50px;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.btn #criar {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  background: #8b4513;
+  color: #ffe5b5;
+  border-radius: 30px;
+  font-weight: bold;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease;
+}
+
+.btn #criar:hover {
+  background: #ffe5b5;
+  color: #8b4513;
+}
+
+.btn #entrar {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  background: #ffe5b5;
+  color: #8b4513;
+  border-radius: 30px;
+  font-weight: bold;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease;
+}
+
+.btn #entrar:hover {
+  background: #8b4513;
+  color: #ffe5b5;
+}
+
+/* From Uiverse.io by gharsh11032000 */
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  border: 2px solid white;
+  border-radius: 50px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  left: 0.2em;
+  bottom: 0.2em;
+  background-color: white;
+  border-radius: inherit;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.switch input:checked+.slider {
+  box-shadow: 0 0 20px #8B4513;
+  border: 2px solid wheat;
+}
+
+.switch input:checked+.slider:before {
+  transform: translateX(1.5em);
+}
+
+#comunidades {
+  margin: 90px 100px;
+}
+
+#comunidades h2 {
+  color: var(--txtFundoInv);
+  padding-top: 40px;
+}
+
+.comunidades {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.cardComunidade img {
+  width: 85px;
+  border-radius: 100px;
+  margin-right: 30px;
+}
+
+.cardComunidade .contentCard div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  height: 100%;
+}
+
+.cardComunidade .contentCard {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  color: var(--txtFundoInv);
+}
+
+.cardComunidade .contentCard p {
+  font-size: 0.875rem;
+}
+
+.cardComunidade {
+  background-color: var(--bgCardComunidade);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 20px 30px;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.13);
+}
+
+.btn-card-comunidade {
+  width: 139px;
+  height: 40px;
+  background: #8B4513;
+  border-radius: 17px;
+  color: #FDFDFD;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+}
+
+@media (max-width: 758px){
+  .cardComunidade, .contentCard{
+    flex-direction: column;
+    align-items: start !important;
+    height: fit-content;
+    gap: 15px;
+  }
+  #comunidades {
+    margin: 90px 30px;
+  }
+}
