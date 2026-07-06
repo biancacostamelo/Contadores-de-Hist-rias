@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Comunidade de Escritores</title>
+    <link rel="stylesheet" href="../css/global.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.1/bcrypt.min.js"></script>
+
+  </head>
+  <body>
+    <main class="login-page"> 
+      <a href="../comunidade/index.html">
+         <img
+          class="login-page__logo-img"
+          src="../assets/img/logo.svg"
+          alt="Comunidade de Escritores - Voltar para a página inicial"
+          width="70"
+          height="70"
+        /> 
+      </a>
+      <p>Contadores de Histórias</p>
+
+      <form class="login-card" id="loginForm" action="#" method="post" novalidate>
+        <div class="login-card__content">          
+          <header class="login-card__header">
+            <h1 class="login-card__title">Faça seu login</h1>
+            <p class="login-card__subtitle">
+              Continue desenvolvendo suas histórias com a comunidade.
+            </p>
+          </header>
+
+          <div class="login-form__error" id="global-login-error" role="alert" aria-live="polite"></div>
+
+          <div class="login-form">
+            <div class="login-form__field-group">
+              <label class="login-form__label" for="email-login">E-mail</label>
+              <input
+                class="login-form__input"
+                type="email"
+                id="email-login"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="exemplo@gmail.com"
+                aria-describedby="email-login-error"
+              />
+              <div class="login-form__error" id="email-login-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <div class="login-form__field-group">
+              <label class="login-form__label" for="password-login">Senha</label>
+              <input
+                class="login-form__input"
+                type="password"
+                id="password-login"
+                name="password"
+                required
+                minlength="8"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                aria-describedby="password-login-error"
+              />
+              <div class="login-form__error" id="password-login-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <div class="login-form__actions">
+              <button type="submit" class="login-form__btn login-form__btn--primary">
+                Entrar
+              </button>
+              <a href="#" class="login-form__link">Esqueceu a senha?</a>
+            </div>
+
+            <div class="login-form__social-group">
+              <p class="login-form__social-label">Ou entre com:</p>
+              <google-button label="Entrar com Google" aria-label="Entrar com o Google"></google-button>
+            </div>
+
+            <div class="login-form__divider" role="presentation">
+              <span class="login-form__divider-text">ou</span>
+            </div>
+
+            <p class="login-form__register-text">
+              Não possui uma conta? <a href="../pages/signUp.html" class="login-form__link login-form__link--primary">Criar minha conta</a>
+            </p>
+          </div>
+        </div>
+      </form>
+    </main>
+
+    <script src="../js/icons.js"></script>
+    <script src="../js/form-validation.js"></script>
+    <script src="../js/auth.js"></script>
+  </body>
+</html>

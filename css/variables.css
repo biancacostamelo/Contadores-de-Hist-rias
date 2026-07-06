@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  --color-primary: #8b4513;
+  --color-primary-hover: #a88561;
+  --color-bg-light: #f5ebe1;
+  --color-white: #ffffff;
+  --color-text-dark: #331d05;
+  --color-text-muted: rgba(51, 29, 5, 0.58);
+  --color-text-placeholder: rgba(51, 29, 5, 0.17);
+  --color-border-light: rgba(51, 29, 5, 0.14);
+  --color-error: #d32f2f;
+  --color-success: #388e3c;
+  --radius-lg: 10px;
+  --radius-btn: 7px;
+  --radius-card: 20px;
+
+  --shadow-card: 4px 7px 23.3px -1px rgba(0, 0, 0, 0.06);
+
+  --transition-fast: 0.2s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+label {
+  font-family: inherit;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}

@@ -1,23 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
-
 .dark-theme {
   --bg: #170404;
-  --marromSec: #240F10;
-  --txtFundoInv: #FDFDFD;
+  --marromSec: #240f10;
+  --txtFundoInv: #fdfdfd;
   --bgCardComunidade: #291818;
   transition: 0.1s ease-in-out;
 }
 
 .light-theme {
-  --bg: #F5EBE1;
-  --marromSec: #5D3C1B;
-  --txtFundoInv: #331D05;
+  --bg: #f5ebe1;
+  --marromSec: #5d3c1b;
+  --txtFundoInv: #331d05;
   --bgCardComunidade: #ffffff;
   transition: 0.1s ease-in-out;
 }
 
 * {
-  font-family: "Plus Jakarta Sans", arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', arial, sans-serif;
   padding: 0;
   margin: 0;
   text-decoration: none;
@@ -51,9 +49,8 @@ body {
   padding: 11px 0px;
 }
 
-
 .input-pesquisa input {
-  background-color: #F5EBE1;
+  background-color: #f5ebe1;
 }
 
 .input-pesquisa {
@@ -207,22 +204,22 @@ body {
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 1.4em;
   width: 1.4em;
   left: 0.2em;
   bottom: 0.2em;
   background-color: white;
   border-radius: inherit;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.switch input:checked+.slider {
-  box-shadow: 0 0 20px #8B4513;
+.switch input:checked + .slider {
+  box-shadow: 0 0 20px #8b4513;
   border: 2px solid wheat;
 }
 
-.switch input:checked+.slider:before {
+.switch input:checked + .slider:before {
   transform: translateX(1.5em);
 }
 
@@ -281,16 +278,17 @@ body {
 .btn-card-comunidade {
   width: 139px;
   height: 40px;
-  background: #8B4513;
+  background: #8b4513;
   border-radius: 17px;
-  color: #FDFDFD;
+  color: #fdfdfd;
   font-weight: 600;
   font-size: 0.875rem;
   border: none;
 }
 
-@media (max-width: 758px){
-  .cardComunidade, .contentCard{
+@media (max-width: 758px) {
+  .cardComunidade,
+  .contentCard {
     flex-direction: column;
     align-items: start !important;
     height: fit-content;
