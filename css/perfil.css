@@ -1,7 +1,6 @@
 .perfil-page {
-  max-width: 960px;
+  width: 90%;
   margin: 24px auto;
-  padding: 0 16px;
 }
 
 .perfil-banner {
@@ -14,6 +13,9 @@
   box-shadow: none;
 }
 
+.banner-bg img {
+  border-radius: 20%;
+}
 .banner-bg {
   position: absolute;
   inset: 0;
