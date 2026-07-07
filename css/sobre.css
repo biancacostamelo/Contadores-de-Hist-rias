@@ -1,0 +1,516 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+  --bg-color: #f5ebe1;
+  --txt-border-asset: #ffe4b5;
+  --detail-bgop: #c2a587;
+  --details: #8f6c46;
+  --browntoneOne: #8b4513;
+  --browntoneTwo: #5d3c1b;
+  --browntoneThree: #331d05;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  overflow-x: hidden;
+}
+
+/*CABEÇALHO*/
+
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100;
+  background-color: var(--browntoneTwo);
+  height: 90px;
+  display: flex;
+  justify-content: center;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.logo {
+  padding: 11px 0px;
+}
+
+.img-logo {
+  width: 65px;
+  height: 68.53px;
+}
+
+.input-pesquisa {
+  position: relative;
+  width: 400px;
+  height: 50px;
+}
+
+.input-pesquisa img {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  opacity: 45%;
+  color: var(--browntoneTwo);
+}
+
+.input-pesquisa input {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  background-color: var(--bg-color);
+  text-indent: 45px; /* Move a barra de digitação '|'*/
+}
+
+.input-pesquisa input::placeholder {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 450;
+  color: var(--browntoneTwo);
+  opacity: 45%;
+}
+
+.navbar {
+  display: flex;
+  gap: 50px;
+}
+
+.navbar a {
+  font-weight: bold;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  color: var(--txt-border-asset);
+  transition: 0.3s;
+}
+
+.navbar a:hover {
+  text-decoration: underline 2px var(--txt-border-asset);
+}
+
+.display {
+  display: flex;
+  align-items: center;
+}
+
+.apertar {
+  width: 40px;
+  height: 20px;
+  border: 2px solid var(--browntoneOne);
+  border-radius: 10px;
+  background-color: var(--txt-border-asset);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.circulo {
+  width: 14px;
+  height: 14px;
+  background-color: var(--browntoneTwo);
+  border-radius: 50%;
+}
+
+.btn {
+  display: flex;
+  width: 320px;
+  height: 50px;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.btn #criar {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  background: var(--browntoneOne);
+  color: var(--txt-border-asset);
+  border-radius: 30px;
+  font-weight: bold;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease;
+}
+
+.btn #criar:hover {
+  background: var(--txt-border-asset);
+  color: var(--browntoneOne);
+}
+
+.btn #entrar {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  background: var(--txt-border-asset);
+  color: var(--browntoneOne);
+  border-radius: 30px;
+  font-weight: bold;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease;
+}
+
+.btn #entrar:hover {
+  background: var(--browntoneOne);
+  color: var(--txt-border-asset);
+}
+
+/*Inicio do conteúdo do sobre*/
+
+.txt-sobre {
+  margin-top: 230px;
+}
+
+.txt-sobre-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.textos-sobre {
+  display: grid;
+  align-content: start;
+  justify-content: center;
+  gap: 20px;
+  margin-left: 50px;
+}
+
+.titulo-sobre {
+  font-family: 'Merriweather', serif;
+  font-size: 3.125rem;
+  font-weight: bold;
+  color: var(--browntoneOne);
+}
+
+.subtitulo-sobre {
+  font-family: 'Merriweather', serif;
+  font-size: 3.125rem;
+  font-weight: medium;
+  color: var(--browntoneOne);
+}
+
+.terceiro-titulo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.5625rem;
+  font-weight: 700;
+  color: var(--browntoneTwo);
+}
+
+.img-sobre {
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  margin-right: 50px;
+}
+
+.livro-sobre {
+  transform: rotate(22deg);
+  position: relative;
+}
+
+.pena-sobre {
+  position: absolute;
+  top: -60px;
+  left: 125px;
+}
+
+.linha-sobre {
+  display: block;
+  width: 100vw;
+  height: 80px;
+  background-color: var(--txt-border-asset);
+}
+
+/*Sobre nós*/
+
+.sobre-nos {
+  margin-top: 137px;
+  display: grid;
+  position: relative;
+}
+
+.sobre-nos-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 90px;
+}
+
+.logo-sobre {
+  margin-left: 55px;
+}
+
+.logo-sobre img {
+  width: 400px;
+  height: 400px;
+}
+
+.nos {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5625rem;
+  font-weight: 500;
+  text-align: justify;
+  color: var(--browntoneTwo);
+  line-height: 1.44;
+  margin-right: 55px;
+  border-bottom: 5px solid var(--browntoneOne);
+  padding-bottom: 40px;
+}
+
+/*Princípios. Missão, valores e visão*/
+
+.principios {
+  margin: 100px 0 140px;
+}
+
+.principios-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.titulos-sobre {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.missao-visao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 255px;
+}
+
+.missao-img {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  width: 500px;
+}
+
+.missao {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--browntoneOne);
+}
+
+.img-missao {
+  position: absolute;
+  top: -13%;
+  left: 175px;
+}
+
+.img-missao img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.missaotxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5625rem;
+  font-weight: 500;
+  color: var(--browntoneTwo);
+  text-align: justify;
+}
+
+.visao-img {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  width: 500px;
+}
+
+.visao {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--browntoneOne);
+}
+
+.img-visao {
+  position: absolute;
+  top: -11.5%;
+  left: 135px;
+}
+
+.img-visao img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.visaotxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5625rem;
+  font-weight: 500;
+  color: var(--browntoneTwo);
+  text-align: justify;
+}
+
+.valores-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  width: 1220px;
+  margin-top: 80px;
+}
+
+.valores {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--browntoneOne);
+}
+
+.img-valores {
+  position: absolute;
+  top: -11.5%;
+  left: 695px;
+}
+
+.img-valores img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.valorestxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5625rem;
+  font-weight: 500;
+  color: var(--browntoneTwo);
+  text-align: justify;
+}
+
+/*Footer do sobre*/
+
+.footer {
+  background-color: var(--browntoneTwo);
+}
+
+.footer-container {
+  margin: 0 auto;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-container .txtlogo {
+  align-self: center;
+  justify-self: center;
+  padding-top: 6px;
+  font-family: 'Merriweather', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--txt-border-asset);
+}
+
+.logo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 37px;
+}
+
+.nav-footer {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.linkUm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 40px;
+}
+
+.linkDois {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 22px;
+}
+
+.nav-footer a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.375rem;
+  font-weight: bold;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  color: var(--txt-border-asset);
+  transition: 0.3s;
+}
+
+.nav-footer a:hover {
+  text-decoration: underline 2px var(--txt-border-asset);
+}
+
+.nav-footer a img {
+  height: 50px;
+  width: 50px;
+  transition: 0.4s ease;
+}
+
+.nav-footer a img:hover {
+  transform: scale(1.3);
+}
+
+.linha-footer {
+  display: inline-block;
+  width: 100vw;
+  height: 2px;
+  background-color: var(--txt-border-asset);
+  margin: 5px;
+}
+
+.footer-container .copi {
+  justify-self: center;
+}
+
+.copi {
+  font-family: 'Merriweather', serif;
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--txt-border-asset);
+}

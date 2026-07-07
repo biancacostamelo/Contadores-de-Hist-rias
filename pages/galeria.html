@@ -1,40 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
+Galeria:
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/global.css">
-  <title>Home</title>
-</head>
+HTML:
 
-<body>
-  <!-- <ul>
-   <li> <a href="./pages/comunidade.html">comunidade</a></li>
-  <li>  <a href="./pages/comentariosComunidade.html">comentarioos comunidade</a></li>
-   <li> <a href="./pages/historia.html">historia</a></li>
-   <li> <a href="./pages/login.html">login</a></li>
-   <li> <a href="./pages/perfil.html">perfil</a></li>
-   <li> <a href="./pages/signUp.html">cadastrar</a></li>
-  </ul> -->
-
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="icon" href="../assets/Logo Principal.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contadores de Histórias | Galeria</title>
+  </head>
   <body>
-    <!--Cabeçalho-->
+    <!--Header da página-->
     <header class="header">
       <section class="home-header">
         <div class="logo">
-          <a href="#">
-            <img src="./assets/Logo Principal.svg" alt="Logo Contadores de Histórias" class="img-logo" />
+          <a href="../index.html">
+            <img
+              src="../assets/Logo Principal.svg"
+              alt="Logo Contadores de Histórias"
+              class="img-logo"
+            />
           </a>
         </div>
         <div class="input-pesquisa">
-          <img src="./assets/lupa pesquisar.svg" alt="lupa" />
+          <img src="../assets/lupa pesquisar.svg" alt="lupa" />
           <input type="text" placeholder="Pesquisar..." />
         </div>
         <nav class="navbar">
           <a href="./pages/galeria.html">Galeria</a>
           <a href="#">Comunidades</a>
-          <a href="./pages/sobre.html">Sobre</a>
+          <a href="./sobre.html">Sobre</a>
         </nav>
 
         <div class="display">
@@ -48,100 +45,47 @@
         </div>
       </section>
     </header>
-    <!--Principal-->
-    <main class="main">
-      <section class="home">
-        <!--Inicio da home page-->
-        <div class="home-container">
-          <div class="pena">
-            <img src="./assets/Pena sem sombra esquerda.svg" alt="Pena" />
-          </div>
-          <div class="textos">
-            <h1 class="titulo">Seja bem vindo ao Contadores de Histórias</h1>
-            <p class="subtitulo">
-              Crie | Desenvolva | Compartilhe |Aprenda junto
-            </p>
-            <p class="txt">
-              Descubra as maravilhas deste mundo de arte na escrita,
-              narrativa,<br />
-              e visual. Qual será sua criação ? Descubra agora !
-            </p>
-          </div>
-          <div class="penaDois">
-            <img src="./assets/Pena sem sombra.svg" alt="Pena" />
-          </div>
-          <div class="btn2">
-            <a href="#" id="criar2">Comece a criar</a>
-            <a href="#" id="criar-conta">Criar conta</a>
-          </div>
-          <div class="livro">
-            <img src="./assets/Livro sem sombra.svg" alt="Livro" />
-          </div>
-        </div>
-      </section>
-      <!--Comunidades-->
-      <section class="comunidade">
-        <div class="comunidade-container">
-          <h2 class="titulo-comunidade">Comunidades em alta</h2>
-          <span class="linhaUm"></span>
-          <div class="comuniHome">
-            <div class="comuni">
-              <a href="#">
-                <div class="imgbg">
-                  <div class="txtcomu">
-                    <p>Criativos</p>
-                  </div>
-                  <img src="./assets/img/Criativos.png" alt="Comunidade-img" class="foto-fundo" />
-                </div>
-              </a>
-              <a href="#">
-                <div class="imgbg">
-                  <div class="txtcomu">
-                    <p>Fanart</p>
-                  </div>
-                  <img src="./assets/img/Desenho.jpeg" alt="Comunidade-img" class="foto-fundo" />
-                </div>
-              </a>
-              <a href="#">
-                <div class="imgbg">
-                  <div class="txtcomu">
-                    <p>Mangá Club</p>
-                  </div>
-                  <img src="./assets/img/Manga.png" alt="Comunidade-img" class="foto-fundo" />
-                </div>
-              </a>
-              <div class="explore"><a href="#">Explore +</a></div>
-            </div>
-          </div>
-          <span class="linhaDois"></span>
-        </div>
-      </section>
-      <!--Posts-->
-      <section class="home-post">
-        <div class="posts-container">
-          <h2>Posts da comunidade</h2>
-          <div class="postsHome">
+    <!--Sub-Menu-->
+    <nav class="sub-menu">
+      <a href="#" class="active">Explorar</a>
+      <a href="">Destaques</a>
+      <a href="">Tópicos</a>
+    </nav>
+    <main class="galeria">
+      <!--Posts da galeria-->
+      <section class="post-galeria">
+        <div class="galeria-container">
+          <h1 class="titulo-galeria">Explore a arte conceitual</h1>
+          <div class="postsGaleria">
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post1.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post1.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>1.096</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>1.010</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>196</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Homem Aranha</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -155,24 +99,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post2.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post2.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>2.146</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>1.996</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>230</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Coringa</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -186,24 +138,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post3.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post3.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>3.570</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>2.900</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>300</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Capitão VS. Homem de ferro</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -217,24 +177,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post4.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post4.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>2.340</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>2.200</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>436</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Capitão</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -248,24 +216,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post5.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post5.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>4.700</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>4.096</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>598</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Spider</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -279,24 +255,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post6.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post6.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>2.000</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>1.589</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>200</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Treino de Gohan</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -310,24 +294,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post7.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post7.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>6.890</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>5.000</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>679</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Baby Yoda</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -341,24 +333,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post8.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post8.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>5.000</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>4.342</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>300</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Batman</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -372,24 +372,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post9.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post9.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>1.010</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>900</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>150</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Venom!</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -403,24 +411,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post10.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post10.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>3.452</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>2.567</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>200</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">X-MEN</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -434,24 +450,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post11.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post11.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>938</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>829</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>196</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Caça-Fantasmas</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -465,24 +489,32 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post12.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="../assets/img/post12.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
-                        <img src="./assets/view.svg" alt="Views" />
+                        <img src="../assets/view.svg" alt="Views" />
                         <span>2.500</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/like.svg" alt="Likes" />
+                        <img src="../assets/like.svg" alt="Likes" />
                         <span>2.000</span>
                       </div>
                       <div class="icon-item">
-                        <img src="./assets/chat.svg" alt="Chat" />
+                        <img src="../assets/chat.svg" alt="Chat" />
                         <span>300</span>
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="../assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Rino</p>
                         <p class="arroba-autor">Por crismiguel @crismiguel</p>
@@ -493,50 +525,67 @@
               </a>
             </div>
           </div>
-          <div class="veja">
-            <a href="./pages/galeria.html">Veja Mais +</a>
+        </div>
+      </section>
+      <section class="historias-galeria">
+        <div class="galeria-container">
+          <h2 class="titulo-galeria">Descubra as hístórias recentes</h2>
+          <div class="hist-post">
+            <div class="posts-historia">
+              <a href="#">
+                <div class="imgpt">
+                  <img
+                    src="../assets/img/regressiva.png"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
+                  <div class="overlay-historia">
+                    <div class="iconStats"></div>
+
+                    <div class="detalhes-historia">
+                      <span class="genero">MISTÉRIO e DRAMA</span>
+                      <h3 class="titulo-capa">Regressiva</h3>
+                      <span class="andamento">Completa</span>
+                      <p class="sinopse">
+                        Um homem confuso não aguenta mais seus problemas e se
+                        rende ao extremo,loucura e insanidade.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="posts-historia">
+              <a href="#">
+                <div class="imgpt">
+                  <img
+                    src="../assets/img/hora-dourada.png"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
+                  <div class="overlay-historia">
+                    <div class="iconStats"></div>
+
+                    <div class="detalhes-historia">
+                      <span class="genero">AÇÃO e DRAMA</span>
+                      <h3 class="titulo-capa">
+                        A Hora dourada: A última esperança
+                      </h3>
+                      <span class="andamento">Em desenvolvimento</span>
+                      <p class="sinopse">
+                        Em um mundo distópico dominado pela tirania e
+                        desigualdade, surge a luz em meio a escuridão de um
+                        homem e de um povo.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </section>
     </main>
-
-    <!--Footer-->
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="logo-footer">
-          <img src="./assets/Logo (footer) Variante 2.svg" alt="Logo" />
-        </div>
-        <p class="txtlogo">Contadores de Histórias</p>
-        <nav class="nav-footer">
-          <div class="linkUm">
-            <a href="#">Home</a>
-            <a href="#">Contadores Originals</a>
-            <a href="./pages/sobre.html">Sobre</a>
-            <a href="#">Contatos</a>
-            <a href="#">Suporte</a>
-            <a href="#">Politica de privacidade</a>
-          </div>
-          <div class="linkDois">
-            <a href="#">Termos de uso</a>
-            <a href="https://www.instagram.com/cont.adoresdehistorias?igsh=MWR0eTIzYmJjbXRibA==" target="_blank" rel="noopener noreferrer">
-              <div class="social">
-                <img src="./assets/Instagram.svg" alt="Instagram" />
-              </div>
-            </a>
-            <a href="https://www.tiktok.com/@contadores.de.his1?_r=1&_t=ZS-97f1KpD6OG1" target="_blank" rel="noopener noreferrer">
-              <div class="social">
-                <img src="./assets/tiktok.svg" alt="TikTok" />
-              </div>
-            </a>
-          </div>
-        </nav>
-        <span class="linha-footer"></span>
-        <p class="copi">
-          © 2026 Contadores de Histórias. Todos os direitos reservados
-        </p>
-      </div>
-    </footer>
-    <script src="/js/script.js"></script>
   </body>
-
 </html>
