@@ -9,23 +9,24 @@
   <body>
 
     <main class="perfil-page">
-      <header class="perfil-banner">
-        <div class="banner-bg" id="bannerBg" role="img" aria-label="Imagem de capa do perfil"></div>
-        <button type="button" class="btn-upload-banner" id="btnUploadBanner" title="Alterar capa">📷</button>
-        <div class="perfil-info">
-          <div class="avatar-wrapper">
+    <header class="perfil-banner">
+    <div class="banner-bg" id="bannerBg"></div>
+    <button type="button" class="btn-upload-banner" id="btnUploadBanner" title="Alterar capa">📷</button>
+    <div class="perfil-info">
+        <div class="avatar-wrapper">
             <img class="avatar" id="avatarImg" alt="Foto de perfil" />
             <button type="button" class="btn-upload-avatar" id="btnUploadAvatar" title="Alterar foto">📷</button>
-          </div>
-          <h1 class="perfil-name" id="perfilName">Carregando...</h1>
-          <p class="perfil-bio" id="perfilBio">Leitor Voraz · Ofensiva de M Dias</p>
-          <div class="perfil-stats">
+        </div>
+        <h1 class="perfil-name" id="perfilName">Carregando...</h1>
+        <p class="perfil-bio" id="perfilBio">Leitor Voraz · Ofensiva de M Dias</p>
+        <div class="perfil-stats">
             <span><strong>384</strong> seguidores</span>
             <span aria-hidden="true">·</span>
             <span><a href="#" class="stat-link">218 seguindo</a></span>
-          </div>
         </div>
-      </header>
+    </div>
+</header>
+
 
       <div class="edit-profile-section">
         <button type="button" class="btn-edit-profile" id="btnEditProfile">
@@ -57,7 +58,6 @@
               <button type="submit" class="btn btn--primary">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="profileError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
@@ -83,7 +83,6 @@
               <button type="submit" class="btn btn--primary">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="bioError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
@@ -106,7 +105,6 @@
               <button type="submit" class="btn btn--primary" id="btnSubmitAvatar">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="avatarError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
@@ -129,13 +127,12 @@
               <button type="submit" class="btn btn--primary" id="btnSubmitBanner">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="bannerError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
       <section class="perfil-gallery" aria-label="Galeria de imagens">
         <h2 class="gallery-title">Minhas Histórias</h2>
-        <button type="button" class="btn-add-image" id="btnAddStory">
+        <button type="button" class="btn-add-story" id="btnAddStory">
           <span aria-hidden="true">＋</span> Adicionar
         </button>
       <dialog class="edit-modal story-editor-modal" id="editModalStory" aria-labelledby="storyEditorTitle">
@@ -241,7 +238,6 @@
               <button type="submit" class="btn btn--primary" id="btnSubmitImage">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="imageError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
@@ -282,7 +278,6 @@
               <button type="submit" class="btn btn--primary">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="editStoryError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
       </dialog>
@@ -305,12 +300,17 @@
               <button type="submit" class="btn btn--primary" id="btnSubmitEditCaption">Salvar</button>
             </div>
 
-            <div class="form-global-error" id="editCaptionError" role="alert" aria-live="assertive"></div>
           </form>
         </div>
-      </dialog>
+      </dialog> 
+    </main>
 
-      <section class="perfil-achievements" aria-label="Conquistas e medalhas">
+    <section class="perfil-gallery" aria-label="Galeria de imagens">
+    <div id="storyContent" class="story__content"></div>
+
+      </section>
+
+       <section class="perfil-achievements" aria-label="Conquistas e medalhas">
         <h2 class="achievements-title">Conquistas e Medalhas</h2>
         <div class="badges-grid">
           <article class="badge-card badge-card--earned">
@@ -332,14 +332,7 @@
             <span class="badge-status badge-status--locked">Bloqueado 🔒</span>
           </article>
         </div>
-        <section class="perfil-gallery" aria-label="Galeria de imagens">
-  
-
-  <div id="imagesGrid" class="images-grid"></div>
-
-      </section>
-    </main>
-
+     </section> 
     <script src="../js/auth.js"></script>
     <script src="../js/perfil.js"></script>
   </body>

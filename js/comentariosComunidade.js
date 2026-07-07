@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   feed.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && e.target.matches('.comment-input')) {
-      e.preventDefault(); // Evita comportamentos indesejados do Enter
+      e.preventDefault();
       const targetCard = e.target.closest('.post-card');
       handleCommentSubmit(targetCard);
     }

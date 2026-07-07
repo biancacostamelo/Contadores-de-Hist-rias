@@ -54,7 +54,7 @@
   }
 
   function renderStories(stories) {
-    const grid = document.getElementById('imagesGrid');
+    const grid = document.getElementById('storyContent');
     if (!grid) return;
 
     if (stories.length === 0) {
@@ -64,22 +64,22 @@
     }
 
     grid.innerHTML = stories
-      .map(
-        (story, index) => `
-      <article class="story-card" data-story-index="${index}" aria-label="História: ${story.title}">
-        <div class="story-cover" style="background-image: url('${story.cover}');"></div>
-        <button type="button" class="btn-edit-story" title="Editar história" aria-label="Editar ${story.title}">✏️</button>
-        <div class="story-details">
-          <span class="story-badge story-badge--${story.type
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')}">${story.type}</span>
-          <h3 class="story-title-text">${story.title}</h3>
-          <p class="story-date">Criado em: ${story.createdAt}</p>
+      .map((story, index) => {
+        const coverUrl =
+          '../assets/img/capaPadraoHistorias.png' ||
+          '../assets/img/capaPadraoHistorias.png';
+
+        return `
+        <div class="cardPerfil" data-story-index="${index}" style="background-image: url('${coverUrl}');">
+          <div class="contentCard">
+            <div>
+              <h3>${story.title || 'Sem título'}</h3>
+              <p>${story.type || 'Gênero'}</p>
+            </div>
+          </div>
         </div>
-      </article>
-    `,
-      )
+      `;
+      })
       .join('');
   }
 
@@ -272,11 +272,9 @@
       }
     });
 
-  // ---- Story edit: event delegation on the grid ----
-  const imagesGrid = document.getElementById('imagesGrid');
-  if (imagesGrid) {
-    imagesGrid.addEventListener('click', (event) => {
-      // Skip if clicking a button inside the card
+  const storyContent = document.getElementById('storyContent');
+  if (storyContent) {
+    storyContent.addEventListener('click', (event) => {
       if (
         event.target.closest('.btn-edit-story') ||
         event.target.closest('[data-action]')
@@ -297,13 +295,10 @@
       const storyToEdit = stories[index];
       if (!storyToEdit) return;
 
-      // Track that we're editing (not creating)
       editingStoryIndex = index;
 
-      // Open the full story editor modal (same as "Add Story")
       modais.stories.modal.showModal();
 
-      // Populate fields with existing data after modal opens
       setTimeout(() => {
         const titleInput = document.getElementById('storyTitleInput');
         const categorySelect = document.getElementById('storyCategorySelect');
@@ -317,7 +312,6 @@
           writingArea.innerHTML = '';
         }
 
-        // Sync state with populated values
         storyEditorState.title = titleInput?.value || '';
         storyEditorState.category = categorySelect?.value || 'Conto';
         storyEditorState.content = writingArea?.innerHTML || '';
@@ -414,7 +408,6 @@
       });
     }
 
-    // Aplica tamanho da fonte
     if (fontSizeSelect) {
       fontSizeSelect.addEventListener('change', () => {
         const sizeMap = {
@@ -439,7 +432,6 @@
       });
     }
 
-    // Botões de formatação na toolbar
     const toolbar = document.querySelector('.editor-toolbar');
     if (toolbar) {
       toolbar.addEventListener('click', (event) => {
@@ -452,7 +444,6 @@
       });
     }
 
-    // Botão de inserir imagem
     const btnInsertImage = document.getElementById('btnInsertImage');
     const imageFileInput = document.getElementById('imageFileInput');
     if (btnInsertImage && imageFileInput) {
@@ -491,7 +482,6 @@
       });
     }
 
-    // Botão de inserir link
     const btnInsertLink = document.getElementById('btnInsertLink');
     if (btnInsertLink) {
       btnInsertLink.addEventListener('click', () => {
@@ -597,7 +587,6 @@
     });
   }
 
-  // Inicializa o editor após carregar a página
   initStoryEditor();
 
   const tabsList = document.querySelector('.tabs-list');
