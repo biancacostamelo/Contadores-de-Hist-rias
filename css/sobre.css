@@ -71,6 +71,7 @@ body {
   height: 100%;
   border-radius: 15px;
   background-color: var(--bg-main);
+  border: 2px solid var(--border-color-two);
   text-indent: 45px; /* Move a barra de digitação '|'*/
 }
 
@@ -137,8 +138,9 @@ body {
   align-items: center;
   height: 100%;
   width: 130px;
-  background: var(--color-primary);
+  background: var(--color-secundary);
   color: var(--text-header);
+  border: 1px solid var(--border-color-two);
   border-radius: 30px;
   font-weight: bold;
   transition:
@@ -158,7 +160,7 @@ body {
   height: 100%;
   width: 130px;
   background: var(--text-header);
-  color: var(--color-primary);
+  color: var(--text-quartiary);
   border-radius: 30px;
   font-weight: bold;
   transition:

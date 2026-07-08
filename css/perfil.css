@@ -240,7 +240,7 @@
 .gallery-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-text-dark);
+  color: var(--text-primary);
   margin-bottom: 16px;
 }
 
@@ -342,7 +342,7 @@
 .achievements-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-text-dark);
+  color: var(--text-primary);
   margin-bottom: 20px;
 }
 
@@ -377,13 +377,13 @@
 .badge-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-text-dark);
+  color: var(--text-tertiary);
   margin-bottom: 4px;
 }
 
 .badge-desc {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--color-primary-hover);
   margin-bottom: 8px;
 }
 

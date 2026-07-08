@@ -9,6 +9,12 @@
 
   </head>
   <body>
+    <div class="display">
+        <label class="switch">
+          <input type="checkbox" id="btnTheme">
+          <span class="slider"></span>
+        </label>
+      </div>
     <main class="login-page"> 
       <a href="../comunidade/index.html">
          <img
@@ -19,7 +25,7 @@
           height="70"
         /> 
       </a>
-      <p>Contadores de Histórias</p>
+     
 
       <form class="login-card" id="loginForm" action="#" method="post" novalidate>
         <div class="login-card__content">          
@@ -65,19 +71,18 @@
             </div>
 
             <div class="login-form__actions">
+              <a href="#" class="login-form__link">Esqueceu a senha?</a>
               <button type="submit" class="login-form__btn login-form__btn--primary">
                 Entrar
               </button>
-              <a href="#" class="login-form__link">Esqueceu a senha?</a>
             </div>
 
             <div class="login-form__social-group">
-              <p class="login-form__social-label">Ou entre com:</p>
-              <google-button label="Entrar com Google" aria-label="Entrar com o Google"></google-button>
+              <p class="login-form__social-label">Ou:</p>
+              <google-button label="Continuar com Google" aria-label="Entrar com o Google"></google-button>
             </div>
 
             <div class="login-form__divider" role="presentation">
-              <span class="login-form__divider-text">ou</span>
             </div>
 
             <p class="login-form__register-text">
@@ -91,5 +96,6 @@
     <script src="../js/icons.js"></script>
     <script src="../js/form-validation.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
   </body>
 </html>

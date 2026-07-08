@@ -250,7 +250,7 @@ body {
 }
 
 .cardComunidade {
-  background-color: var(--surface-1);
+  background-color: var(--surface-3);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -261,12 +261,12 @@ body {
 .btn-card-comunidade {
   width: 139px;
   height: 40px;
-  background: #8b4513;
+  background: var(--color-primary);
+  border: 2px solid var(--border-color-two);
   border-radius: 17px;
-  color: #fdfdfd;
+  color: var(--bg-main);
   font-weight: 600;
   font-size: 0.875rem;
-  border: none;
 }
 
 @media (max-width: 758px) {
