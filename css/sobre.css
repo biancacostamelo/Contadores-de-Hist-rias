@@ -1,16 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
-:root {
-  --bg-color: #f5ebe1;
-  --txt-border-asset: #ffe4b5;
-  --detail-bgop: #c2a587;
-  --details: #8f6c46;
-  --browntoneOne: #8b4513;
-  --browntoneTwo: #5d3c1b;
-  --browntoneThree: #331d05;
-}
-
 * {
   margin: 0px;
   padding: 0px;
@@ -21,7 +11,7 @@
 }
 
 body {
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   overflow-x: hidden;
 }
 
@@ -33,7 +23,7 @@ body {
   left: 0px;
   right: 0px;
   z-index: 100;
-  background-color: var(--browntoneTwo);
+  background-color: var(--surface-2);
   height: 90px;
   display: flex;
   justify-content: center;
@@ -73,14 +63,14 @@ body {
   width: 20px;
   height: 20px;
   opacity: 45%;
-  color: var(--browntoneTwo);
+  color: var(--surface-2);
 }
 
 .input-pesquisa input {
   width: 100%;
   height: 100%;
   border-radius: 15px;
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   text-indent: 45px; /* Move a barra de digitação '|'*/
 }
 
@@ -88,7 +78,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.9375rem;
   font-weight: 450;
-  color: var(--browntoneTwo);
+  color: var(--surface-2);
   opacity: 45%;
 }
 
@@ -101,12 +91,12 @@ body {
   font-weight: bold;
   text-decoration: underline 2px transparent;
   text-underline-offset: 4px;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   transition: 0.3s;
 }
 
 .navbar a:hover {
-  text-decoration: underline 2px var(--txt-border-asset);
+  text-decoration: underline 2px var(--text-header);
 }
 
 .display {
@@ -117,9 +107,9 @@ body {
 .apertar {
   width: 40px;
   height: 20px;
-  border: 2px solid var(--browntoneOne);
+  border: 2px solid var(--surface-2);
   border-radius: 10px;
-  background-color: var(--txt-border-asset);
+  background-color: var(--text-header);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -129,7 +119,7 @@ body {
 .circulo {
   width: 14px;
   height: 14px;
-  background-color: var(--browntoneTwo);
+  background-color: var(--surface-2);
   border-radius: 50%;
 }
 
@@ -147,18 +137,18 @@ body {
   align-items: center;
   height: 100%;
   width: 130px;
-  background: var(--browntoneOne);
-  color: var(--txt-border-asset);
+  background: var(--color-primary);
+  color: var(--text-header);
   border-radius: 30px;
   font-weight: bold;
   transition:
-    background 0.4s ease,
+    background 0.4s ease,----text-header
     color 0.4s ease;
 }
 
 .btn #criar:hover {
-  background: var(--txt-border-asset);
-  color: var(--browntoneOne);
+  background: var(--text-header);
+  color: var(--color-primary);
 }
 
 .btn #entrar {
@@ -167,8 +157,8 @@ body {
   align-items: center;
   height: 100%;
   width: 130px;
-  background: var(--txt-border-asset);
-  color: var(--browntoneOne);
+  background: var(--text-header);
+  color: var(--color-primary);
   border-radius: 30px;
   font-weight: bold;
   transition:
@@ -177,8 +167,8 @@ body {
 }
 
 .btn #entrar:hover {
-  background: var(--browntoneOne);
-  color: var(--txt-border-asset);
+  background: var(--color-primary);
+  color: var(--text-header);
 }
 
 /*Inicio do conteúdo do sobre*/
@@ -205,21 +195,21 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 3.125rem;
   font-weight: bold;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
 }
 
 .subtitulo-sobre {
   font-family: 'Merriweather', serif;
   font-size: 3.125rem;
   font-weight: medium;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
 }
 
 .terceiro-titulo {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.5625rem;
   font-weight: 700;
-  color: var(--browntoneTwo);
+  color: var(--color-primary);
 }
 
 .img-sobre {
@@ -245,7 +235,7 @@ body {
   display: block;
   width: 100vw;
   height: 80px;
-  background-color: var(--txt-border-asset);
+  background-color: var(--bg-main);
 }
 
 /*Sobre nós*/
@@ -279,10 +269,10 @@ body {
   font-size: 1.5625rem;
   font-weight: 500;
   text-align: justify;
-  color: var(--browntoneTwo);
+  color: var(--color-primary);
   line-height: 1.44;
   margin-right: 55px;
-  border-bottom: 5px solid var(--browntoneOne);
+  border-bottom: 5px solid var(--color-primary);
   padding-bottom: 40px;
 }
 
@@ -324,7 +314,7 @@ body {
   font-size: 3.125rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
 }
 
 .img-missao {
@@ -342,7 +332,7 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 1.5625rem;
   font-weight: 500;
-  color: var(--browntoneTwo);
+  color: var(--color-primary);
   text-align: justify;
 }
 
@@ -359,7 +349,7 @@ body {
   font-size: 3.125rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
 }
 
 .img-visao {
@@ -377,7 +367,7 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 1.5625rem;
   font-weight: 500;
-  color: var(--browntoneTwo);
+  color: var(--color-primary);
   text-align: justify;
 }
 
@@ -398,7 +388,7 @@ body {
   font-weight: 700;
   text-align: center;
   text-transform: uppercase;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
 }
 
 .img-valores {
@@ -416,14 +406,14 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 1.5625rem;
   font-weight: 500;
-  color: var(--browntoneTwo);
+  color: var(--color-primary);
   text-align: justify;
 }
 
 /*Footer do sobre*/
 
 .footer {
-  background-color: var(--browntoneTwo);
+  background-color: var(--surface-2);
 }
 
 .footer-container {
@@ -440,7 +430,7 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
 }
 
 .logo-footer {
@@ -478,12 +468,12 @@ body {
   font-weight: bold;
   text-decoration: underline 2px transparent;
   text-underline-offset: 4px;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   transition: 0.3s;
 }
 
 .nav-footer a:hover {
-  text-decoration: underline 2px var(--txt-border-asset);
+  text-decoration: underline 2px var(--text-header);
 }
 
 .nav-footer a img {
@@ -500,7 +490,7 @@ body {
   display: inline-block;
   width: 100vw;
   height: 2px;
-  background-color: var(--txt-border-asset);
+  background-color: var(--text-header);
   margin: 5px;
 }
 
@@ -512,5 +502,5 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 1.375rem;
   font-weight: 500;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
 }

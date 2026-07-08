@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
-:root {
-  --bg-color: #f5ebe1;
-  --txt-border-asset: #ffe4b5;
+/* :root {
+  --bg-main: #f5ebe1;
+  --text-header: #ffe4b5;
   --detail-bgop: #c2a587;
   --details: #8f6c46;
-  --browntoneOne: #8b4513;
-  --browntoneTwo: #5d3c1b;
-  --browntoneThree: #331d05;
-}
+  --color-primary: #8b4513;
+  --surface-2: #5d3c1b;
+  --text-primary: #331d05;
+} */
 
 * {
   margin: 0px;
@@ -21,7 +21,7 @@
 }
 
 body {
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   overflow-x: hidden;
 }
 
@@ -33,7 +33,7 @@ body {
   left: 0px;
   right: 0px;
   z-index: 100;
-  background-color: var(--browntoneTwo);
+  background-color: var(--surface-2);
   height: 90px;
   display: flex;
   justify-content: center;
@@ -73,14 +73,14 @@ body {
   width: 20px;
   height: 20px;
   opacity: 45%;
-  color: var(--browntoneTwo);
+  color: var(--surface-2);
 }
 
 .input-pesquisa input {
   width: 100%;
   height: 100%;
   border-radius: 15px;
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   text-indent: 45px; /* Move a barra de digitação '|'*/
 }
 
@@ -88,7 +88,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.9375rem;
   font-weight: 450;
-  color: var(--browntoneTwo);
+  color: var(--surface-2);
   opacity: 45%;
 }
 
@@ -101,17 +101,17 @@ body {
   font-weight: bold;
   text-decoration: underline 2px transparent;
   text-underline-offset: 4px;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   transition: 0.3s;
 }
 
 .navbar a:hover {
-  text-decoration: underline 2px var(--txt-border-asset);
+  text-decoration: underline 2px var(--text-header);
 }
 
 .sub-menu {
-  background-color: var(--browntoneTwo);
-  border-top: 2px solid var(--txt-border-asset);
+  background-color: var(--surface-2);
+  border-top: 2px solid var(--text-header);
   margin-top: 90px;
   height: 50px;
   width: 100%;
@@ -126,19 +126,19 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.975rem;
   font-weight: bold;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   text-decoration: underline 2px transparent;
   text-underline-offset: 4px;
   transition: 0.3s ease;
 }
 
 .sub-menu .active {
-  text-decoration: underline 2px var(--txt-border-asset);
+  text-decoration: underline 2px var(--text-header);
   text-underline-offset: 4px;
 }
 
 .sub-menu a:hover {
-  text-decoration: underline 2px var(--txt-border-asset);
+  text-decoration: underline 2px var(--text-header);
 }
 
 .display {
@@ -149,9 +149,9 @@ body {
 .apertar {
   width: 40px;
   height: 20px;
-  border: 2px solid var(--browntoneOne);
+  border: 2px solid var(--color-primary);
   border-radius: 10px;
-  background-color: var(--txt-border-asset);
+  background-color: var(--text-header);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@ body {
 .circulo {
   width: 14px;
   height: 14px;
-  background-color: var(--browntoneTwo);
+  background-color: var(--surface-2);
   border-radius: 50%;
 }
 
@@ -179,8 +179,8 @@ body {
   align-items: center;
   height: 100%;
   width: 130px;
-  background: var(--browntoneOne);
-  color: var(--txt-border-asset);
+  background: var(--color-primary);
+  color: var(--text-header);
   border-radius: 30px;
   font-weight: bold;
   transition:
@@ -189,8 +189,8 @@ body {
 }
 
 .btn #criar:hover {
-  background: var(--txt-border-asset);
-  color: var(--browntoneOne);
+  background: var(--text-header);
+  color: var(--color-primary);
 }
 
 .btn #entrar {
@@ -199,8 +199,8 @@ body {
   align-items: center;
   height: 100%;
   width: 130px;
-  background: var(--txt-border-asset);
-  color: var(--browntoneOne);
+  background: var(--text-header);
+  color: var(--color-primary);
   border-radius: 30px;
   font-weight: bold;
   transition:
@@ -209,8 +209,8 @@ body {
 }
 
 .btn #entrar:hover {
-  background: var(--browntoneOne);
-  color: var(--txt-border-asset);
+  background: var(--color-primary);
+  color: var(--text-header);
 }
 
 /*Posts da galeria*/
@@ -219,7 +219,7 @@ body {
   font-family: 'Merriweather', serif;
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--browntoneOne);
+  color: var(--color-primary);
   margin: 50px 0px 30px 75px;
 }
 
@@ -240,7 +240,7 @@ body {
 .posts {
   width: 300px;
   height: 400px;
-  border: 2px solid var(--browntoneTwo);
+  border: 2px solid var(--surface-2);
   border-radius: 40px;
   overflow: hidden;
   position: relative;
@@ -248,7 +248,7 @@ body {
 }
 
 .posts:hover {
-  border: 2px solid var(--txt-border-asset);
+  border: 2px solid var(--text-header);
 }
 
 .imgpt {
@@ -295,7 +295,7 @@ body {
   gap: 6px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.9rem;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
 }
 
 .avatar {
@@ -321,14 +321,14 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.05rem;
   font-weight: bold;
-  color: var(--bg-color);
+  color: var(--text-header);
   margin: 0;
 }
 
 .txtautor .arroba-autor {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   margin: 0;
 }
 
@@ -357,12 +357,12 @@ body {
   position: relative;
   border-radius: 40px;
   overflow: hidden;
-  border: 2px solid var(--browntoneTwo);
+  border: 2px solid var(--surface-2);
   transition: border-color 0.4s ease;
 }
 
 .hist-post .posts-historia:hover {
-  border-color: var(--txt-border-asset);
+  border-color: var(--text-header);
 }
 
 .hist-post .posts-historia a {
@@ -442,7 +442,7 @@ body {
 }
 
 .hist-post .detalhes-historia .andamento {
-  color: var(--txt-border-asset);
+  color: var(--text-header);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   opacity: 0.85;
@@ -450,7 +450,7 @@ body {
 }
 
 .hist-post .detalhes-historia .sinopse {
-  color: var(--bg-color);
+  color: var(--bg-main);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   line-height: 1.4;

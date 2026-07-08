@@ -1,140 +1,142 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meu Perfil — Comunidade de Escritores</title>
-    <link rel="stylesheet" href="../css/global.css" />
-  </head>
-  <body>
- <div class="site-header-container"></div>
-    <main class="perfil-page">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil — Comunidade de Escritores</title>
+  <link rel="stylesheet" href="../css/global.css" />
+</head>
+
+<body>
+  <div class="site-header-container"></div>
+  <main class="perfil-page">
     <header class="perfil-banner">
-    <div class="banner-bg" id="bannerBg"></div>
-    <button type="button" class="btn-upload-banner" id="btnUploadBanner" title="Alterar capa">📷</button>
-    <div class="perfil-info">
+      <div class="banner-bg" id="bannerBg"></div>
+      <button type="button" class="btn-upload-banner" id="btnUploadBanner" title="Alterar capa">📷</button>
+      <div class="perfil-info">
         <div class="avatar-wrapper">
-            <img class="avatar" id="avatarImg" alt="Foto de perfil" />
-            <button type="button" class="btn-upload-avatar" id="btnUploadAvatar" title="Alterar foto">📷</button>
+          <img class="avatar" id="avatarImg" alt="Foto de perfil" />
+          <button type="button" class="btn-upload-avatar" id="btnUploadAvatar" title="Alterar foto">📷</button>
         </div>
         <h1 class="perfil-name" id="perfilName">Carregando...</h1>
         <p class="perfil-bio" id="perfilBio">Leitor Voraz · Ofensiva de M Dias</p>
         <div class="perfil-stats">
-            <span><strong>384</strong> seguidores</span>
-            <span aria-hidden="true">·</span>
-            <span><a href="#" class="stat-link">218 seguindo</a></span>
+          <span><strong>384</strong> seguidores</span>
+          <span aria-hidden="true">·</span>
+          <span><a href="#" class="stat-link">218 seguindo</a></span>
         </div>
-    </div>
-</header>
-
-
-      <div class="edit-profile-section">
-        <button type="button" class="btn-edit-profile" id="btnEditProfile">
-          <span aria-hidden="true">✏️</span> Editar Nome
-        </button>
-        <button type="button" class="btn-edit-profile" id="btnEditBio">
-          <span aria-hidden="true">✏️</span> Editar Bio
-        </button>
       </div>
+    </header>
 
-      <dialog class="edit-modal" id="editModalName" aria-labelledby="editModalTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalTitle">Editar Nome</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseName" aria-label="Fechar">&times;</button>
-          </header>
 
-          <form class="edit-form" id="editProfileForm" novalidate>
-            <div class="form-field">
-              <label class="form-label" for="newUsername">Novo Nome</label>
-              <input type="text" class="form-input" id="newUsername" name="username" required minlength="3" maxlength="50" placeholder="Seu nome de escritor" aria-describedby="username-error" />
-              <div class="field-error" id="username-error" role="alert" aria-live="assertive"></div>
-            </div>
+    <div class="edit-profile-section">
+      <button type="button" class="btn-edit-profile" id="btnEditProfile">
+        <span aria-hidden="true">✏️</span> Editar Nome
+      </button>
+      <button type="button" class="btn-edit-profile" id="btnEditBio">
+        <span aria-hidden="true">✏️</span> Editar Bio
+      </button>
+    </div>
 
-            <p class="form-hint">O nome deve ter no mínimo 3 caracteres e não pode estar em uso.</p>
+    <dialog class="edit-modal" id="editModalName" aria-labelledby="editModalTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalTitle">Editar Nome</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseName" aria-label="Fechar">&times;</button>
+        </header>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelName">Cancelar</button>
-              <button type="submit" class="btn btn--primary">Salvar</button>
-            </div>
+        <form class="edit-form" id="editProfileForm" novalidate>
+          <div class="form-field">
+            <label class="form-label" for="newUsername">Novo Nome</label>
+            <input type="text" class="form-input" id="newUsername" name="username" required minlength="3" maxlength="50" placeholder="Seu nome de escritor" aria-describedby="username-error" />
+            <div class="field-error" id="username-error" role="alert" aria-live="assertive"></div>
+          </div>
 
-          </form>
-        </div>
-      </dialog>
+          <p class="form-hint">O nome deve ter no mínimo 3 caracteres e não pode estar em uso.</p>
 
-      <dialog class="edit-modal" id="editModalBio" aria-labelledby="editModalBioTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalBioTitle">Editar Bio</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseBio" aria-label="Fechar">&times;</button>
-          </header>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelName">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Salvar</button>
+          </div>
 
-          <form class="edit-form" id="editBioForm" novalidate>
-            <div class="form-field">
-              <label class="form-label" for="newBio">Sua Bio</label>
-              <textarea class="form-input form-textarea" id="newBio" name="bio" maxlength="200" placeholder="Conte um pouco sobre você..." aria-describedby="bio-error"></textarea>
-              <div class="field-error" id="bio-error" role="alert" aria-live="assertive"></div>
-            </div>
+        </form>
+      </div>
+    </dialog>
 
-            <p class="form-hint">Máximo de 200 caracteres.</p>
+    <dialog class="edit-modal" id="editModalBio" aria-labelledby="editModalBioTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalBioTitle">Editar Bio</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseBio" aria-label="Fechar">&times;</button>
+        </header>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelBio">Cancelar</button>
-              <button type="submit" class="btn btn--primary">Salvar</button>
-            </div>
+        <form class="edit-form" id="editBioForm" novalidate>
+          <div class="form-field">
+            <label class="form-label" for="newBio">Sua Bio</label>
+            <textarea class="form-input form-textarea" id="newBio" name="bio" maxlength="200" placeholder="Conte um pouco sobre você..." aria-describedby="bio-error"></textarea>
+            <div class="field-error" id="bio-error" role="alert" aria-live="assertive"></div>
+          </div>
 
-          </form>
-        </div>
-      </dialog>
+          <p class="form-hint">Máximo de 200 caracteres.</p>
 
-      <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalAvatarTitle">Alterar Foto de Perfil</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseAvatar" aria-label="Fechar">&times;</button>
-          </header>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelBio">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Salvar</button>
+          </div>
 
-          <form class="edit-form" id="avatarUploadForm">
-            <div class="form-field">
-              <label class="form-label" for="avatarInput">Escolher Imagem</label>
-              <input type="file" class="form-input-file" id="avatarInput" accept="image/*" />
-            </div>
+        </form>
+      </div>
+    </dialog>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelAvatar">Cancelar</button>
-              <button type="submit" class="btn btn--primary" id="btnSubmitAvatar">Salvar</button>
-            </div>
+    <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalAvatarTitle">Alterar Foto de Perfil</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseAvatar" aria-label="Fechar">&times;</button>
+        </header>
 
-          </form>
-        </div>
-      </dialog>
+        <form class="edit-form" id="avatarUploadForm">
+          <div class="form-field">
+            <label class="form-label" for="avatarInput">Escolher Imagem</label>
+            <input type="file" class="form-input-file" id="avatarInput" accept="image/*" />
+          </div>
 
-      <dialog class="edit-modal" id="editModalBanner" aria-labelledby="editModalBannerTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalBannerTitle">Alterar Capa</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseBanner" aria-label="Fechar">&times;</button>
-          </header>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelAvatar">Cancelar</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitAvatar">Salvar</button>
+          </div>
 
-          <form class="edit-form" id="bannerUploadForm">
-            <div class="form-field">
-              <label class="form-label" for="bannerInput">Escolher Imagem</label>
-              <input type="file" class="form-input-file" id="bannerInput" accept="image/*" />
-            </div>
+        </form>
+      </div>
+    </dialog>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelBanner">Cancelar</button>
-              <button type="submit" class="btn btn--primary" id="btnSubmitBanner">Salvar</button>
-            </div>
+    <dialog class="edit-modal" id="editModalBanner" aria-labelledby="editModalBannerTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalBannerTitle">Alterar Capa</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseBanner" aria-label="Fechar">&times;</button>
+        </header>
 
-          </form>
-        </div>
-      </dialog>
-      <section class="perfil-gallery" aria-label="Galeria de imagens">
-        <h2 class="gallery-title">Minhas Histórias</h2>
-        <button type="button" class="btn-add-story" id="btnAddStory">
-          <span aria-hidden="true">＋</span> Adicionar
-        </button>
+        <form class="edit-form" id="bannerUploadForm">
+          <div class="form-field">
+            <label class="form-label" for="bannerInput">Escolher Imagem</label>
+            <input type="file" class="form-input-file" id="bannerInput" accept="image/*" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelBanner">Cancelar</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitBanner">Salvar</button>
+          </div>
+
+        </form>
+      </div>
+    </dialog>
+    <section class="perfil-gallery" aria-label="Galeria de imagens">
+      <h2 class="gallery-title">Minhas Histórias</h2>
+      <button type="button" class="btn-add-story" id="btnAddStory">
+        <span aria-hidden="true">＋</span> Adicionar
+      </button>
       <dialog class="edit-modal story-editor-modal" id="editModalStory" aria-labelledby="storyEditorTitle">
         <div class="modal-content">
           <header class="editor-top-bar">
@@ -212,129 +214,130 @@
         </div>
       </dialog>
 
-      
-      </section>
 
-      <dialog class="edit-modal" id="editModalImage" aria-labelledby="editModalImageTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalImageTitle">Adicionar Foto</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseImage" aria-label="Fechar">&times;</button>
-          </header>
+    </section>
 
-          <form class="edit-form" id="imageUploadForm">
-            <div class="form-field">
-              <label class="form-label" for="imageInput">Escolher Imagem</label>
-              <input type="file" class="form-input-file" id="imageInput" accept="image/*" />
-            </div>
+    <dialog class="edit-modal" id="editModalImage" aria-labelledby="editModalImageTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalImageTitle">Adicionar Foto</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseImage" aria-label="Fechar">&times;</button>
+        </header>
 
-            <div class="form-field">
-              <label class="form-label" for="imageCaption">Legenda (opcional)</label>
-              <input type="text" class="form-input" id="imageCaption" maxlength="150" placeholder="Descreva sua foto..." />
-            </div>
+        <form class="edit-form" id="imageUploadForm">
+          <div class="form-field">
+            <label class="form-label" for="imageInput">Escolher Imagem</label>
+            <input type="file" class="form-input-file" id="imageInput" accept="image/*" />
+          </div>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelImage">Cancelar</button>
-              <button type="submit" class="btn btn--primary" id="btnSubmitImage">Salvar</button>
-            </div>
+          <div class="form-field">
+            <label class="form-label" for="imageCaption">Legenda (opcional)</label>
+            <input type="text" class="form-input" id="imageCaption" maxlength="150" placeholder="Descreva sua foto..." />
+          </div>
 
-          </form>
-        </div>
-      </dialog>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelImage">Cancelar</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitImage">Salvar</button>
+          </div>
 
-      <dialog class="edit-modal" id="editModalEditStory" aria-labelledby="editModalEditStoryTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalEditStoryTitle">Editar História</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseEditStory" aria-label="Fechar">&times;</button>
-          </header>
+        </form>
+      </div>
+    </dialog>
 
-          <form class="edit-form" id="editStoryForm" novalidate>
-            <div class="form-field">
-              <label class="form-label" for="editStoryTitle">Título</label>
-              <input type="text" class="form-input" id="editStoryTitle" name="title" required minlength="1" maxlength="150" placeholder="Título da sua obra..." aria-describedby="editStoryTitle-error" />
-              <div class="field-error" id="editStoryTitle-error" role="alert" aria-live="assertive"></div>
-            </div>
+    <dialog class="edit-modal" id="editModalEditStory" aria-labelledby="editModalEditStoryTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalEditStoryTitle">Editar História</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseEditStory" aria-label="Fechar">&times;</button>
+        </header>
 
-            <div class="form-field">
-              <label class="form-label" for="editStoryCategory">Categoria</label>
-              <select class="form-input story-category-select" id="editStoryCategory" name="category">
-                <option value="Conto">📖 Conto</option>
-                <option value="Manga">🎌 Manga</option>
-                <option value="Romance">💕 Romance</option>
-                <option value="Crônica">⏳ Crônica</option>
-              </select>
-            </div>
+        <form class="edit-form" id="editStoryForm" novalidate>
+          <div class="form-field">
+            <label class="form-label" for="editStoryTitle">Título</label>
+            <input type="text" class="form-input" id="editStoryTitle" name="title" required minlength="1" maxlength="150" placeholder="Título da sua obra..." aria-describedby="editStoryTitle-error" />
+            <div class="field-error" id="editStoryTitle-error" role="alert" aria-live="assertive"></div>
+          </div>
 
-            <div class="form-field">
-              <label class="form-label" for="editStoryCover">Capa (URL da imagem)</label>
-              <input type="url" class="form-input" id="editStoryCover" name="cover" placeholder="https://exemplo.com/capa.jpg" />
-            </div>
+          <div class="form-field">
+            <label class="form-label" for="editStoryCategory">Categoria</label>
+            <select class="form-input story-category-select" id="editStoryCategory" name="category">
+              <option value="Conto">📖 Conto</option>
+              <option value="Manga">🎌 Manga</option>
+              <option value="Romance">💕 Romance</option>
+              <option value="Crônica">⏳ Crônica</option>
+            </select>
+          </div>
 
-            <p class="form-hint">Atualize as informações da sua história. A capa aceita URLs de imagens.</p>
+          <div class="form-field">
+            <label class="form-label" for="editStoryCover">Capa (URL da imagem)</label>
+            <input type="url" class="form-input" id="editStoryCover" name="cover" placeholder="https://exemplo.com/capa.jpg" />
+          </div>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelEditStory">Cancelar</button>
-              <button type="submit" class="btn btn--primary">Salvar</button>
-            </div>
+          <p class="form-hint">Atualize as informações da sua história. A capa aceita URLs de imagens.</p>
 
-          </form>
-        </div>
-      </dialog>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelEditStory">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Salvar</button>
+          </div>
 
-      <dialog class="edit-modal" id="editModalEditImage" aria-labelledby="editModalEditImageTitle">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h2 class="modal-title" id="editModalEditImageTitle">Editar Legenda</h2>
-            <button type="button" class="btn-close-modal" id="btnCloseEditImage" aria-label="Fechar">&times;</button>
-          </header>
+        </form>
+      </div>
+    </dialog>
 
-          <form class="edit-form" id="editImageCaptionForm">
-            <div class="form-field">
-              <label class="form-label" for="editCaptionInput">Legenda</label>
-              <input type="text" class="form-input" id="editCaptionInput" maxlength="150" placeholder="Sua legenda..." />
-            </div>
+    <dialog class="edit-modal" id="editModalEditImage" aria-labelledby="editModalEditImageTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalEditImageTitle">Editar Legenda</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseEditImage" aria-label="Fechar">&times;</button>
+        </header>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn--secondary" id="btnCancelEditImage">Cancelar</button>
-              <button type="submit" class="btn btn--primary" id="btnSubmitEditCaption">Salvar</button>
-            </div>
+        <form class="edit-form" id="editImageCaptionForm">
+          <div class="form-field">
+            <label class="form-label" for="editCaptionInput">Legenda</label>
+            <input type="text" class="form-input" id="editCaptionInput" maxlength="150" placeholder="Sua legenda..." />
+          </div>
 
-          </form>
-        </div>
-      </dialog> 
-    </main>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--secondary" id="btnCancelEditImage">Cancelar</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitEditCaption">Salvar</button>
+          </div>
 
-    <section class="perfil-gallery" aria-label="Galeria de imagens">
+        </form>
+      </div>
+    </dialog>
+  </main>
+
+  <section class="perfil-gallery" aria-label="Galeria de imagens">
     <div id="storyContent" class="story__content"></div>
 
-      </section>
+  </section>
 
-       <section class="perfil-achievements" aria-label="Conquistas e medalhas">
-        <h2 class="achievements-title">Conquistas e Medalhas</h2>
-        <div class="badges-grid">
-          <article class="badge-card badge-card--earned">
-            <span class="badge-icon" aria-hidden="true">📚</span>
-            <h3 class="badge-name">Primeiro Capítulo</h3>
-            <p class="badge-desc">Iniciou sua jornada literária</p>
-            <span class="badge-status badge-status--earned">Conquistado ✓</span>
-          </article>
-          <article class="badge-card badge-card--earned">
-            <span class="badge-icon" aria-hidden="true">🔥</span>
-            <h3 class="badge-name">7 Dias de Fogo</h3>
-            <p class="badge-desc">Leu 7 dias consecutivos</p>
-            <span class="badge-status badge-status--earned">Conquistado ✓</span>
-          </article>
-          <article class="badge-card badge-card--locked">
-            <span class="badge-icon" aria-hidden="true">🌙</span>
-            <h3 class="badge-name">Leitor Noturno</h3>
-            <p class="badge-desc">Leu após meia-noite 5x</p>
-            <span class="badge-status badge-status--locked">Bloqueado 🔒</span>
-          </article>
-        </div>
-     </section> 
-     <script src="../js/header.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/perfil.js"></script>
-  </body>
+  <section class="perfil-achievements" aria-label="Conquistas e medalhas">
+    <h2 class="achievements-title">Conquistas e Medalhas</h2>
+    <div class="badges-grid">
+      <article class="badge-card badge-card--earned">
+        <span class="badge-icon" aria-hidden="true">📚</span>
+        <h3 class="badge-name">Primeiro Capítulo</h3>
+        <p class="badge-desc">Iniciou sua jornada literária</p>
+        <span class="badge-status badge-status--earned">Conquistado ✓</span>
+      </article>
+      <article class="badge-card badge-card--earned">
+        <span class="badge-icon" aria-hidden="true">🔥</span>
+        <h3 class="badge-name">7 Dias de Fogo</h3>
+        <p class="badge-desc">Leu 7 dias consecutivos</p>
+        <span class="badge-status badge-status--earned">Conquistado ✓</span>
+      </article>
+      <article class="badge-card badge-card--locked">
+        <span class="badge-icon" aria-hidden="true">🌙</span>
+        <h3 class="badge-name">Leitor Noturno</h3>
+        <p class="badge-desc">Leu após meia-noite 5x</p>
+        <span class="badge-status badge-status--locked">Bloqueado 🔒</span>
+      </article>
+    </div>
+  </section>
+  <script src="../js/header.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/perfil.js"></script>
+</body>
+
 </html>

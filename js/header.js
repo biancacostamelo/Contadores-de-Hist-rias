@@ -1,5 +1,7 @@
 const HeaderComponent = (() => {
+
   const render = (config = {}) => {
+
     const {
       logoPath = '../assets/img/logo.png',
       searchIconPath = './assets/lupa pesquisar.svg',
@@ -17,7 +19,7 @@ const HeaderComponent = (() => {
       <header class="header">
         <section class="home-header">
           <div class="logo">
-            <a href="#">
+            <a href="../index.html">
               <img src="${escapeHtml(logoPath)}" alt="Logo Contadores de Histórias" class="img-logo" />
             </a>
           </div>
@@ -26,9 +28,9 @@ const HeaderComponent = (() => {
             <input type="text" placeholder="Pesquisar..." />
           </div>
           <nav class="navbar">
-            <a href="#">Galeria</a>
-            <a href="#">Comunidades</a>
-            <a href="#">Sobre</a>
+            <a href="/pages/galeria.html">Galeria</a>
+            <a href="/pages/comunidade.html">Comunidades</a>
+            <a href="/pages/sobre.html">Sobre</a>
           </nav>
 
           <div class="display">
@@ -46,6 +48,15 @@ const HeaderComponent = (() => {
     `;
 
     container.innerHTML = html;
+
+    const btnTheme = document.getElementById('btnTheme');
+
+    btnTheme.addEventListener('click', (e) => {
+      document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('light-theme');
+
+    });
+
   };
 
   const escapeHtml = (unsafe) => {
@@ -63,3 +74,5 @@ const HeaderComponent = (() => {
 document.addEventListener('DOMContentLoaded', () => {
   HeaderComponent.render();
 });
+
+
