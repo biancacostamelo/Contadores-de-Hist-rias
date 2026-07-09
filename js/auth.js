@@ -1,5 +1,8 @@
 (() => {
   'use strict';
+
+  const GOOGLE_CLIENT_ID =
+    '767512924393-2401pkq0a4t6rjd7aam060ko62jledqu.apps.googleusercontent.com';
   const STORAGE_KEY_USERS = 'writersCommunity_users';
   const STORAGE_KEY_SESSION = 'writersCommunity_session';
   const SESSION_DURATION_MS = 60 * 60 * 1000;
@@ -314,6 +317,93 @@
     });
   }
 
+  const initGoogleClient = () => {
+    if (typeof google === 'undefined') {
+      const waitForGoogle = setInterval(() => {
+        if (typeof google !== 'undefined') {
+          clearInterval(waitForGoogle);
+          runGoogleInit();
+        }
+      }, 100);
+      return;
+    }
+
+    runGoogleInit();
+  };
+
+  const runGoogleInit = () => {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
+
+    document
+      .querySelectorAll('google-button, [data-provider="Google"]')
+      .forEach((buttonDiv) => {
+        google.accounts.id.renderButton(buttonDiv, {
+          theme: 'outline',
+          size: 'large',
+          locale: 'pt_BR',
+          text: isSignup ? 'signup_with' : 'signin_with',
+        });
+      });
+  };
+
+  const handleCredentialResponse = (response) => {
+    if (!response.credential) return;
+
+    try {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      const email = payload.email;
+
+      if (!email) {
+        showFormAuthError('E-mail não disponível. Tente novamente.');
+        return;
+      }
+
+      const users = getUsers();
+
+      if (!users[email]) {
+        const displayName = payload.name || generateRandomUsername();
+        users[email] = new User('', displayName, '');
+        saveUsers(users);
+      }
+
+      const token = crypto.randomUUID();
+      const expiresAt = Date.now() + SESSION_DURATION_MS;
+      saveSession(token, email, '', expiresAt);
+      window.location.href = '../pages/perfil.html';
+    } catch (err) {
+      console.error(err);
+      showFormAuthError('Erro ao processar autenticação. Tente novamente.');
+    }
+  };
+
+  const googleSignIn = () => {
+    if (typeof google === 'undefined') return;
+
+    google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        return;
+      }
+    });
+  };
+
+  const setupGoogleButtonListeners = () => {
+    document
+      .querySelectorAll('[data-provider="Google"], google-button')
+      .forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          googleSignIn();
+        });
+      });
+  };
+
+  initGoogleClient();
+  setupGoogleButtonListeners();
   window.auth = {
     isLoggedIn: () => getSession() !== null,
     getCurrentUser: () => {
