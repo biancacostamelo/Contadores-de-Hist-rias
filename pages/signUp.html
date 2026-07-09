@@ -1,140 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro — Comunidade de Escritores</title>
-    <link rel="stylesheet" href="../css/global.css" />
-  </head>
-  <body>
-    <div class="display">
-        <label class="switch">
-          <input type="checkbox" id="btnTheme">
-          <span class="slider"></span>
-        </label>
-      </div>
-    <main class="cadastro-page">
-      <a href="../index.html">
-        <img
-          class="cadastro-page__logo-img"
-          src="../assets/img/logo.svg"
-          alt=""
-          width="70"
-          height="70"
-        />        
-      </a>
-      <p>Contadores de Histórias</p>
 
-      <section class="cadastro-card">
-        <div class="cadastro-card__content">
-          <header class="cadastro-card__header">
-            <h1 class="cadastro-card__title">Crie sua conta</h1>
-            <p class="cadastro-card__subtitle">
-              Junte-se a uma comunidade que transforma histórias em oportunidades.
-            </p>
-          </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — Comunidade de Escritores</title>
+  <link rel="icon" href="../assets/Logo Principal.svg" />
+  <link rel="stylesheet" href="../css/global.css" />
+</head>
 
-          <form class="cadastro-form" id="signupForm" action="#" method="post" novalidate>
+<body>
+  <div class="display">
+    <div class="box-switch">
+      <label class="switch">
+        <input type="checkbox" id="btnTheme">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <main class="cadastro-page">
+    <a href="../index.html">
+      <img class="cadastro-page__logo-img" src="../assets/img/logo.svg" alt="" width="70" height="70" />
+    </a>
 
-            <div class="cadastro-form__field-group">
-              <label class="cadastro-form__label" for="fullname">Nome Completo</label>
-              <input
-                class="cadastro-form__input"
-                type="text"
-                id="fullname"
-                name="fullname"
-                required
-                minlength="3"
-                maxlength="100"
-                placeholder="Renan Antonio"
-                aria-describedby="fullname-error"
-              />
-              <div class="cadastro-form__error" id="fullname-error" role="alert" aria-live="assertive"></div>
-            </div>
+    <section class="cadastro-card">
+      <div class="cadastro-card__content">
+        <header class="cadastro-card__header">
+          <h1 class="cadastro-card__title">Crie sua conta</h1>
+          <p class="cadastro-card__subtitle">
+            Junte-se a uma comunidade que transforma histórias em oportunidades.
+          </p>
+        </header>
 
-            <div class="cadastro-form__field-group">
-              <label class="cadastro-form__label" for="email-cadastro">E-mail</label>
-              <input
-                class="cadastro-form__input"
-                type="email"
-                id="email-cadastro"
-                name="email"
-                required
-                inputmode="email"
-                autocomplete="email"
-                placeholder="exemplo@gmail.com"
-                aria-describedby="email-cadastro-error"
-              />
-              <div class="cadastro-form__error" id="email-cadastro-error" role="alert" aria-live="assertive"></div>
-            </div>
+        <form class="cadastro-form" id="signupForm" action="#" method="post" novalidate>
 
-            <div class="cadastro-form__field-group">
-              <label class="cadastro-form__label" for="password-cadastro">Senha</label>
-              <input
-                class="cadastro-form__input cadastro-form__input--password"
-                type="password"
-                id="password-cadastro"
-                name="password"
-                required
-                inputmode="text"
-                minlength="8"
-                autocomplete="new-password"
-                placeholder="••••••••"
-                aria-describedby="password-cadastro-error"
-              />
-              <div class="cadastro-form__error" id="password-cadastro-error" role="alert" aria-live="assertive"></div>
-            </div>
-
-            <div class="cadastro-form__field-group">
-              <label class="cadastro-form__label" for="confirm-password">Confirme a senha</label>
-              <input
-                class="cadastro-form__input cadastro-form__input--password"
-                type="password"
-                id="confirm-password"
-                name="confirm_password"
-                required
-                inputmode="text"
-                minlength="8"
-                autocomplete="new-password"
-                placeholder="••••••••"
-                aria-describedby="confirm-password-error"
-              />
-              <div class="cadastro-form__error" id="confirm-password-error" role="alert" aria-live="assertive"></div>
-            </div>
-
-            <div class="cadastro-form__field-group cadastro-form__field-group--checkbox">
-              <label class="cadastro-form__checkbox-label">
-                <input
-                  type="checkbox"
-                  id="terms-checkbox"
-                  name="terms"
-                  required
-                  aria-describedby="terms-error"
-                />
-                Aceito os Termos de Uso e Diretrizes da comunidade
-              </label>
-              <div class="cadastro-form__error" id="terms-error" role="alert" aria-live="assertive"></div>
-            </div>
-
-            <button type="submit" class="cadastro-form__btn cadastro-form__btn--primary">
-              Criar minha conta de escritor
-            </button>           
-          </form>
-
-          <div class="cadastro-form__social-group">
-            <p class="cadastro-form__social-label">Ou registre-se com:</p>
-            <google-button label="Entrar com Google" aria-label="Criar conta com o Google"></google-button>
+          <div class="cadastro-form__field-group">
+            <label class="cadastro-form__label" for="fullname">Nome Completo</label>
+            <input class="cadastro-form__input" type="text" id="fullname" name="fullname" required minlength="3" maxlength="100" placeholder="Renan Antonio" aria-describedby="fullname-error" />
+            <div class="cadastro-form__error" id="fullname-error" role="alert" aria-live="assertive"></div>
           </div>
 
-          <div class="cadastro-form__login-redirect">
-            <p>Já possui uma conta? <a href="../pages/login.html" class="cadastro-form__link cadastro-form__link--primary">Faça o login</a></p>
+          <div class="cadastro-form__field-group">
+            <label class="cadastro-form__label" for="email-cadastro">E-mail</label>
+            <input class="cadastro-form__input" type="email" id="email-cadastro" name="email" required inputmode="email" autocomplete="email" placeholder="exemplo@gmail.com" aria-describedby="email-cadastro-error" />
+            <div class="cadastro-form__error" id="email-cadastro-error" role="alert" aria-live="assertive"></div>
           </div>
+
+          <div class="cadastro-form__field-group">
+            <label class="cadastro-form__label" for="password-cadastro">Senha</label>
+            <input class="cadastro-form__input cadastro-form__input--password" type="password" id="password-cadastro" name="password" required inputmode="text" minlength="8" autocomplete="new-password" placeholder="••••••••" aria-describedby="password-cadastro-error" />
+            <div class="cadastro-form__error" id="password-cadastro-error" role="alert" aria-live="assertive"></div>
+          </div>
+
+          <div class="cadastro-form__field-group">
+            <label class="cadastro-form__label" for="confirm-password">Confirme a senha</label>
+            <input class="cadastro-form__input cadastro-form__input--password" type="password" id="confirm-password" name="confirm_password" required inputmode="text" minlength="8" autocomplete="new-password" placeholder="••••••••" aria-describedby="confirm-password-error" />
+            <div class="cadastro-form__error" id="confirm-password-error" role="alert" aria-live="assertive"></div>
+          </div>
+
+          <div class="cadastro-form__field-group cadastro-form__field-group--checkbox">
+            <label class="cadastro-form__checkbox-label">
+              <input type="checkbox" id="terms-checkbox" name="terms" required aria-describedby="terms-error" />
+              Aceito os Termos de Uso e Diretrizes da comunidade
+            </label>
+            <div class="cadastro-form__error" id="terms-error" role="alert" aria-live="assertive"></div>
+          </div>
+
+          <button type="submit" class="cadastro-form__btn cadastro-form__btn--primary">
+            Criar minha conta de escritor
+          </button>
+        </form>
+
+        <div class="cadastro-form__social-group">
+          <p class="cadastro-form__social-label">Ou:</p>
+          <google-button label="Continuar com Google" aria-label="Criar conta com o Google"></google-button>
         </div>
-      </section>
-    </main>
-    <script src="../js/icons.js"></script>
-    <script src="../js/form-validation.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/script.js"></script>
-  </body>
+        <div class="login-form__divider" role="presentation">
+        </div>
+        <div class="cadastro-form__login-redirect">
+          <p>Já possui uma conta? <a href="../pages/login.html" class="cadastro-form__link cadastro-form__link--primary">Faça o login</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../js/icons.js"></script>
+  <script src="../js/form-validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+</body>
+
 </html>

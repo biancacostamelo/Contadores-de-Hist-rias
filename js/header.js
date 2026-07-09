@@ -3,8 +3,8 @@ const HeaderComponent = (() => {
   const render = (config = {}) => {
 
     const {
-      logoPath = '../assets/img/logo.png',
-      searchIconPath = './assets/lupa pesquisar.svg',
+      logoPath = '../assets/Logo principal.svg',
+      searchIconPath = '../assets/lupa-pesquisar',
       containerSelector = '.site-header-container',
     } = config;
 
@@ -16,6 +16,7 @@ const HeaderComponent = (() => {
       return;
     }
     const html = `
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
       <header class="header">
         <section class="home-header">
           <div class="logo">
@@ -24,7 +25,7 @@ const HeaderComponent = (() => {
             </a>
           </div>
           <div class="input-pesquisa">
-            <img src="${escapeHtml(searchIconPath)}" alt="lupa" />
+            <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
             <input type="text" placeholder="Pesquisar..." />
           </div>
           <nav class="navbar">

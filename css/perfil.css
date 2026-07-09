@@ -6,12 +6,14 @@
 
 .perfil-banner {
   position: relative;
-  height: 400px;
+  min-height: 250px;
   width: 100%;
   margin: 0;
   padding: 0;
   border: none;
   box-shadow: none;
+  border-radius: 0 0 26px 26px;
+  overflow: hidden;
 }
 
 .banner-bg img {
@@ -35,7 +37,7 @@
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0) 40%,
-    rgba(0, 0, 0, 0.35) 100%
+    rgba(0, 0, 0, 0.7) 100%
   );
   pointer-events: none;
 }
@@ -74,7 +76,6 @@
   left: 24px;
   right: 24px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 16px;
 }
@@ -127,7 +128,7 @@
 .perfil-name {
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-white);
+  color: #fff;
   margin-bottom: 2px;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
@@ -137,7 +138,7 @@
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 6px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .perfil-stats {
@@ -145,7 +146,7 @@
   align-items: center;
   gap: 4px;
   font-size: 14px;
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .stat-link {
@@ -167,25 +168,21 @@
 .btn-edit-profile {
   padding: 6px 18px;
   border-radius: var(--radius-pill);
-  background-color: var(--color-white);
-  color: var(--color-text-dark);
-  border: 1px solid var(--color-border-light);
+  background-color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
+  transition: 0.4s ease;
 }
 
 .btn-edit-profile:hover {
-  background-color: var(--color-primary-hover);
-  background-color: var(--color-primary);
+  background-color: var(--text-one);
+  color: #ffffff;
+  transform: var(--btn-transform);
   border-color: rgba(51, 29, 5, 0.25);
-  color: var(--color-white);
 }
 
 .reading-tabs {
@@ -199,7 +196,7 @@
 .tab-pill {
   padding: 6px 16px;
   border-radius: var(--radius-pill);
-  background-color: var(--color-white);
+  background-color: #ffffff;
   color: var(--color-text-dark);
   font-size: 14px;
   font-weight: 500;
@@ -220,7 +217,7 @@
 
 .tab-pill--active {
   background-color: var(--color-primary) !important;
-  color: var(--color-white) !important;
+  color: #ffffff !important;
   border-color: var(--color-primary) !important;
 }
 
@@ -234,7 +231,8 @@
 }
 
 .perfil-gallery {
-  padding: 5px 100px;
+      width: 90%;
+    margin: auto;
 }
 
 .gallery-title {
@@ -247,9 +245,7 @@
 .btn-add-story {
   padding: 8px 20px;
   border-radius: var(--radius-pill);
-  background-color: var(--color-white);
-  color: var(--color-primary);
-  border: 1.5px solid var(--color-primary);
+  background-color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -262,8 +258,9 @@
 }
 
 .btn-add-story:hover {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+ background-color: var(--text-one);
+  color: #ffffff;
+  transform: var(--btn-transform);
 }
 
 .story__content {
@@ -336,7 +333,8 @@
 }
 
 .perfil-achievements {
-  margin-top: 40px;
+    width: 90%;
+    margin: 40px auto;
 }
 
 .achievements-title {
@@ -354,10 +352,11 @@
 
 .badge-card {
   background-color: var(--card-bg);
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   padding: 20px 16px;
   text-align: center;
-  box-shadow: 0 2px 10px var(--card-shadow);
+  box-shadow: 0 2px 10px var(--shadow-card);
+  border: 1px solid var(--border-color);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -402,7 +401,7 @@
 
 .badge-status--locked {
   background-color: rgba(51, 29, 5, 0.08);
-  color: var(--color-text-muted);
+  color: var(--text-tertiary);
 }
 
 .edit-modal {
@@ -411,7 +410,7 @@
   overflow-y: auto;
   border-radius: var(--radius-lg);
   border: none;
-  background-color: var(--color-white);
+  background-color: #ffffff;
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
   padding: 0;
 }
@@ -553,7 +552,7 @@
 
 .btn--primary {
   background-color: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .btn--primary:hover {
@@ -640,7 +639,7 @@
   padding: 8px 20px;
   border-radius: var(--radius-pill);
   background-color: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -718,7 +717,7 @@
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--color-border-light);
-  background-color: var(--color-white);
+  background-color: #ffffff;
   font-size: 13px;
   color: var(--color-text-dark);
   cursor: pointer;

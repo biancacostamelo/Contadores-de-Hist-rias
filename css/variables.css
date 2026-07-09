@@ -18,8 +18,8 @@ body {
   --text-quartiary: #574F4F;
   --text-header: #F8E8E1;
   --border-color: rgba(51, 29, 5, 0.14);
-    --border-color-two: rgba(255, 255, 255, 0.0);
-  --color-primary: #8b4513;
+  --border-color-two: rgba(255, 255, 255, 0.0);
+  --color-primary: #733830;
   --color-primary-hover: #a88561;
   --color-error: #d32f2f;
   --color-success: #388e3c;
@@ -28,9 +28,10 @@ body {
   --radius-md: 10px;
   --radius-lg: 20px;
   --radius-pill: 9999px;
-    --text-one: #532822;
-    --text-two: #DDD9D5;
-    transition: 0.1s ease-in-out;
+  --text-one: #532822;
+  --text-two: #DDD9D5;
+  --btn-transform: scale(1.05);
+  transition: 0.1s ease-in-out;
 }
 
 .dark-theme {
@@ -39,9 +40,9 @@ body {
   --surface-1: #272121;
   --color-secundary: #272121;
   --surface-2: #221818;
-  --surface-3: #221818;
+  --surface-3: #272121;
   --surface-4: #1C0D0D;
-   --bg-home: #170404;
+  --bg-home: #170404;
   --text-primary: #fdfdfd;
   --text-secondary: rgba(253, 253, 253, 0.6);
   --text-tertiary: #ffe5b5;
@@ -54,7 +55,8 @@ body {
   --text-one: #C3825F;
   --text-two: #463E3B;
   --shadow-card: 4px 7px 23.3px -1px rgba(0, 0, 0, 0.3);
-    transition: 0.1s ease-in-out;
+  --btn-transform: scale(1.05);
+  transition: 0.1s ease-in-out;
 }
 
 *,

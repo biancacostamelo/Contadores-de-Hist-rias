@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --color-primary: #8b4513;
   --color-primary-hover: #a88561;
   --color-bg-light: #f5ebe1;
@@ -9,7 +9,7 @@
   --color-border-light: rgba(51, 29, 5, 0.14);
   --color-error: #d32f2f;
   --color-success: #388e3c;
-}
+} */
 
 .login-page {
   width: 100%;
@@ -95,11 +95,11 @@
 .login-form__input {
   width: 100%;
   padding: 8px 16px;
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: 8px;
-  background-color: var(--bg-main) !important;
+  background-color: var(--surface-3) !important;
   font-size: 16px;
-  color: var(--color-text-dark);
+  color: var(--text-primary);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -151,7 +151,7 @@
 
 .login-form__btn--primary {
   background-color: var(--text-one);
-  color: var(--color-white);
+  color: #ffffff;
   border: none;
   cursor: pointer;
   text-align: center;

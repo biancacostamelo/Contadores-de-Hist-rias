@@ -118,45 +118,6 @@ body {
   gap: 15px;
 }
 
-.btn #criar {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 130px;
-  background: #8b4513;
-  color: #ffe5b5;
-  border-radius: 30px;
-  font-weight: bold;
-  transition:
-    background 0.4s ease,
-    color 0.4s ease;
-}
-
-.btn #criar:hover {
-  background: #ffe5b5;
-  color: #8b4513;
-}
-
-.btn #entrar {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 130px;
-  background: #ffe5b5;
-  color: #8b4513;
-  border-radius: 30px;
-  font-weight: bold;
-  transition:
-    background 0.4s ease,
-    color 0.4s ease;
-}
-
-.btn #entrar:hover {
-  background: #8b4513;
-  color: #ffe5b5;
-}
 
 /* From Uiverse.io by gharsh11032000 */
 /* The switch - the box around the slider */
@@ -261,12 +222,16 @@ body {
 .btn-card-comunidade {
   width: 139px;
   height: 40px;
-  background: var(--color-primary);
-  border: 2px solid var(--border-color-two);
+  background: var(--text-one);
   border-radius: 17px;
-  color: var(--bg-main);
+  color: #fdfdfd;
   font-weight: 600;
   font-size: 0.875rem;
+  transition: 0.3s ease;
+}
+
+.btn-card-comunidade:hover {
+  transform: var(--btn-transform);
 }
 
 @media (max-width: 758px) {

@@ -173,46 +173,6 @@ body {
   gap: 15px;
 }
 
-.btn #criar {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 130px;
-  background: var(--color-primary);
-  color: var(--text-header);
-  border-radius: 30px;
-  font-weight: bold;
-  transition:
-    background 0.4s ease,
-    color 0.4s ease;
-}
-
-.btn #criar:hover {
-  background: var(--text-header);
-  color: var(--color-primary);
-}
-
-.btn #entrar {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 130px;
-  background: var(--text-header);
-  color: var(--color-primary);
-  border-radius: 30px;
-  font-weight: bold;
-  transition:
-    background 0.4s ease,
-    color 0.4s ease;
-}
-
-.btn #entrar:hover {
-  background: var(--color-primary);
-  color: var(--text-header);
-}
-
 /*Posts da galeria*/
 
 .titulo-galeria {
@@ -228,6 +188,7 @@ body {
   margin: 0 auto;
   display: grid;
   justify-content: center;
+  margin-bottom: 50px;
 }
 
 .postsGaleria {
@@ -450,7 +411,7 @@ body {
 }
 
 .hist-post .detalhes-historia .sinopse {
-  color: var(--bg-main);
+  color: #fdfdfd;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   line-height: 1.4;
