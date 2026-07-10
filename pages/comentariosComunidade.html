@@ -38,7 +38,7 @@
                 </div>
             </nav>
 
-            <article class="post-card">
+            <article class="post-card" data-post-id="post-1">
                 <header class="post-header">
                     <div class="user-avatar" aria-hidden="true"></div>
                     <div class="user-info">
@@ -80,7 +80,7 @@
                 </div>
             </article>
 
-            <article class="post-card">
+            <article class="post-card" data-post-id="post-2">
                 <header class="post-header">
                     <div class="user-avatar" aria-hidden="true"></div>
                     <div class="user-info">
@@ -118,6 +118,20 @@
 
         </section>
     </main>
+
+    <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" hidden>
+      <div class="auth-modal-backdrop" data-close></div>
+      <div class="auth-modal-content">
+        <h2 id="auth-modal-title">Faça login para comentar</h2>
+        <p>Para deixar seu comentário na comunidade, você precisa estar logado na sua conta.</p>
+        <div class="auth-modal-actions">
+          <a href="../pages/login.html" class="auth-modal-link">Fazer login</a>
+          <button type="button" class="auth-modal-close-btn" data-close aria-label="Fechar">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
     <script src="../js/comentariosComunidade.js"></script>
      <script src="../js/header.js"></script>
