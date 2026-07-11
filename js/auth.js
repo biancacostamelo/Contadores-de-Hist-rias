@@ -16,59 +16,6 @@
     }
   }
 
-  const prefixes = [
-    'Leitor',
-    'Sonhador',
-    'Criativo',
-    'Curioso',
-    'Explorador',
-    'Inspirado',
-    'Visionário',
-    'Dedicado',
-    'Poeta',
-    'Autor',
-    'Escritor',
-    'Narrador',
-    'Crônica',
-    'Verso',
-    'Estrofe',
-    'Mito',
-    'Lenda',
-    'Saga',
-    'Fábula',
-    'Parábola',
-  ];
-
-  const suffixes = [
-    'Literário',
-    'Digital',
-    'Noturno',
-    'Estelar',
-    'Mágico',
-    'Poético',
-    'Luminoso',
-    'Aventureiro',
-    'Sábio',
-    'Criativo',
-    'Brilhante',
-    'Escuro',
-    'Celestial',
-    'Eterno',
-    'Divino',
-    'Real',
-    'Fantasma',
-    'Viajante',
-    'Guardião',
-    'Mestre',
-  ];
-
-  const generateRandomUsername = () => {
-    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-    const num = Math.floor(Math.random() * 999) + 1;
-    return `${prefix}${suffix}${num}`;
-  };
-
   const activeForm =
     document.getElementById('loginForm') ||
     document.getElementById('signupForm');
@@ -115,11 +62,14 @@
   const registerUser = async (email, password, fullname, bio) => {
     const users = getUsers();
     if (users[email])
-      return { success: false, message: 'Este e-mail já está cadastrado.' };
+      return {
+        success: false,
+        message: 'Erro ao tentar se registar com este Email',
+      };
 
     const hashedPassword = await hashPassword(password);
-    const displayName = fullname.trim() || generateRandomUsername();
-    const displayBio = bio.trim() || 'Leitor Voraz · Ofensiva de 0 Dias';
+    const displayName = fullname.trim() || 'Leitor Voraz';
+    const displayBio = bio.trim() || 'Leitor Voraz';
 
     users[email] = new User(hashedPassword, displayName, displayBio);
 
@@ -244,8 +194,11 @@
     return true;
   };
 
+  const getGlobalErrorId = () =>
+    isSignup ? 'global-signup-error' : 'global-login-error';
+
   const showFormAuthError = (message) => {
-    const globalErrorContainer = document.getElementById('global-login-error');
+    const globalErrorContainer = document.getElementById(getGlobalErrorId());
     if (globalErrorContainer) {
       globalErrorContainer.textContent = message;
       globalErrorContainer.style.display = 'block';
@@ -253,9 +206,10 @@
   };
 
   const clearFormAuthError = () => {
-    const globalErrorContainer = document.getElementById('global-login-error');
+    const globalErrorContainer = document.getElementById(getGlobalErrorId());
     if (globalErrorContainer) {
       globalErrorContainer.textContent = '';
+      globalErrorContainer.style.display = 'none';
     }
   };
 
@@ -306,14 +260,19 @@
 
   if (activeForm) {
     activeForm.addEventListener('submit', handleFormSubmit);
+    activeForm.addEventListener('focusout', (event) => {
+      if (
+        event.target.tagName === 'INPUT' &&
+        event.target.value.trim() !== ''
+      ) {
+        validateField(event.target);
+      }
+    });
 
-    activeForm.querySelectorAll('input').forEach((input) => {
-      input.addEventListener('focusout', () => {
-        if (input.value.trim() !== '') {
-          validateField(input);
-        }
-      });
-      input.addEventListener('input', clearFormAuthError);
+    activeForm.addEventListener('input', (event) => {
+      if (event.target.tagName === 'INPUT') {
+        clearFormAuthError();
+      }
     });
   }
 
@@ -364,16 +323,15 @@
       }
 
       const users = getUsers();
-
       if (!users[email]) {
-        const displayName = payload.name || generateRandomUsername();
+        const displayName = payload.name || 'Leitor Voraz';
         users[email] = new User('', displayName, '');
         saveUsers(users);
       }
 
       const token = crypto.randomUUID();
       const expiresAt = Date.now() + SESSION_DURATION_MS;
-      saveSession(token, email, '', expiresAt);
+      saveSession(token, email, users[email].fullname, expiresAt);
       window.location.href = '../pages/perfil.html';
     } catch (err) {
       console.error(err);

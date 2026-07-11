@@ -20,10 +20,6 @@ class StorageService {
     }
   }
 }
-
-/**
- * 2. COMMENTS BUSINESS LOGIC
- */
 class CommentService {
   static getCommentsByPost(postId) {
     const allPosts = StorageService.read(STORAGE_KEY_POSTS);
@@ -75,9 +71,6 @@ class CommentService {
   }
 }
 
-/**
- * 3. LIKES BUSINESS LOGIC
- */
 class LikeService {
   static isLiked(postId) {
     const allLikes = StorageService.read(STORAGE_KEY_LIKES);
@@ -92,10 +85,6 @@ class LikeService {
     return allLikes[postId];
   }
 }
-
-/**
- * 4. USER INTERACTION & DOM MANIPULATION
- */
 class FeedUI {
   static initializeAllPosts() {
     document.querySelectorAll('.post-card').forEach((postCard) => {
@@ -196,9 +185,6 @@ class FeedUI {
   }
 }
 
-/**
- * 5. EVENT LISTENERS & INITIALIZATION
- */
 document.addEventListener('DOMContentLoaded', () => {
   FeedUI.initializeAllPosts();
 
