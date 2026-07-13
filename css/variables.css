@@ -12,6 +12,7 @@ body {
   --surface-4: #FCF9F7;
   --color-secundary: #733830;
   --bg-home: #F1D8CF;
+  --color-text-dark: #331d05;
   --text-primary: #331d05;
   --text-secondary: rgba(51, 29, 5, 0.6);
   --text-tertiary: #331d05;
@@ -43,6 +44,7 @@ body {
   --surface-3: #272121;
   --surface-4: #1C0D0D;
   --bg-home: #170404;
+  --color-text-dark: #fdfdfd;
   --text-primary: #fdfdfd;
   --text-secondary: rgba(253, 253, 253, 0.6);
   --text-tertiary: #ffe5b5;
