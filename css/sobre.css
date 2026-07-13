@@ -73,6 +73,7 @@ body {
   background-color: var(--bg-main);
   border: 2px solid var(--border-color-two);
   text-indent: 45px;
+  color: var(--text-primary);
   /* Move a barra de digitação '|'*/
 }
 
