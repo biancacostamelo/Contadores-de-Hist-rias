@@ -429,7 +429,7 @@ details > div a.active {
 
 .auth-modal-link {
   background-color: var(--color-primary);
-  color: #fff;
+  color: var(--bg-main);
   padding: 10px 24px;
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
