@@ -42,78 +42,6 @@
       </button>
     </div>
 
-    <dialog class="edit-modal" id="editModalName" aria-labelledby="editModalTitle">
-      <div class="modal-content">
-        <header class="modal-header">
-          <h2 class="modal-title" id="editModalTitle">Editar Nome</h2>
-          <button type="button" class="btn-close-modal" id="btnCloseName" aria-label="Fechar">&times;</button>
-        </header>
-
-        <form class="edit-form" id="editProfileForm" novalidate>
-          <div class="form-field">
-            <label class="form-label" for="newUsername">Novo Nome</label>
-            <input type="text" class="form-input" id="newUsername" name="username" required minlength="3" maxlength="50" placeholder="Seu nome de escritor" aria-describedby="username-error" />
-            <div class="field-error" id="username-error" role="alert" aria-live="assertive"></div>
-          </div>
-
-          <p class="form-hint">O nome deve ter no mínimo 3 caracteres e não pode estar em uso.</p>
-
-          <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelName">Cancelar</button>
-            <button type="submit" class="btn btn--primary">Salvar</button>
-          </div>
-
-        </form>
-      </div>
-    </dialog>
-
-    <dialog class="edit-modal" id="editModalBio" aria-labelledby="editModalBioTitle">
-      <div class="modal-content">
-        <header class="modal-header">
-          <h2 class="modal-title" id="editModalBioTitle">Editar Bio</h2>
-          <button type="button" class="btn-close-modal" id="btnCloseBio" aria-label="Fechar">&times;</button>
-        </header>
-
-        <form class="edit-form" id="editBioForm" novalidate>
-          <div class="form-field">
-            <label class="form-label" for="newBio">Sua Bio</label>
-            <textarea class="form-input form-textarea" id="newBio" name="bio" maxlength="200" placeholder="Conte um pouco sobre você..." aria-describedby="bio-error"></textarea>
-            <div class="field-error" id="bio-error" role="alert" aria-live="assertive"></div>
-          </div>
-
-          <p class="form-hint">Máximo de 200 caracteres.</p>
-
-          <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelBio">Cancelar</button>
-            <button type="submit" class="btn btn--primary">Salvar</button>
-          </div>
-
-        </form>
-      </div>
-    </dialog>
-
-    <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
-      <div class="modal-content">
-        <header class="modal-header">
-          <h2 class="modal-title" id="editModalAvatarTitle">Alterar Foto de Perfil</h2>
-          <button type="button" class="btn-close-modal" id="btnCloseAvatar" aria-label="Fechar">&times;</button>
-        </header>
-
-        <form class="edit-form" id="avatarUploadForm">
-          <div class="form-field">
-            <label class="form-label" for="avatarInput">Escolher Imagem</label>
-            <input type="file" class="form-input-file" id="avatarInput" accept="image/*" />
-          </div>
-
-          <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelAvatar">Cancelar</button>
-            <button type="submit" class="btn btn--primary" id="btnSubmitAvatar">Salvar</button>
-          </div>
-
-        </form>
-      </div>
-    </dialog>
-
     <dialog class="edit-modal" id="editModalBanner" aria-labelledby="editModalBannerTitle">
       <div class="modal-content">
         <header class="modal-header">
@@ -146,12 +74,11 @@
             <nav class="breadcrumb-nav" aria-label="Navegação de breadcrumbs">
               <button type="button" class="btn-back-editor" id="btnBackEditor" title="Voltar">←</button>
               <div class="breadcrumb-dropdown">
-                <span class="breadcrumb-current">Rascunho(s)</span>
-                <span aria-hidden="true">▾</span>
+               <button id="btnSaveDraft" class="btn-save-sketch">Salvar Rascunho</button>
               </div>
             </nav>
             <h2 class="editor-title" id="storyEditorTitle" hidden>Escrita de histórias/Anime/contos</h2>
-            <button type="button" class="btn-continue-editor" id="btnContinueEditor">Continue</button>
+            <button type="button" class="btn-send" id="btnContinueEditor">Enviar</button>
           </header>
 
           <div class="editor-toolbar" role="toolbar" aria-label="Ferramentas de formatação">
@@ -175,11 +102,8 @@
             <div class="toolbar-group toolbar-group--right">
               <button type="button" class="btn-tool" data-action="justifyLeft" title="Alinhar à esquerda">≡</button>
               <button type="button" class="btn-tool" data-action="justifyCenter" title="Centralizar">≡</button>
-              <hr class="toolbar-separator" />
-              <button type="button" class="btn-tool" data-action="insertHorizontalRule" title="Linha horizontal">—</button>
+              <hr class="toolbar-separator" />             
               <button type="button" class="btn-tool" id="btnInsertImage" title="Inserir imagem">🖼️</button>
-              <button type="button" class="btn-tool" id="btnInsertLink" title="Inserir link">🔗</button>
-              <button type="button" class="btn-tool" id="btnAddComment" title="Adicionar comentário">💬</button>
               <hr class="toolbar-separator" />
               <button type="button" class="btn-tool" data-action="insertUnorderedList" title="Lista com marcadores">•≡</button>
               <button type="button" class="btn-tool" data-action="insertOrderedList" title="Lista numerada">1.≡</button>
@@ -214,6 +138,8 @@
             </div>
           </div>
 
+        </div>
+        <div id="draftsContainer" class="drafts-list">
         </div>
       </dialog>
 
@@ -338,6 +264,13 @@
       </article>
     </div>
   </section>
+
+  <dialog class="toast-modal" id="toastModal">
+    <div class="toast-content">
+      <p class="toast-message" id="toastMessage">Rascunho salvo com sucesso!</p>
+      <button type="button" class="btn-toast-close" id="btnToastClose" aria-label="Fechar notificação">✕</button>
+    </div>
+  </dialog>
 
   <script src="../js/script.js"></script>
   <script src="../js/header.js"></script>

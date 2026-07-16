@@ -185,54 +185,9 @@
   border-color: rgba(51, 29, 5, 0.25);
 }
 
-.reading-tabs {
-  display: flex;
-  gap: 8px;
-  margin-top: 24px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.tab-pill {
-  padding: 6px 16px;
-  border-radius: var(--radius-pill);
-  background-color: #ffffff;
-  color: var(--color-text-dark);
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid var(--color-border-light);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-}
-
-.tab-pill:hover {
-  background-color: var(--color-bg-light);
-}
-
-.tab-pill--active {
-  background-color: var(--color-primary) !important;
-  color: #ffffff !important;
-  border-color: var(--color-primary) !important;
-}
-
-.tab-pill--active:hover {
-  background-color: var(--color-primary-hover) !important;
-}
-
-.tab-count {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
 .perfil-gallery {
-      width: 90%;
-    margin: auto;
+  width: 90%;
+  margin: auto;
 }
 
 .gallery-title {
@@ -258,7 +213,7 @@
 }
 
 .btn-add-story:hover {
- background-color: var(--text-one);
+  background-color: var(--text-one);
   color: #ffffff;
   transform: var(--btn-transform);
 }
@@ -270,71 +225,9 @@
   margin-top: 24px;
 }
 
-.book-card {
-  background-color: var(--card-bg);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: 0 2px 12px var(--card-shadow);
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.book-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 24px rgba(139, 69, 19, 0.12);
-}
-
-.book-cover {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  display: block;
-}
-
-.book-info {
-  padding: 12px 14px 14px;
-}
-
-.book-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-dark);
-  margin-bottom: 2px;
-}
-
-.book-author {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
-}
-
-.progress-bar-wrapper {
-  width: 100%;
-  height: 6px;
-  background-color: rgba(51, 29, 5, 0.1);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background-color: var(--color-primary);
-  border-radius: var(--radius-pill);
-  transition: width 0.4s ease;
-}
-
-.progress-text {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--color-text-muted);
-  margin-top: 6px;
-}
-
 .perfil-achievements {
-    width: 90%;
-    margin: 40px auto;
+  width: 90%;
+  margin: 40px auto;
 }
 
 .achievements-title {
@@ -410,7 +303,6 @@
   overflow-y: auto;
   border-radius: var(--radius-lg);
   border: none;
-  background-color: #ffffff;
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
   padding: 0;
 }
@@ -422,6 +314,8 @@
 .modal-content {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .modal-header {
@@ -575,15 +469,51 @@
   width: min(420px, calc(100% - 2rem));
   box-shadow: var(--shadow-card);
   border: none;
-  overflow: hidden;
-  border-radius: 3%;
+  overflow-y: auto;
 }
 
 .story-editor-modal {
   width: min(900px, calc(100% - 2rem));
   height: min(80vh, 750px);
   flex-direction: column;
-  background-color: var(--color-editor-bg, #f9f3eb);
+  background-color: var(--bg-main);
+}
+
+.cardDraft {
+  border: 1px dashed #ccc;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+.draft-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.draft-title {
+  margin: 0 0 5px 0;
+  color: var(--color-primary);
+}
+
+.draft-meta {
+  font-size: 12px;
+  color: var(--color-primary);
+}
+
+.btn-delete-draft {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-save-sketch {
+  color: var(--color-primary);
 }
 
 .editor-top-bar {
@@ -635,10 +565,10 @@
   color: var(--color-text-dark);
 }
 
-.btn-continue-editor {
+.btn-send {
   padding: 8px 20px;
   border-radius: var(--radius-pill);
-  background-color: var(--color-primary);
+  background-color: var(--text-one);
   color: #ffffff;
   font-size: 14px;
   font-weight: 600;
@@ -647,7 +577,7 @@
   transition: background 0.2s;
 }
 
-.btn-continue-editor:hover {
+.btn-send:hover {
   background-color: var(--color-primary-hover);
 }
 
@@ -657,7 +587,6 @@
   gap: 6px;
   padding: 10px 24px;
   border-bottom: 1px solid var(--color-border-light);
-  background-color: #faf5ef;
   flex-wrap: wrap;
 }
 
@@ -717,9 +646,7 @@
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   border: 1.5px solid var(--color-border-light);
-  background-color: #ffffff;
   font-size: 13px;
-  color: var(--color-text-dark);
   cursor: pointer;
 }
 
@@ -910,15 +837,6 @@
     font-size: 16px;
   }
 
-  .reading-tabs {
-    gap: 6px;
-  }
-
-  .tab-pill {
-    padding: 5px 12px;
-    font-size: 13px;
-  }
-
   .story__content {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -936,4 +854,66 @@
     width: 100%;
     text-align: center;
   }
+}
+
+.toast-modal {
+  position: fixed; /* Alinha em relação ao pai e não à tela */
+  top: 50%;
+  left: 50%;
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Centralização perfeita em ambos os eixos */
+  width: min(
+    360px,
+    calc(100% - 32px)
+  ); /* Usa 100% da largura do pai em telas menores, não 100vw */
+  border-radius: var(--radius-md);
+  padding: 0;
+  margin: 0; /* Remove o margin auto para não conflitar com a centralização */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+  border: none;
+}
+
+.toast-modal::backdrop {
+  background: transparent;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--color-bg-light);
+}
+
+.toast-message {
+  flex: 1;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.btn-toast-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.btn-toast-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
