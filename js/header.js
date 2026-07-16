@@ -21,7 +21,7 @@ const HeaderComponent = (() => {
     <section class="header-container">
       <div class="logo">
         <a href="/pages/sobre.html">
-          <img src="../assets/Logo principal.svg" alt="Logo Contadores de Histórias" />
+          <img src="../assets/Logo-principal.svg" alt="Logo Contadores de Histórias" />
         </a>
       </div>
 
