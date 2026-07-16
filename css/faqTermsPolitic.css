@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+/*Header do site*/
+
+
+
+/*Titulo do faq*/
+
+.titulo-faq {
+  margin-top: 90px;
+  width: 100%;
+  height: 80px;
+  background-color: var(--principal-escura);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo-faq-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.img-faq img {
+  height: 50px;
+}
+
+.faq-titulo {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--txt-asset);
+}
+
+/*Perguntas*/
+
+.perguntas-faq {
+  margin: 50px 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.perguntas-faq-container {
+  max-width: 950px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.respostas {
+  width: 100%;
+  height: auto;
+  border: 3px solid var(--principal-escura);
+  text-align: justify;
+  cursor: pointer;
+  padding: 0px;
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+}
+
+.respostas:hover {
+  border: 3px solid var(--detalhes);
+  border-radius: 40px;
+  transform: scale(1.05);
+}
+
+.respostas summary {
+  padding: 24px 30px;
+  font-family: 'Merriweather', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--txt);
+  list-style: none;
+  outline: none;
+}
+
+.respostas p {
+  padding: 0 30px 24px 30px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--txt);
+  text-align: justify;
+}
+
+.linha-faq {
+  display: block;
+  width: 100vw;
+  height: 10px;
+  background-color: var(--principal);
+}
+
+/*Contatos*/
+
+.contatos {
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contatos-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo-contatos {
+  font-family: 'Merriweather', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--principal);
+}
+
+.contatostxt {
+  display: flex;
+  gap: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--txt);
+  border-bottom: 2px solid var(--secundaria);
+  padding-bottom: 5px;
+}
+
+/*Termos de uso*/
+
+.termos {
+  margin: 50px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.termos-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo-termos {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--principal);
+  text-align: center;
+}
+
+.termos-uso {
+  margin-top: 25px;
+  width: 900px;
+  border-top: 3px solid var(--secundaria);
+  padding-top: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--txt);
+  text-align: justify;
+  line-height: 1.5;
+}
+
+.termos-uso strong {
+  font-size: 1.5rem;
+}
+
+/*Politica*/
+
+.politica {
+  margin: 50px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.politica-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo-politica {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--principal);
+  text-align: center;
+}
+
+.politicatxt {
+  margin-top: 25px;
+  width: 900px;
+  border-bottom: 3px solid var(--secundaria);
+  padding-bottom: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--txt);
+  text-align: justify;
+  line-height: 1.5;
+}
+
+.politicatxt strong {
+  font-size: 1.5rem;
+}
+
+/*Footer*/
+

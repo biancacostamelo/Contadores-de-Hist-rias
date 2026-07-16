@@ -59,39 +59,6 @@ body {
   height: 68.53px;
 }
 
-.input-pesquisa {
-  position: relative;
-  width: 400px;
-  height: 50px;
-}
-
-.input-pesquisa img {
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  opacity: 45%;
-  color: var(--surface-2);
-}
-
-.input-pesquisa input {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
-  background-color: var(--bg-main);
-  text-indent: 45px; /* Move a barra de digitação '|'*/
-}
-
-.input-pesquisa input::placeholder {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 450;
-  color: var(--surface-2);
-  opacity: 45%;
-}
-
 .navbar {
   display: flex;
   gap: 50px;
@@ -146,7 +113,6 @@ body {
 .home {
   background-color: var(--bg-home);
   height: 515px;
-  margin-top: 90px;
   display: flex;
 }
 
@@ -165,36 +131,115 @@ body {
   text-align: center;
   font-family: 'Merriweather', serif;
   display: grid;
-  gap: 20px;
 }
 
 .textos .titulo {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--text-one);
+  margin-bottom: 15px;
 }
 
 .textos .subtitulo {
   font-size: 1.875rem;
   font-weight: 700;
   color: var(--color-primary);
+  margin-bottom: 20px;
 }
+
+.typing-text {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.typing-text span {
+  position: relative;
+  color: var(--color-primary);
+}
+
+.typing-text span::before {
+  content: "Crie";
+  animation: words 20s infinite;
+}
+
+.typing-text span::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  width: calc(100% + 8px);
+  height: 100%;
+  background: var(--bg-home);
+  border-left: 3px solid var(--color-primary);
+  animation: cursor .8s infinite,
+             typing 4s steps(14) infinite;
+}
+
+@keyframes cursor {
+  50% {
+    border-left-color: transparent;
+  }
+}
+
+@keyframes typing {
+  0%, 10% {
+    width: calc(100% + 8px);
+  }
+
+  45%, 55% {
+    width: 0;
+  }
+
+  90%, 100% {
+    width: calc(100% + 8px);
+  }
+}
+
+@keyframes words {
+  0%, 20% {
+    content: "Desenvolva";
+  }
+
+  21%, 40% {
+    content: "Crie e Cresça";
+  }
+
+  41%, 60% {
+    content: "Aprenda junto";
+  }
+
+  61%, 80% {
+    content: "Compartilhe";
+  }
+
+  81%, 100% {
+    content: "Escreva";
+  }
+}
+
 .textos .txt {
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: normal;
   color: var(--text-primary);
 }
+
+.textos .txt2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
 .pena {
   position: absolute;
-  left: -140px;
-  top: 40%;
+  left: -240px;
+  top: 45%;
   transform: translateY(-50%);
 }
 
 .penaDois {
   position: absolute;
-  right: -140px;
-  top: 40%;
+  right: -240px;
+  top: 45%;
   transform: translateY(-50%);
 }
 
@@ -262,7 +307,7 @@ body {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--color-primary);
-  margin-left: 90px;
+  margin: 0px 40px;
 }
 
 .linhaUm {
@@ -278,18 +323,24 @@ body {
 .comuniHome {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 40px;
+  margin: 100px 40px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .comuni {
   display: flex;
-  gap: 55px;
-  margin: 108px 53px 108px 75px;
+  flex-wrap: wrap;
+  gap: 35px;
   align-items: center;
+  justify-content: center;
 }
 
+
+
 .imgbg {
-  width: 309px;
+  width: 300px;
   height: 250px;
   border: 1px solid var(--surface-2);
   border-radius: 40px;
@@ -332,8 +383,8 @@ body {
 }
 
 .explore a {
-  width: 200px;
-  height: 80px;
+  width: 150px;
+  height: 70px;
   background-color: var(--surface-2);
   color: #F8E8E1;
   border: 1px solid var(--border-color-two);
@@ -342,13 +393,13 @@ body {
   align-items: center;
   justify-content: center;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.875rem;
+  font-size: 1.6rem;
   font-weight: bold;
   transition: 0.4s ease;
 }
 
 .explore a:hover {
-   transform: var(--btn-transform);
+  transform: var(--btn-transform);
 }
 
 .linhaDois {
@@ -384,13 +435,15 @@ body {
 }
 
 .postsHome {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0 40px;
+  gap: 20px;
 }
 
 .posts {
-  width: 300px;
+  width: 279px;
   height: 400px;
   border: 2px solid var(--surface-2);
   border-radius: 40px;
@@ -503,7 +556,7 @@ body {
 .veja a {
   width: 200px;
   height: 80px;
- background-color: var(--surface-2);
+  background-color: var(--surface-2);
   color: #F8E8E1;
   border: 1px solid var(--border-color-two);
   border-radius: 10px;
@@ -613,4 +666,10 @@ body {
   font-size: 1.375rem;
   font-weight: 500;
   color: var(--text-header);
+}
+
+@media (max-width: 1232px) {
+  .postsHome, .comuniHome{
+    justify-content: center;
+  }
 }

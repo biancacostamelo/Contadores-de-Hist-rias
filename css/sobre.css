@@ -126,12 +126,13 @@ body {
   border-radius: 50%;
 }
 
-.btn {
+.header .header-container .btn {
   display: flex;
   width: 320px;
   height: 50px;
   justify-content: space-between;
   gap: 15px;
+  padding: 0
 }
 
 .btn #criar {
@@ -169,333 +170,591 @@ body {
   transition: 0.3s ease;
 }
 
-  /*Inicio do conteúdo do sobre*/
+/*Inicio do conteúdo do sobre*/
 
-  .txt-sobre {
-    margin-top: 90px;
-  }
+.txt-sobre {
+  margin-top: 90px;
+}
 
+.txt-sobre-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.textos-sobre {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.titulo-sobre {
+  font-family: 'Merriweather', serif;
+  font-size: 3.125rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.subtitulo-sobre {
+  font-family: 'Merriweather', serif;
+  font-size: 3.125rem;
+  font-weight: medium;
+  color: var(--color-primary);
+}
+
+.terceiro-titulo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.5625rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.img-sobre {
+  width: 100%;
+}
+
+.livro-sobre {
+  transform: rotate(22deg);
+  position: relative;
+}
+
+.pena-sobre {
+  position: absolute;
+  top: -60px;
+  left: 125px;
+}
+
+.linha-sobre {
+  display: block;
+  width: 100vw;
+  height: 80px;
+  background-color: var(--bg-main);
+}
+
+/*Sobre nós*/
+
+.sobre-nos {
+  display: flex;
+  position: relative;
+}
+
+.sobre-nos-container {
+  max-width: 1440px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  justify-content: center;
+  gap: 90px;
+}
+
+
+.logo-sobre img {
+  width: 400px;
+  height: 400px;
+}
+
+.nos {
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-align: justify;
+  color: var(--color-primary);
+  line-height: 1.44;
+  border-bottom: 5px solid var(--color-primary);
+  padding-bottom: 40px;
+}
+
+/*Princípios. Missão, valores e visão*/
+
+.principios {
+  margin: 100px 0px;
+}
+
+.principios-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.titulos-sobre {
+  flex-direction: column;
+  align-items: center;
+}
+
+.sobre {
+  margin: 0px 100px;
+}
+
+.missao-visao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 255px;
+}
+
+.missao-img {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  width: 500px;
+}
+
+.missao {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.img-missao {
+  position: absolute;
+  top: -13%;
+  left: 175px;
+}
+
+.img-missao img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.missaotxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-align: justify;
+}
+
+.visao-img {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  width: 500px;
+}
+
+.visao {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.img-visao {
+  position: absolute;
+  top: -11.5%;
+  left: 135px;
+}
+
+.img-visao img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.visaotxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-align: justify;
+}
+
+.valores-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
+  position: relative;
+  margin-top: 80px;
+}
+
+.valores {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3.125rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.img-valores {
+  position: absolute;
+  top: -11.5%;
+  left: 695px;
+}
+
+.img-valores img {
+  width: 99.09px;
+  height: 155.79px;
+}
+
+.valorestxt {
+  font-family: 'Merriweather', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-align: justify;
+}
+
+/*Footer do sobre*/
+
+.footer {
+  background-color: var(--surface-2);
+}
+
+.footer-container {
+  margin: 0 auto;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-container .txtlogo {
+  align-self: center;
+  justify-self: center;
+  padding-top: 6px;
+  font-family: 'Merriweather', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-header);
+}
+
+.logo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 37px;
+}
+
+.nav-footer {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.linkUm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 40px;
+}
+
+.linkDois {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 22px;
+}
+
+.nav-footer a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.375rem;
+  font-weight: bold;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  color: var(--text-header);
+  transition: 0.3s;
+}
+
+.nav-footer a:hover {
+  text-decoration: underline 2px var(--text-header);
+}
+
+.nav-footer a img {
+  height: 50px;
+  width: 50px;
+  transition: 0.4s ease;
+}
+
+.nav-footer a img:hover {
+  transform: scale(1.3);
+}
+
+.linha-footer {
+  display: inline-block;
+  width: 100vw;
+  height: 2px;
+  background-color: var(--text-header);
+  margin: 5px;
+}
+
+.footer-container .copi {
+  justify-self: center;
+}
+
+.copi {
+  font-family: 'Merriweather', serif;
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--text-header);
+}
+
+/* novo header */
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 100px;
+}
+
+.logo img {
+  width: 65px;
+  height: 68.53px;
+}
+
+.navbar2 {
+  display: flex;
+  gap: 17px;
+}
+
+.navbar2 a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 117px;
+  height: 73px;
+  border-radius: 20px;
+  background-color: transparent;
+  transition: 0.4s ease;
+}
+
+.navbar2 a:hover {
+  background-color: var(--text-one);
+}
+
+.icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.icons img {
+  width: 35px;
+  height: 35px;
+}
+
+.iconstxt {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-header);
+  padding: 5px;
+}
+
+.btn .criar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 230px;
+  height: 50px;
+  border-radius: 30px;
+  background: var(--color-secundary);
+  color: var(--text-header);
+  border: 1px solid var(--border-color-two);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+.btn .criar:hover {
+  transform: var(--btn-transform);
+}
+
+.btn .entrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 130px;
+  height: 50px;
+  border-radius: 30px;
+  background: var(--text-header);
+  color: var(--text-quartiary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+.btn .entrar:hover {
+  transform: var(--btn-transform);
+}
+
+.menu {
+  padding-left: 19px;
+  cursor: pointer;
+}
+
+
+.bottom-header {
+  position: sticky;
+  margin-top: 90px;
+  background-color: var(--surface-2);
+  width: 100%;
+  height: 56px;
+  padding: 0 80px;
+}
+
+.bottom-header-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+
+
+.input-pesquisa svg {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  opacity: 45%;
+  color: var(--text-quartiary);
+}
+
+
+.navbar-bottom {
+  display: flex;
+  gap: 67px;
+  padding-right: 300px;
+}
+
+.navbar-bottom a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-header);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  transition: 0.3s ease;
+}
+
+.navbar-bottom .ativado {
+  text-decoration: underline 2px var(--text-header);
+  text-underline-offset: 4px;
+}
+
+.navbar-bottom a:hover {
+  text-decoration: underline 2px var(--text-header);
+  text-underline-offset: 4px;
+}
+
+.ofensiva {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: var(--bg-main);
+}
+
+.icon-ofensiva {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ofensivatxt {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #ca3500;
+}
+
+.menu-opcoes {
+  background-color: var(--color-secundary);
+  backdrop-filter: blur(10px);
+  margin-right: 100px;
+  border-radius: 20px;
+  position: absolute;
+  bottom: -120px;
+  right: 0;
+  flex-direction: column;
+  gap: 0px;
+  overflow: hidden;
+  border: 1px solid white;
+  z-index: 10;
+  display: none;
+
+}
+
+.menu-opcoes-active {
+  display: flex;
+}
+
+.menu-opcoes p {
+  color: white;
+  cursor: pointer;
+  padding: 20px 40px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0px 1px 10px var(--text-quartiary);
+  font-weight: 500;
+  text-align: end;
+}
+
+@media (max-width: 1000px) {
   .txt-sobre-container {
-    max-width: 1440px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 400px;
   }
-
-  .textos-sobre {
-    display: grid;
-    align-content: center;
-    justify-content: center;
-    gap: 20px;
-    margin-left: 50px;
-  }
-
-  .titulo-sobre {
-    font-family: 'Merriweather', serif;
-    font-size: 3.125rem;
-    font-weight: bold;
-    color: var(--color-primary);
-  }
-
-  .subtitulo-sobre {
-    font-family: 'Merriweather', serif;
-    font-size: 3.125rem;
-    font-weight: medium;
-    color: var(--color-primary);
-  }
-
-  .terceiro-titulo {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.5625rem;
-    font-weight: 700;
-    color: var(--color-primary);
-  }
-
+  
   .img-sobre {
+    height: 100%;
+  }
+  
+  .sobre-nos-container {
+    display: flex;
+    flex-direction: column;
+    flex-direction: column-reverse;
+  }
+  
+  .logo-sobre {
+    width: 100%;
+    height: 300px;
+    background-color: #F2E4CA;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .logo-sobre img {
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .missao-visao{
+    flex-wrap: wrap;
+    gap: 60px;
+  }
+  
+  .missao-img, .visao-img{
     width: 100%;
   }
 
-  .livro-sobre {
-    transform: rotate(22deg);
-    position: relative;
+  .sobre{
+    overflow: hidden;
   }
-
-  .pena-sobre {
-    position: absolute;
-    top: -60px;
-    left: 125px;
-  }
-
-  .linha-sobre {
-    display: block;
-    width: 100vw;
-    height: 80px;
-    background-color: var(--bg-main);
-  }
-
-  /*Sobre nós*/
-
-  .sobre-nos {
-    display: flex;
-    position: relative;
-  }
-
-  .sobre-nos-container {
-    max-width: 1440px;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    align-items: center;
-    justify-content: center;
-    gap: 90px;
-  }
-
+}
+@media (max-width: 521px) {
   .logo-sobre {
-    margin-left: 55px;
+    display: none;
   }
-
-  .logo-sobre img {
-    width: 400px;
-    height: 400px;
+  .sobre{
+    margin: 0 40px;
   }
-
-  .nos {
-    font-family: 'Merriweather', serif;
-    font-size: 1.5625rem;
-    font-weight: 500;
-    text-align: justify;
-    color: var(--color-primary);
-    line-height: 1.44;
-    margin-right: 55px;
-    border-bottom: 5px solid var(--color-primary);
-    padding-bottom: 40px;
-  }
-
-  /*Princípios. Missão, valores e visão*/
-
-  .principios {
-    margin: 100px 0 140px;
-  }
-
-  .principios-container {
-    max-width: 1440px;
-    margin: 0 auto;
-  }
-
-  .titulos-sobre {
-    display: grid;
-    grid-template-columns: 1fr;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-  }
-
-  .missao-visao {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 255px;
-  }
-
-  .missao-img {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    position: relative;
-    width: 500px;
-  }
-
-  .missao {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 3.125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--color-primary);
-  }
-
-  .img-missao {
-    position: absolute;
-    top: -13%;
-    left: 175px;
-  }
-
-  .img-missao img {
-    width: 99.09px;
-    height: 155.79px;
-  }
-
-  .missaotxt {
-    font-family: 'Merriweather', serif;
-    font-size: 1.5625rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    text-align: justify;
-  }
-
-  .visao-img {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    position: relative;
-    width: 500px;
-  }
-
-  .visao {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 3.125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--color-primary);
-  }
-
-  .img-visao {
-    position: absolute;
-    top: -11.5%;
-    left: 135px;
-  }
-
-  .img-visao img {
-    width: 99.09px;
-    height: 155.79px;
-  }
-
-  .visaotxt {
-    font-family: 'Merriweather', serif;
-    font-size: 1.5625rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    text-align: justify;
-  }
-
-  .valores-img {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 25px;
-    position: relative;
-    width: 1220px;
-    margin-top: 80px;
-  }
-
-  .valores {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 3.125rem;
-    font-weight: 700;
-    text-align: center;
-    text-transform: uppercase;
-    color: var(--color-primary);
-  }
-
-  .img-valores {
-    position: absolute;
-    top: -11.5%;
-    left: 695px;
-  }
-
-  .img-valores img {
-    width: 99.09px;
-    height: 155.79px;
-  }
-
-  .valorestxt {
-    font-family: 'Merriweather', serif;
-    font-size: 1.5625rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    text-align: justify;
-  }
-
-  /*Footer do sobre*/
-
-  .footer {
-    background-color: var(--surface-2);
-  }
-
-  .footer-container {
-    margin: 0 auto;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .footer-container .txtlogo {
-    align-self: center;
-    justify-self: center;
-    padding-top: 6px;
-    font-family: 'Merriweather', serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-header);
-  }
-
-  .logo-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 37px;
-  }
-
-  .nav-footer {
-    display: grid;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .linkUm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding-top: 40px;
-  }
-
-  .linkDois {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding-top: 22px;
-  }
-
-  .nav-footer a {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.375rem;
-    font-weight: bold;
-    text-decoration: underline 2px transparent;
-    text-underline-offset: 4px;
-    color: var(--text-header);
-    transition: 0.3s;
-  }
-
-  .nav-footer a:hover {
-    text-decoration: underline 2px var(--text-header);
-  }
-
-  .nav-footer a img {
-    height: 50px;
-    width: 50px;
-    transition: 0.4s ease;
-  }
-
-  .nav-footer a img:hover {
-    transform: scale(1.3);
-  }
-
-  .linha-footer {
-    display: inline-block;
-    width: 100vw;
-    height: 2px;
-    background-color: var(--text-header);
-    margin: 5px;
-  }
-
-  .footer-container .copi {
-    justify-self: center;
-  }
-
-  .copi {
-    font-family: 'Merriweather', serif;
-    font-size: 1.375rem;
-    font-weight: 500;
-    color: var(--text-header);
-  }
+}

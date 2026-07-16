@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+/*Menu destaques*/
+
+.destaques {
+  margin-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-main);
+}
+
+.destaques-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  height: 400px;
+  display: grid;
+  align-content: center;
+  text-align: center;
+}
+
+.titulo-destaques {
+  font-family: 'Merriweather', serif;
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.subtitulo-destaque {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+ color: var(--text-secondary);
+}
+
+.txtdestaque {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+ color: var(--text-secondary);
+}
+

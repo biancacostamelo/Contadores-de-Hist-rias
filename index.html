@@ -21,7 +21,41 @@
 
   <body class="dark-theme">
     <!--Cabeçalho-->
-     <div class="site-header-container"></div>
+    <div class="site-header-container"></div>
+    <!-- submenu -->
+    <section class="bottom-header">
+      <div class="bottom-header-container">
+        <div class="input-pesquisa">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="
+    color: var(--text-primary);">
+<g opacity=" 0.45">
+            <path d="M8.75008 15.8334C12.6622 15.8334 15.8334 12.6621 15.8334 8.75002C15.8334 4.83794 12.6622 1.66669 8.75008 1.66669C4.838 1.66669 1.66675 4.83794 1.66675 8.75002C1.66675 12.6621 4.838 15.8334 8.75008 15.8334Z" stroke="var(--text-primary)" stroke-width="2" stroke-linejoin="round" />
+            <path d="M11.1072 5.97625C10.798 5.66636 10.4305 5.42059 10.026 5.25306C9.62156 5.08553 9.18796 4.99953 8.75015 5C8.31234 4.99953 7.87874 5.08553 7.47425 5.25306C7.06976 5.42059 6.70233 5.66636 6.39307 5.97625M13.8426 13.8425L17.3781 17.3779" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+          </svg>
+
+          <input type="text" placeholder="Procurar por comunidades, títulos, autores..." />
+        </div>
+
+        <nav class="navbar-bottom">
+          <a href="/index.html" class="ativado">Para Você</a>
+          <a href="./pages/topicos.html">Descobrir</a>
+          <a href="./pages/galeria.html">Galeria</a>
+        </nav>
+
+        <div class="menu-opcoes" id="menu-opcoes">
+          <p id="btnTheme">Mudar tema</p>
+          <p>Configurações</p>
+        </div>
+
+        <div class="ofensiva">
+          <div class="icon-ofensiva">
+            <img src="./assets/ofensiva.svg" alt="Ofensiva" />
+          </div>
+          <p class="ofensivatxt">14</p>
+        </div>
+      </div>
+    </section>
     <!--Principal-->
     <main class="main">
       <section class="home">
@@ -31,14 +65,12 @@
             <img src="./assets/Pena sem sombra esquerda.svg" alt="Pena" />
           </div>
           <div class="textos">
-            <h1 class="titulo">Seja bem vindo ao Contadores de Histórias</h1>
-            <p class="subtitulo">
-              Crie | Desenvolva | Compartilhe |Aprenda junto
-            </p>
+            <p class="txt2">Seja bem vindo ao </p>
+            <h1 class="titulo">Contadores de Histórias</h1>
+            <p class="typing-text"><span></span></p>
             <p class="txt">
-              Descubra as maravilhas deste mundo de arte na escrita,
-              narrativa,<br />
-              e visual. Qual será sua criação ? Descubra agora !
+              Descubra as maravilhas deste mundo de arte na escrita,<br />
+              narrativa, e visual. Qual será sua criação ? Descubra agora !
             </p>
           </div>
           <div class="penaDois">
@@ -47,9 +79,6 @@
           <div class="btn2">
             <a href="./pages/historia.html" id="criar2">Comece a criar</a>
             <a href="./pages/signUp.html" id="criar-conta">Criar conta</a>
-          </div>
-          <div class="livro">
-            <img src="./assets/Livro sem sombra.svg" alt="Livro" />
           </div>
         </div>
       </section>
@@ -84,8 +113,8 @@
                   <img src="./assets/img/Manga.png" alt="Comunidade-img" class="foto-fundo" />
                 </div>
               </a>
-              <div class="explore"><a href="./pages/comunidade.html">Explore +</a></div>
             </div>
+            <div class="explore"><a href="./pages/comunidade.html">Explore +</a></div>
           </div>
           <span class="linhaDois"></span>
         </div>
@@ -274,7 +303,7 @@
                       <div class="txtautor">
                         <p class="nome">Treino de Gohan</p>
                         <p class="arroba-autor">Por crismiguel <br>
-                           @crismiguel</p>
+                          @crismiguel</p>
                       </div>
                     </div>
                   </div>
@@ -476,43 +505,43 @@
     </main>
 
     <!--Footer-->
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="logo-footer">
-          <img src="./assets/Logo principal.svg" width="100px" alt="Logo" />
-        </div>
-        <p class="txtlogo">Contadores de Histórias</p>
-        <nav class="nav-footer">
-          <div class="linkUm">
-            <a href="#">Home</a>
-            <a href="#">Contadores Originals</a>
-            <a href="./pages/sobre.html">Sobre</a>
-            <a href="#">Contatos</a>
-            <a href="#">Suporte</a>
-            <a href="#">Politica de privacidade</a>
-          </div>
-          <div class="linkDois">
-            <a href="#">Termos de uso</a>
-            <a href="https://www.instagram.com/cont.adoresdehistorias?igsh=MWR0eTIzYmJjbXRibA==" target="_blank" rel="noopener noreferrer">
-              <div class="social">
-                <img src="./assets/Instagram.svg" alt="Instagram" />
-              </div>
-            </a>
-            <a href="https://www.tiktok.com/@contadores.de.his1?_r=1&_t=ZS-97f1KpD6OG1" target="_blank" rel="noopener noreferrer">
-              <div class="social">
-                <img src="./assets/tiktok.svg" alt="TikTok" />
-              </div>
-            </a>
-          </div>
-        </nav>
-        <span class="linha-footer"></span>
-        <p class="copi">
-          © 2026 Contadores de Histórias. Todos os direitos reservados
-        </p>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="logo-footer">
+        <img src="../assets/Logo (footer) Variante 2.svg" alt="Logo" />
       </div>
-    </footer>
+      <p class="txtlogo">Contadores de Histórias</p>
+      <nav class="nav-footer">
+        <div class="linkUm">
+          <a href="../index.html">Home</a>
+          <a href="#">Contadores Originals</a>
+          <a href="#">Sobre</a>
+          <a href="#">Contatos</a>
+          <a href="#">Suporte</a>
+          <a href="#">Politica de privacidade</a>
+        </div>
+        <div class="linkDois">
+          <a href="#">Termos de uso</a>
+          <a href="https://www.instagram.com/cont.adoresdehistorias?igsh=MWR0eTIzYmJjbXRibA==" target="_blank" rel="noopener noreferrer">
+            <div class="social">
+              <img src="../assets/Instagram.svg" alt="Instagram" />
+            </div>
+          </a>
+          <a href="https://www.tiktok.com/@contadores.de.his1?_r=1&_t=ZS-97f1KpD6OG1" target="_blank" rel="noopener noreferrer">
+            <div class="social">
+              <img src="../assets/tiktok.svg" alt="TikTok" />
+            </div>
+          </a>
+        </div>
+      </nav>
+      <span class="linha-footer"></span>
+      <p class="copi">
+        © 2026 Contadores de Histórias. Todos os direitos reservados
+      </p>
+    </div>
+  </footer> 
     <script src="/js/script.js"></script>
-     <script src="../js/header.js"></script>
+    <script src="../js/header.js"></script>
   </body>
 
 </html>

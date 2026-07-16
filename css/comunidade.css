@@ -32,42 +32,7 @@ body {
   padding: 11px 0px;
 }
 
-.input-pesquisa input {
-  background-color: #f5ebe1;
-}
 
-.input-pesquisa {
-  position: relative;
-  width: 400px;
-  height: 50px;
-}
-
-.input-pesquisa img {
-  position: absolute;
-  top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  opacity: 45%;
-  color: #5d3c1b;
-}
-
-.input-pesquisa input {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
-  text-indent: 45px;
-  /* Move a barra de digitação '|'*/
-}
-
-.input-pesquisa input::placeholder {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 450;
-  color: #5d3c1b;
-  opacity: 45%;
-}
 
 .navbar {
   display: flex;
