@@ -6,10 +6,11 @@
   const STORAGE_KEY_USERS = 'writersCommunity_users';
   const STORAGE_KEY_SESSION = 'writersCommunity_session';
   const SESSION_DURATION_MS = 60 * 60 * 1000;
-
+  const PBKDF2_ITERATIONS = 600000;
   class User {
-    constructor(passwordHash, fullname = '', bio = '') {
+    constructor(passwordHash, saltHex, fullname = '', bio = '') {
       this.passwordHash = passwordHash;
+      this.saltHex = saltHex;
       this.fullname = fullname.trim();
       this.bio = bio.trim();
       this.createdAt = Date.now();
@@ -50,13 +51,41 @@
 
   const clearSession = () => localStorage.removeItem(STORAGE_KEY_SESSION);
 
-  const hashPassword = async (password) => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer))
+  const bufferToHex = (buffer) => {
+    return Array.from(new Uint8Array(buffer))
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
+  };
+
+  const hexToBuffer = (hexString) => {
+    const pairs = hexString.match(/[\da-f]{2}/gi) || [];
+    return new Uint8Array(pairs.map((h) => parseInt(h, 16))).buffer;
+  };
+
+  const derivePasswordHash = async (password, saltBuffer) => {
+    const encoder = new TextEncoder();
+    const passwordBuffer = encoder.encode(password);
+
+    const baseKey = await window.crypto.subtle.importKey(
+      'raw',
+      passwordBuffer,
+      'PBKDF2',
+      false,
+      ['deriveBits'],
+    );
+
+    const hashBuffer = await window.crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: saltBuffer,
+        iterations: PBKDF2_ITERATIONS,
+        hash: 'SHA-256',
+      },
+      baseKey,
+      256,
+    );
+
+    return bufferToHex(hashBuffer);
   };
 
   const registerUser = async (email, password, fullname, bio) => {
@@ -67,11 +96,14 @@
         message: 'Erro ao tentar se registar com este Email',
       };
 
-    const hashedPassword = await hashPassword(password);
+    const saltBuffer = window.crypto.getRandomValues(new Uint8Array(16));
+    const saltHex = bufferToHex(saltBuffer);
+    const hashedPassword = await derivePasswordHash(password, saltBuffer);
+
     const displayName = fullname.trim() || 'Leitor Voraz';
     const displayBio = bio.trim() || 'Leitor Voraz';
 
-    users[email] = new User(hashedPassword, displayName, displayBio);
+    users[email] = new User(hashedPassword, saltHex, displayName, displayBio);
 
     saveUsers(users);
     return { success: true, username: displayName };
@@ -79,7 +111,6 @@
 
   const loginUser = async (email, password) => {
     const users = getUsers();
-    const hashedPassword = await hashPassword(password);
 
     const invalidAuthResponse = {
       success: false,
@@ -87,7 +118,14 @@
     };
 
     if (!users[email]) return invalidAuthResponse;
-    if (hashedPassword !== users[email].passwordHash)
+
+    if (!users[email].saltHex && !users[email].passwordHash)
+      return invalidAuthResponse;
+
+    const saltBuffer = hexToBuffer(users[email].saltHex);
+    const calculatedHash = await derivePasswordHash(password, saltBuffer);
+
+    if (calculatedHash !== users[email].passwordHash)
       return invalidAuthResponse;
 
     const token = crypto.randomUUID();
@@ -325,7 +363,7 @@
       const users = getUsers();
       if (!users[email]) {
         const displayName = payload.name || 'Leitor Voraz';
-        users[email] = new User('', displayName, '');
+        users[email] = new User('', '', displayName, '');
         saveUsers(users);
       }
 

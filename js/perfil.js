@@ -3,6 +3,7 @@
 
   const MAX_DRAFTS_LIMIT = 3;
   const DEFAULT_PLACEHOLDER = '<p>Comece a escrever sua história aqui...</p>';
+  const IMAGE_MAX_SIZE = 5 * 1024 * 1024;
 
   const state = {
     title: '',
@@ -22,7 +23,6 @@
 
     btnInsertImage: document.getElementById('btnInsertImage'),
     imageFileInput: document.getElementById('imageFileInput'),
-    btnInsertLink: document.getElementById('btnInsertLink'),
 
     storiesGrid: document.getElementById('storyContent'),
     draftsContainer: document.getElementById('draftsContainer'),
@@ -31,13 +31,30 @@
     btnSaveDraft: document.getElementById('btnSaveDraft'),
   };
 
-  const convertToBase64 = (file) =>
-    new Promise((resolve, reject) => {
+  function validateImageFile(file) {
+    if (!file || !file.name) return null;
+
+    const allowedMimes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    if (!allowedMimes.includes(file.type)) {
+      return 'Formato inválido. Apenas imagens PNG, JPEG, WebP ou GIF são aceitas.';
+    }
+
+    const maxSize = IMAGE_MAX_SIZE;
+    if (file.size > maxSize) {
+      return 'A imagem excede o limite de 5 MB.';
+    }
+
+    return null;
+  }
+
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (err) => reject(err);
     });
+  }
 
   function sanitizeHTML(html) {
     if (!html || typeof html !== 'string') return '';
@@ -45,10 +62,10 @@
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
 
-    const firstP = tempDiv.querySelector('p');
+    // Empty placeholder → return empty string
     if (
-      firstP &&
-      firstP.textContent.trim() === 'Comece a escrever sua história aqui...'
+      tempDiv.querySelector('p')?.textContent.trim() ===
+      'Comece a escrever sua história aqui...'
     ) {
       return '';
     }
@@ -57,6 +74,7 @@
     const hasImages = tempDiv.getElementsByTagName('img').length > 0;
     if (!hasText && !hasImages) return '';
 
+    // Strip scripts and inline event handlers
     return tempDiv.innerHTML
       .replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '')
       .replace(/\bon\w+\s*=\s*"(?:\\"|[^"])*"/gi, '')
@@ -73,6 +91,8 @@
       const range = selection.getRangeAt(0);
       range.deleteContents();
       range.insertNode(node);
+
+      // Move caret after the inserted node
       const newRange = document.createRange();
       newRange.setStartAfter(node);
       newRange.setEndAfter(node);
@@ -105,9 +125,10 @@
       ],
       setupInput: document.getElementById('newUsername'),
       clearFn: () => {
-        document.getElementById('newUsername').value = '';
-        document.getElementById('username-error').textContent = '';
-        document.getElementById('profileError').textContent = '';
+        const input = document.getElementById('newUsername');
+        if (input) input.value = '';
+        const err = document.getElementById('username-error');
+        if (err) err.textContent = '';
       },
     },
     bio: {
@@ -120,9 +141,10 @@
       setupInput: document.getElementById('newBio'),
       clearFn: () => {
         const user = auth.getUsers()?.[auth.getSession()?.email];
-        document.getElementById('newBio').value = user?.bio || '';
-        document.getElementById('bio-error').textContent = '';
-        document.getElementById('bioError').textContent = '';
+        const input = document.getElementById('newBio');
+        if (input) input.value = user?.bio || '';
+        const err = document.getElementById('bio-error');
+        if (err) err.textContent = '';
       },
     },
     avatar: {
@@ -133,8 +155,10 @@
         document.getElementById('btnCancelAvatar'),
       ],
       clearFn: () => {
-        document.getElementById('avatarInput').value = '';
-        document.getElementById('avatarError').textContent = '';
+        const input = document.getElementById('avatarInput');
+        if (input) input.value = '';
+        const err = document.getElementById('avatar-error');
+        if (err) err.textContent = '';
       },
     },
     banner: {
@@ -145,8 +169,10 @@
         document.getElementById('btnCancelBanner'),
       ],
       clearFn: () => {
-        document.getElementById('bannerInput').value = '';
-        document.getElementById('bannerError').textContent = '';
+        const input = document.getElementById('bannerInput');
+        if (input) input.value = '';
+        const err = document.getElementById('banner-error');
+        if (err) err.textContent = '';
       },
     },
     stories: {
@@ -174,16 +200,19 @@
       btn?.addEventListener('click', () => modal.close()),
     );
 
+    // Close when clicking outside the content area
     modal.addEventListener('click', (event) => {
       const content = modal.querySelector('.modal-content');
       if (!content) return;
-      // Don't close when clicking on drafts container or its children
+
+      // Prevent closing when interacting with drafts container
       if (
         event.target.closest('#draftsContainer') ||
         event.target.closest('[data-draft-index]')
       ) {
         return;
       }
+
       const rect = content.getBoundingClientRect();
       if (
         event.clientX < rect.left ||
@@ -208,6 +237,7 @@
   }) {
     document.getElementById(formId)?.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const session = auth.getSession();
       if (!session) return;
 
@@ -215,6 +245,7 @@
       const errorEl = document.getElementById(errorId);
       let value = input.files ? input.files[0] : input.value.trim();
 
+      // Run validation
       if (validationFn) {
         const errorMsg = validationFn(value);
         if (errorMsg) {
@@ -225,9 +256,8 @@
       }
 
       try {
-        if (input.files) {
-          value = await convertToBase64(value);
-        }
+        if (input.files) value = await convertToBase64(value);
+
         const result = await auth.updateProfile(session.email, {
           [profileKey]: value,
         });
@@ -243,6 +273,8 @@
       }
     });
   }
+
+  const imageValidationFn = (file) => validateImageFile(file);
 
   setupProfileForm({
     formId: 'editProfileForm',
@@ -261,27 +293,38 @@
   setupProfileForm({
     formId: 'editBioForm',
     inputId: 'newBio',
-    errorId: 'bioError',
+    errorId: 'bio-error',
     profileKey: 'bio',
     modal: modais.bio.modal,
   });
+
+  // Image upload forms share the same validation helper
   setupProfileForm({
     formId: 'avatarUploadForm',
     inputId: 'avatarInput',
-    errorId: 'avatarError',
+    errorId: 'avatar-error',
     profileKey: 'avatar',
     modal: modais.avatar.modal,
+    validationFn: imageValidationFn,
   });
   setupProfileForm({
     formId: 'bannerUploadForm',
     inputId: 'bannerInput',
-    errorId: 'bannerError',
+    errorId: 'banner-error',
     profileKey: 'banner',
     modal: modais.banner.modal,
+    validationFn: imageValidationFn,
+  });
+  setupProfileForm({
+    formId: 'imageUploadForm',
+    inputId: 'imageInput',
+    errorId: 'image-error',
+    profileKey: 'galleryImages',
+    modal: document.getElementById('editModalImage'),
+    validationFn: imageValidationFn,
   });
 
   function initStoryEditor() {
-    // Open story editor modal and render drafts
     modais.stories.modal?.addEventListener('toggle', () => {
       if (modais.stories.modal.opened) {
         const session = auth.getSession();
@@ -290,6 +333,7 @@
       }
     });
 
+    // Bind state to inputs
     DOM.titleInput?.addEventListener(
       'input',
       () => (state.title = DOM.titleInput.value.trim()),
@@ -299,6 +343,7 @@
       () => (state.category = DOM.categorySelect.value),
     );
 
+    // Toolbar: paragraph style
     DOM.styleSelect?.addEventListener('change', () => {
       document.execCommand(
         'formatBlock',
@@ -308,15 +353,16 @@
       DOM.writingArea?.focus();
     });
 
+    // Toolbar: font size
+    const sizeMap = {
+      1: '12px',
+      2: '14px',
+      3: '16px',
+      4: '18px',
+      5: '24px',
+      6: '32px',
+    };
     DOM.fontSizeSelect?.addEventListener('change', () => {
-      const sizeMap = {
-        1: '12px',
-        2: '14px',
-        3: '16px',
-        4: '18px',
-        5: '24px',
-        6: '32px',
-      };
       const selection = window.getSelection();
       if (
         !selection.rangeCount ||
@@ -330,27 +376,37 @@
       }
     });
 
+    // Toolbar: format buttons (bold, italic, etc.)
     DOM.toolbar?.addEventListener('mousedown', (e) => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
       e.preventDefault();
 
       let action = btn.dataset.action;
-      if (action.toLowerCase() === 'strikethrough' || action === 'tachado') {
+      if (action.toLowerCase() === 'strikethrough' || action === 'tachado')
         action = 'strikeThrough';
-      }
 
       document.execCommand(action, false, null);
       DOM.writingArea?.focus();
     });
 
+    // Insert image from toolbar
     if (DOM.btnInsertImage && DOM.imageFileInput) {
       DOM.btnInsertImage.addEventListener('click', () =>
         DOM.imageFileInput.click(),
       );
+
       DOM.imageFileInput.addEventListener('change', async () => {
         const file = DOM.imageFileInput.files[0];
         if (!file || !DOM.writingArea) return;
+
+        const validationError = validateImageFile(file);
+        if (validationError) {
+          showToast(validationError, 'error');
+          DOM.imageFileInput.value = '';
+          return;
+        }
+
         try {
           const base64Image = await convertToBase64(file);
           const img = document.createElement('img');
@@ -366,42 +422,23 @@
       });
     }
 
-    DOM.btnInsertLink?.addEventListener('click', () => {
-      const url = prompt('Insira a URL do link:');
-      if (!url || !DOM.writingArea) return;
-
-      const selection = window.getSelection();
-      const hasSelection =
-        selection.rangeCount > 0 &&
-        DOM.writingArea.contains(selection.anchorNode) &&
-        selection.toString().trim().length > 0;
-
-      if (hasSelection && document.queryCommandSupported('createLink')) {
-        document.execCommand('createLink', false, url);
-      } else {
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.textContent = url;
-        insertNodeAtCaret(a);
-      }
-      DOM.writingArea.focus();
-    });
-
+    // Writing area: auto-save content to state + placeholder logic
     if (DOM.writingArea) {
       DOM.writingArea.addEventListener(
         'input',
         () => (state.content = DOM.writingArea.innerHTML),
       );
+
       DOM.writingArea.addEventListener('focus', () => {
+        const firstP = DOM.writingArea.querySelector('p');
         if (
-          DOM.writingArea.querySelector('p')?.textContent.trim() ===
+          firstP?.textContent.trim() ===
           'Comece a escrever sua história aqui...'
         ) {
           DOM.writingArea.innerHTML = '';
         }
       });
+
       DOM.writingArea.addEventListener('blur', () => {
         if (!DOM.writingArea.innerHTML.trim()) {
           DOM.writingArea.innerHTML = DEFAULT_PLACEHOLDER;
@@ -409,6 +446,7 @@
       });
     }
 
+    // Title → Enter focuses writing area
     DOM.titleInput?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -416,6 +454,7 @@
       }
     });
 
+    // Save draft button
     DOM.btnSaveDraft?.addEventListener('click', (e) => {
       e.preventDefault();
       saveDraft();
@@ -443,15 +482,14 @@
     if (state.activeDraftIndex !== null) {
       currentDrafts[state.activeDraftIndex] = draftPayload;
     } else {
-      if (currentDrafts.length >= MAX_DRAFTS_LIMIT) {
-        if (
-          !confirm(
-            'Você atingiu o limite de 3 rascunhos. Deseja sobrescrever o mais antigo?',
-          )
+      if (
+        currentDrafts.length >= MAX_DRAFTS_LIMIT &&
+        !confirm(
+          'Você atingiu o limite de 3 rascunhos. Deseja sobrescrever o mais antigo?',
         )
-          return;
-        currentDrafts.pop();
-      }
+      )
+        return;
+      if (currentDrafts.length >= MAX_DRAFTS_LIMIT) currentDrafts.pop();
       currentDrafts.unshift(draftPayload);
       state.activeDraftIndex = 0;
     }
@@ -472,12 +510,8 @@
 
     state.activeDraftIndex = index;
     state.activeStoryIndex = null;
-
     modais.stories.modal.showModal();
-    setTimeout(
-      () => updateEditorDOM(draft.title, draft.type, draft.content),
-      100,
-    );
+    updateEditorDOM(draft.title, draft.type, draft.content);
   };
 
   window.deleteDraft = async function (index, event) {
@@ -497,6 +531,7 @@
     }
   };
 
+  // Publish / edit story button
   DOM.btnPublishStory?.addEventListener('click', async (e) => {
     e.preventDefault();
     const session = auth.getSession();
@@ -526,15 +561,13 @@
       currentStories.unshift(storyPayload);
     }
 
-    if (state.activeDraftIndex !== null) {
+    if (state.activeDraftIndex !== null)
       currentDrafts.splice(state.activeDraftIndex, 1);
-    }
 
     const result = await auth.updateProfile(session.email, {
       stories: currentStories,
       drafts: currentDrafts,
     });
-
     if (result.success) {
       modais.stories.modal.close();
       state.activeStoryIndex = null;
@@ -545,7 +578,11 @@
     }
   });
 
-  DOM.storiesGrid?.addEventListener('click', (event) => {
+  // Click handlers for story cards and draft cards (delegated)
+  DOM.storiesGrid?.addEventListener('click', handleStoryClick);
+  DOM.draftsContainer?.addEventListener('click', handleDraftClick);
+
+  function handleStoryClick(event) {
     if (
       event.target.closest('.btn-edit-story') ||
       event.target.closest('[data-action]')
@@ -562,15 +599,11 @@
 
     state.activeStoryIndex = index;
     state.activeDraftIndex = null;
-
     modais.stories.modal.showModal();
-    setTimeout(
-      () => updateEditorDOM(story.title, story.type, story.content),
-      100,
-    );
-  });
+    updateEditorDOM(story.title, story.type, story.content);
+  }
 
-  DOM.draftsContainer?.addEventListener('click', (event) => {
+  function handleDraftClick(event) {
     const deleteBtn = event.target.closest('[data-delete-draft-index]');
     if (deleteBtn) {
       const index = parseInt(
@@ -591,13 +624,9 @@
 
     state.activeDraftIndex = index;
     state.activeStoryIndex = null;
-
     modais.stories.modal.showModal();
-    setTimeout(
-      () => updateEditorDOM(draft.title, draft.type, draft.content),
-      100,
-    );
-  });
+    updateEditorDOM(draft.title, draft.type, draft.content);
+  }
 
   function checkAuth() {
     if (!auth.isLoggedIn()) {
@@ -613,23 +642,18 @@
 
     const user = auth.getUsers()?.[session.email];
 
-    const elements = {
-      name: document.getElementById('perfilName'),
-      bio: document.getElementById('perfilBio'),
-      avatar: document.getElementById('avatarImg'),
-      banner: document.getElementById('bannerBg'),
-    };
+    const nameEl = document.getElementById('perfilName');
+    const bioEl = document.getElementById('perfilBio');
+    const avatarEl = document.getElementById('avatarImg');
+    const bannerEl = document.getElementById('bannerBg');
 
-    if (elements.name)
-      elements.name.textContent = session.fullname || 'Leitor Voraz';
-    if (elements.bio)
-      elements.bio.textContent =
-        user?.bio || 'Leitor Voraz · Ofensiva de 0 Dias';
-    if (elements.avatar)
-      elements.avatar.src = user?.avatar || 'https://via.placeholder.com/150';
-    if (elements.banner && user?.banner) {
-      elements.banner.style.backgroundImage = `url('${user.banner}')`;
-    }
+    if (nameEl) nameEl.textContent = session.fullname || 'Leitor Voraz';
+    if (bioEl)
+      bioEl.textContent = user?.bio || 'Leitor Voraz · Ofensiva de 0 Dias';
+    if (avatarEl)
+      avatarEl.src = user?.avatar || 'https://via.placeholder.com/150';
+    if (bannerEl && user?.banner)
+      bannerEl.style.backgroundImage = `url('${user.banner}')`;
 
     renderStories(user?.stories || []);
     renderDrafts(user?.drafts || []);
@@ -639,25 +663,25 @@
     if (!DOM.draftsContainer) return;
 
     if (drafts.length === 0) {
-      DOM.draftsContainer.innerHTML = `
-        <p class="empty-message-modal">
-          Nenhum rascunho salvo no momento (máximo de ${MAX_DRAFTS_LIMIT}).
-        </p>`;
+      DOM.draftsContainer.innerHTML =
+        '<p class="empty-message-modal">Nenhum rascunho salvo no momento (máximo de ' +
+        MAX_DRAFTS_LIMIT +
+        ').</p>';
       return;
     }
 
     DOM.draftsContainer.innerHTML = drafts
       .map(
-        (draft, index) => `
-      <div class="cardDraft" data-draft-index="${index}" style="cursor:pointer">
-        <div class="draft-header">
-          <div>
-            <h4 class="draft-title">${draft.title}</h4>
-            <span class="draft-meta">${draft.type} • Editado às ${draft.updatedAt}</span>
+        (draft, index) =>
+          `<div class="cardDraft" data-draft-index="${index}" style="cursor:pointer">
+          <div class="draft-header">
+            <div>
+              <h4 class="draft-title">${draft.title}</h4>
+              <span class="draft-meta">${draft.type} • Editado às ${draft.updatedAt}</span>
+            </div>
+            <button class="btn-delete-draft" data-delete-draft-index="${index}" aria-label="Excluir rascunho ${draft.title}">✕</button>
           </div>
-          <button class="btn-delete-draft" data-delete-draft-index="${index}" aria-label="Excluir rascunho ${draft.title}">✕</button>
-        </div>
-      </div>`,
+        </div>`,
       )
       .join('');
   }
@@ -666,18 +690,16 @@
     if (!DOM.storiesGrid) return;
 
     if (stories.length === 0) {
-      DOM.storiesGrid.innerHTML = `
-        <p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">
-          Nenhuma história adicionada ainda.
-        </p>`;
+      DOM.storiesGrid.innerHTML =
+        '<p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">Nenhuma história adicionada ainda.</p>';
       return;
     }
 
     const coverUrl = '../assets/img/capaPadraoHistorias.png';
     DOM.storiesGrid.innerHTML = stories
       .map(
-        (story, index) => `
-        <div class="cardPerfil" data-story-index="${index}" style="background-image: url('${coverUrl}');">
+        (story, index) =>
+          `<div class="cardPerfil" data-story-index="${index}" style="background-image: url('${coverUrl}');">
           <div class="contentCard">
             <div>
               <h3>${story.title || 'Sem título'}</h3>
@@ -689,21 +711,16 @@
       .join('');
   }
 
-  // Armazena o timer para evitar fechamento precoce em cliques rápidos
-  let toastTimeout = null;
-
-  // Elementos cacheados (buscados apenas uma vez no carregamento)
   const toastModal = document.getElementById('toastModal');
   const toastMessage = document.getElementById('toastMessage');
-  const btnToastClose = document.getElementById('btnToastClose');
+  let toastTimeout = null;
 
-  // Inicializa os eventos apenas UMA vez
   if (toastModal && toastMessage) {
-    const closeToast = () => toastModal.close();
+    document
+      .getElementById('btnToastClose')
+      ?.addEventListener('click', () => toastModal.close());
 
-    btnToastClose?.addEventListener('click', closeToast);
-
-    // Fecha ao clicar fora (no backdrop)
+    // Close on backdrop click
     toastModal.addEventListener('click', (event) => {
       const content = toastModal.querySelector('.toast-content');
       if (!content) return;
@@ -714,34 +731,23 @@
         event.clientX > rect.right ||
         event.clientY < rect.top ||
         event.clientY > rect.bottom;
-
-      if (clickedOutside) closeToast();
+      if (clickedOutside) toastModal.close();
     });
   }
 
-  /**
-   * Exibe a notificação toast.
-   * @param {string} message - Mensagem do toast.
-   * @param {'success' | 'error'} type - Tipo do toast.
-   */
   function showToast(message, type = 'success') {
     if (!toastModal || !toastMessage) return;
 
     clearTimeout(toastTimeout);
-
     toastMessage.textContent = message;
-
     toastModal.style.backgroundColor =
       type === 'error' ? 'var(--color-error)' : 'var(--color-success)';
 
-    if (!toastModal.open) {
-      toastModal.showModal();
-    }
+    if (!toastModal.open) toastModal.showModal();
 
-    toastTimeout = setTimeout(() => {
-      toastModal.close();
-    }, 3000);
+    toastTimeout = setTimeout(() => toastModal.close(), 3000);
   }
+
   if (checkAuth()) {
     loadUserProfile();
     initStoryEditor();

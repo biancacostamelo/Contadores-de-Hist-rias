@@ -32,12 +32,11 @@
       </div>
     </header>
 
-
     <div class="edit-profile-section">
-      <button type="button" class="btn-edit-profile" id="btnEditProfile">
+      <button type="button" class="btn-update" id="btnEditProfile">
         <span aria-hidden="true">✏️</span> Editar Nome
       </button>
-      <button type="button" class="btn-edit-profile" id="btnEditBio">
+      <button type="button" class="btn-update" id="btnEditBio">
         <span aria-hidden="true">✏️</span> Editar Bio
       </button>
     </div>
@@ -52,29 +51,32 @@
         <form class="edit-form" id="bannerUploadForm">
           <div class="form-field">
             <label class="form-label" for="bannerInput">Escolher Imagem</label>
-            <input type="file" class="form-input-file" id="bannerInput" accept="image/*" />
+            <input type="file" class="form-input-file" id="bannerInput" accept="image/png, image/jpeg, image/webp, image/gif" />
           </div>
+
+          <div id="banner-error" class="field-error" role="alert"></div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelBanner">Cancelar</button>
-            <button type="submit" class="btn btn--primary" id="btnSubmitBanner">Salvar</button>
+            <button type="button" class="btn-send" id="btnCancelBanner">Cancelar</button>
+            <button type="submit" class="btn-send" id="btnSubmitBanner">Salvar</button>
           </div>
-
         </form>
       </div>
     </dialog>
-    <section class="perfil-gallery" aria-label="Galeria de imagens">
+
+    <section class="perfil-gallery" aria-label="Galeria de histórias">
       <h2 class="gallery-title">Minhas Histórias</h2>
-      <button type="button" class="btn-add-story" id="btnAddStory">
+      <button type="button" class="btn-update" id="btnAddStory">
         <span aria-hidden="true">＋</span> Adicionar
       </button>
+
       <dialog class="edit-modal story-editor-modal" id="editModalStory" aria-labelledby="storyEditorTitle">
         <div class="modal-content">
           <header class="editor-top-bar">
             <nav class="breadcrumb-nav" aria-label="Navegação de breadcrumbs">
               <button type="button" class="btn-back-editor" id="btnBackEditor" title="Voltar">←</button>
               <div class="breadcrumb-dropdown">
-               <button id="btnSaveDraft" class="btn-save-sketch">Salvar Rascunho</button>
+                <button id="btnSaveDraft" class="btn-save-sketch">Salvar Rascunho</button>
               </div>
             </nav>
             <h2 class="editor-title" id="storyEditorTitle" hidden>Escrita de histórias/Anime/contos</h2>
@@ -102,7 +104,7 @@
             <div class="toolbar-group toolbar-group--right">
               <button type="button" class="btn-tool" data-action="justifyLeft" title="Alinhar à esquerda">≡</button>
               <button type="button" class="btn-tool" data-action="justifyCenter" title="Centralizar">≡</button>
-              <hr class="toolbar-separator" />             
+              <hr class="toolbar-separator" />
               <button type="button" class="btn-tool" id="btnInsertImage" title="Inserir imagem">🖼️</button>
               <hr class="toolbar-separator" />
               <button type="button" class="btn-tool" data-action="insertUnorderedList" title="Lista com marcadores">•≡</button>
@@ -121,6 +123,8 @@
             </div>
           </div>
 
+          <input type="file" id="imageFileInput" accept="image/png, image/jpeg, image/webp, image/gif" style="display:none" />
+
           <div class="editor-area" id="storyEditorArea">
             <div class="title-input-wrapper">
               <input type="text" class="story-title-input" id="storyTitleInput" placeholder="Título da sua obra..." maxlength="150" aria-label="Título da história" />
@@ -138,13 +142,33 @@
             </div>
           </div>
 
-        </div>
-        <div id="draftsContainer" class="drafts-list">
+          <div id="draftsContainer" class="drafts-list"></div>
         </div>
       </dialog>
-
-
     </section>
+
+    <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="editModalAvatarTitle">Alterar Foto de Perfil</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseAvatar" aria-label="Fechar">&times;</button>
+        </header>
+
+        <form class="edit-form" id="avatarUploadForm">
+          <div class="form-field">
+            <label class="form-label" for="avatarInput">Escolher Imagem</label>
+            <input type="file" class="form-input-file" id="avatarInput" accept="image/png, image/jpeg, image/webp, image/gif" />
+          </div>
+
+          <div id="avatar-error" class="field-error" role="alert"></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-send" id="btnCancelAvatar">Cancelar</button>
+            <button type="submit" class="btn-send" id="btnSubmitAvatar">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
 
     <dialog class="edit-modal" id="editModalImage" aria-labelledby="editModalImageTitle">
       <div class="modal-content">
@@ -156,8 +180,10 @@
         <form class="edit-form" id="imageUploadForm">
           <div class="form-field">
             <label class="form-label" for="imageInput">Escolher Imagem</label>
-            <input type="file" class="form-input-file" id="imageInput" accept="image/*" />
+            <input type="file" class="form-input-file" id="imageInput" accept="image/png, image/jpeg, image/webp, image/gif" />
           </div>
+
+          <div id="image-error" class="field-error" role="alert"></div>
 
           <div class="form-field">
             <label class="form-label" for="imageCaption">Legenda (opcional)</label>
@@ -165,80 +191,62 @@
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelImage">Cancelar</button>
-            <button type="submit" class="btn btn--primary" id="btnSubmitImage">Salvar</button>
+            <button type="button" class="btn-send" id="btnCancelImage">Cancelar</button>
+            <button type="submit" class="btn-send" id="btnSubmitImage">Salvar</button>
           </div>
-
         </form>
       </div>
     </dialog>
 
-    <dialog class="edit-modal" id="editModalEditStory" aria-labelledby="editModalEditStoryTitle">
+    <dialog class="edit-modal" id="editModalName" aria-labelledby="editModalNameTitle">
       <div class="modal-content">
         <header class="modal-header">
-          <h2 class="modal-title" id="editModalEditStoryTitle">Editar História</h2>
-          <button type="button" class="btn-close-modal" id="btnCloseEditStory" aria-label="Fechar">&times;</button>
+          <h2 class="modal-title" id="editModalNameTitle">Editar Nome</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseName" aria-label="Fechar">&times;</button>
         </header>
 
-        <form class="edit-form" id="editStoryForm" novalidate>
+        <form class="edit-form" id="editProfileForm">
           <div class="form-field">
-            <label class="form-label" for="editStoryTitle">Título</label>
-            <input type="text" class="form-input" id="editStoryTitle" name="title" required minlength="1" maxlength="150" placeholder="Título da sua obra..." aria-describedby="editStoryTitle-error" />
-            <div class="field-error" id="editStoryTitle-error" role="alert" aria-live="assertive"></div>
+            <label class="form-label" for="newUsername">Novo Nome</label>
+            <input type="text" class="form-input" id="newUsername" maxlength="50" placeholder="Seu nome completo..." />
           </div>
 
-          <div class="form-field">
-            <label class="form-label" for="editStoryCategory">Categoria</label>
-            <select class="form-input story-category-select" id="editStoryCategory" name="category">
-              <option value="Conto">📖 Conto</option>
-              <option value="Manga">🎌 Manga</option>
-              <option value="Romance">💕 Romance</option>
-              <option value="Crônica">⏳ Crônica</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="editStoryCover">Capa (URL da imagem)</label>
-            <input type="url" class="form-input" id="editStoryCover" name="cover" placeholder="https://exemplo.com/capa.jpg" />
-          </div>
-
-          <p class="form-hint">Atualize as informações da sua história. A capa aceita URLs de imagens.</p>
+          <div id="username-error" class="field-error" role="alert"></div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelEditStory">Cancelar</button>
-            <button type="submit" class="btn btn--primary">Salvar</button>
+            <button type="button" class="btn-send" id="btnCancelName">Cancelar</button>
+            <button type="submit" class="btn-send" id="btnSubmitName">Salvar</button>
           </div>
-
         </form>
       </div>
     </dialog>
 
-    <dialog class="edit-modal" id="editModalEditImage" aria-labelledby="editModalEditImageTitle">
+    <dialog class="edit-modal" id="editModalBio" aria-labelledby="editModalBioTitle">
       <div class="modal-content">
         <header class="modal-header">
-          <h2 class="modal-title" id="editModalEditImageTitle">Editar Legenda</h2>
-          <button type="button" class="btn-close-modal" id="btnCloseEditImage" aria-label="Fechar">&times;</button>
+          <h2 class="modal-title" id="editModalBioTitle">Editar Bio</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseBio" aria-label="Fechar">&times;</button>
         </header>
 
-        <form class="edit-form" id="editImageCaptionForm">
+        <form class="edit-form" id="editBioForm">
           <div class="form-field">
-            <label class="form-label" for="editCaptionInput">Legenda</label>
-            <input type="text" class="form-input" id="editCaptionInput" maxlength="150" placeholder="Sua legenda..." />
+            <label class="form-label" for="newBio">Nova Bio</label>
+            <textarea class="form-input" id="newBio" rows="3" maxlength="200" placeholder="Conte um pouco sobre você..."></textarea>
           </div>
+
+          <div id="bio-error" class="field-error" role="alert"></div>
 
           <div class="modal-actions">
-            <button type="button" class="btn btn--secondary" id="btnCancelEditImage">Cancelar</button>
-            <button type="submit" class="btn btn--primary" id="btnSubmitEditCaption">Salvar</button>
+            <button type="button" class="btn-send" id="btnCancelBio">Cancelar</button>
+            <button type="submit" class="btn-send" id="btnSubmitBio">Salvar</button>
           </div>
-
         </form>
       </div>
     </dialog>
   </main>
 
-  <section class="perfil-gallery" aria-label="Galeria de imagens">
+  <section class="perfil-gallery" aria-label="Conteúdo das histórias">
     <div id="storyContent" class="story__content"></div>
-
   </section>
 
   <section class="perfil-achievements" aria-label="Conquistas e medalhas">
@@ -267,7 +275,7 @@
 
   <dialog class="toast-modal" id="toastModal">
     <div class="toast-content">
-      <p class="toast-message" id="toastMessage">Rascunho salvo com sucesso!</p>
+      <p class="toast-message" id="toastMessage"></p>
       <button type="button" class="btn-toast-close" id="btnToastClose" aria-label="Fechar notificação">✕</button>
     </div>
   </dialog>
