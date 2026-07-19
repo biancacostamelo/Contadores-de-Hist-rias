@@ -62,7 +62,6 @@
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
 
-    // Empty placeholder → return empty string
     if (
       tempDiv.querySelector('p')?.textContent.trim() ===
       'Comece a escrever sua história aqui...'
@@ -74,7 +73,6 @@
     const hasImages = tempDiv.getElementsByTagName('img').length > 0;
     if (!hasText && !hasImages) return '';
 
-    // Strip scripts and inline event handlers
     return tempDiv.innerHTML
       .replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '')
       .replace(/\bon\w+\s*=\s*"(?:\\"|[^"])*"/gi, '')
@@ -92,7 +90,6 @@
       range.deleteContents();
       range.insertNode(node);
 
-      // Move caret after the inserted node
       const newRange = document.createRange();
       newRange.setStartAfter(node);
       newRange.setEndAfter(node);
@@ -200,12 +197,10 @@
       btn?.addEventListener('click', () => modal.close()),
     );
 
-    // Close when clicking outside the content area
     modal.addEventListener('click', (event) => {
       const content = modal.querySelector('.modal-content');
       if (!content) return;
 
-      // Prevent closing when interacting with drafts container
       if (
         event.target.closest('#draftsContainer') ||
         event.target.closest('[data-draft-index]')
@@ -245,7 +240,6 @@
       const errorEl = document.getElementById(errorId);
       let value = input.files ? input.files[0] : input.value.trim();
 
-      // Run validation
       if (validationFn) {
         const errorMsg = validationFn(value);
         if (errorMsg) {
@@ -298,7 +292,6 @@
     modal: modais.bio.modal,
   });
 
-  // Image upload forms share the same validation helper
   setupProfileForm({
     formId: 'avatarUploadForm',
     inputId: 'avatarInput',
@@ -333,7 +326,6 @@
       }
     });
 
-    // Bind state to inputs
     DOM.titleInput?.addEventListener(
       'input',
       () => (state.title = DOM.titleInput.value.trim()),
@@ -343,7 +335,6 @@
       () => (state.category = DOM.categorySelect.value),
     );
 
-    // Toolbar: paragraph style
     DOM.styleSelect?.addEventListener('change', () => {
       document.execCommand(
         'formatBlock',
@@ -353,7 +344,6 @@
       DOM.writingArea?.focus();
     });
 
-    // Toolbar: font size
     const sizeMap = {
       1: '12px',
       2: '14px',
@@ -376,7 +366,6 @@
       }
     });
 
-    // Toolbar: format buttons (bold, italic, etc.)
     DOM.toolbar?.addEventListener('mousedown', (e) => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
@@ -390,7 +379,6 @@
       DOM.writingArea?.focus();
     });
 
-    // Insert image from toolbar
     if (DOM.btnInsertImage && DOM.imageFileInput) {
       DOM.btnInsertImage.addEventListener('click', () =>
         DOM.imageFileInput.click(),
@@ -422,7 +410,6 @@
       });
     }
 
-    // Writing area: auto-save content to state + placeholder logic
     if (DOM.writingArea) {
       DOM.writingArea.addEventListener(
         'input',
@@ -446,7 +433,6 @@
       });
     }
 
-    // Title → Enter focuses writing area
     DOM.titleInput?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -454,7 +440,6 @@
       }
     });
 
-    // Save draft button
     DOM.btnSaveDraft?.addEventListener('click', (e) => {
       e.preventDefault();
       saveDraft();
@@ -531,7 +516,6 @@
     }
   };
 
-  // Publish / edit story button
   DOM.btnPublishStory?.addEventListener('click', async (e) => {
     e.preventDefault();
     const session = auth.getSession();
@@ -578,7 +562,6 @@
     }
   });
 
-  // Click handlers for story cards and draft cards (delegated)
   DOM.storiesGrid?.addEventListener('click', handleStoryClick);
   DOM.draftsContainer?.addEventListener('click', handleDraftClick);
 
@@ -650,10 +633,12 @@
     if (nameEl) nameEl.textContent = session.fullname || 'Leitor Voraz';
     if (bioEl)
       bioEl.textContent = user?.bio || 'Leitor Voraz · Ofensiva de 0 Dias';
-    if (avatarEl)
-      avatarEl.src = user?.avatar || 'https://via.placeholder.com/150';
-    if (bannerEl && user?.banner)
-      bannerEl.style.backgroundImage = `url('${user.banner}')`;
+    const defaultImage = '../assets/img/comunidadeManga.svg';
+
+    if (avatarEl) avatarEl.src = user?.avatar || defaultImage;
+    if (bannerEl) {
+      bannerEl.style.backgroundImage = `url('${user?.banner || defaultImage}')`;
+    }
 
     renderStories(user?.stories || []);
     renderDrafts(user?.drafts || []);
@@ -720,7 +705,6 @@
       .getElementById('btnToastClose')
       ?.addEventListener('click', () => toastModal.close());
 
-    // Close on backdrop click
     toastModal.addEventListener('click', (event) => {
       const content = toastModal.querySelector('.toast-content');
       if (!content) return;

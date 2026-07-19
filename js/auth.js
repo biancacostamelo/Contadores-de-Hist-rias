@@ -7,8 +7,18 @@
   const STORAGE_KEY_SESSION = 'writersCommunity_session';
   const SESSION_DURATION_MS = 60 * 60 * 1000;
   const PBKDF2_ITERATIONS = 600000;
+
   class User {
-    constructor(passwordHash, saltHex, fullname = '', bio = '') {
+    constructor(
+      emailHash,
+      emailSaltHex,
+      passwordHash,
+      saltHex,
+      fullname = '',
+      bio = '',
+    ) {
+      this.emailHash = emailHash;
+      this.emailSaltHex = emailSaltHex;
       this.passwordHash = passwordHash;
       this.saltHex = saltHex;
       this.fullname = fullname.trim();
@@ -49,7 +59,9 @@
     );
   };
 
-  const clearSession = () => localStorage.removeItem(STORAGE_KEY_SESSION);
+  const clearSession = () => {
+    localStorage.removeItem(STORAGE_KEY_SESSION);
+  };
 
   const bufferToHex = (buffer) => {
     return Array.from(new Uint8Array(buffer))
@@ -88,9 +100,57 @@
     return bufferToHex(hashBuffer);
   };
 
+  const deriveEmailHash = async (email) => {
+    const encoder = new TextEncoder();
+    const emailLower = email.toLowerCase().trim();
+    const emailBuffer = encoder.encode(emailLower);
+
+    const baseKey = await window.crypto.subtle.importKey(
+      'raw',
+      emailBuffer,
+      'PBKDF2',
+      false,
+      ['deriveBits'],
+    );
+
+    const hashBuffer = await window.crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: emailBuffer,
+        iterations: PBKDF2_ITERATIONS,
+        hash: 'SHA-256',
+      },
+      baseKey,
+      256,
+    );
+
+    return bufferToHex(hashBuffer);
+  };
+
+  const resolveUserByEmail = async (emailOrHash) => {
+    const users = getUsers();
+
+    let storedUser = Object.values(users).find(
+      (u) => u.emailHash === emailOrHash,
+    );
+
+    if (!storedUser) {
+      const emailHash = await deriveEmailHash(emailOrHash);
+      storedUser = Object.values(users).find((u) => u.emailHash === emailHash);
+    }
+
+    return storedUser || null;
+  };
+
   const registerUser = async (email, password, fullname, bio) => {
     const users = getUsers();
-    if (users[email])
+
+    const emailHash = await deriveEmailHash(email);
+
+    const existingUser = Object.values(users).find(
+      (u) => u.emailHash === emailHash,
+    );
+    if (existingUser)
       return {
         success: false,
         message: 'Erro ao tentar se registar com este Email',
@@ -103,7 +163,14 @@
     const displayName = fullname.trim() || 'Leitor Voraz';
     const displayBio = bio.trim() || 'Leitor Voraz';
 
-    users[email] = new User(hashedPassword, saltHex, displayName, displayBio);
+    users[emailHash] = new User(
+      emailHash,
+      null,
+      hashedPassword,
+      saltHex,
+      displayName,
+      displayBio,
+    );
 
     saveUsers(users);
     return { success: true, username: displayName };
@@ -117,33 +184,42 @@
       message: 'E-mail ou senha incorretos.',
     };
 
-    if (!users[email]) return invalidAuthResponse;
+    const storedUser = await resolveUserByEmail(email);
 
-    if (!users[email].saltHex && !users[email].passwordHash)
+    if (!storedUser) return invalidAuthResponse;
+
+    if (!storedUser.saltHex && !storedUser.passwordHash)
       return invalidAuthResponse;
 
-    const saltBuffer = hexToBuffer(users[email].saltHex);
+    const saltBuffer = hexToBuffer(storedUser.saltHex);
     const calculatedHash = await derivePasswordHash(password, saltBuffer);
 
-    if (calculatedHash !== users[email].passwordHash)
-      return invalidAuthResponse;
+    if (calculatedHash !== storedUser.passwordHash) return invalidAuthResponse;
 
     const token = crypto.randomUUID();
     const expiresAt = Date.now() + SESSION_DURATION_MS;
-    saveSession(token, email, users[email].fullname || '', expiresAt);
+    saveSession(
+      token,
+      storedUser.emailHash,
+      storedUser.fullname || '',
+      expiresAt,
+    );
     return { success: true };
   };
 
-  const updateProfile = async (email, updates) => {
+  const updateProfile = async (emailOrHash, updates) => {
     const users = getUsers();
-    if (!users[email])
+
+    const storedUser = await resolveUserByEmail(emailOrHash);
+
+    if (!storedUser)
       return { success: false, message: 'Usuário não encontrado.' };
 
-    if (updates.fullname && updates.fullname !== users[email].fullname) {
+    if (updates.fullname && updates.fullname !== storedUser.fullname) {
       const existingUser = Object.values(users).find(
         (user) => user.fullname === updates.fullname.trim(),
       );
-      if (existingUser && existingUser.email !== email) {
+      if (existingUser && existingUser.emailHash !== storedUser.emailHash) {
         return {
           success: false,
           message: 'Este nome já está em uso por outro usuário.',
@@ -151,15 +227,15 @@
       }
     }
 
-    users[email] = { ...users[email], ...updates };
+    users[storedUser.emailHash] = { ...storedUser, ...updates };
     saveUsers(users);
 
     const session = getSession();
-    if (session && session.email === email) {
+    if (session && session.email === storedUser.emailHash) {
       saveSession(
         session.token,
-        email,
-        updates.fullname || users[email].fullname,
+        storedUser.emailHash,
+        updates.fullname || storedUser.fullname,
         session.expiresAt,
       );
     }
@@ -348,7 +424,7 @@
       });
   };
 
-  const handleCredentialResponse = (response) => {
+  const handleCredentialResponse = async (response) => {
     if (!response.credential) return;
 
     try {
@@ -360,16 +436,18 @@
         return;
       }
 
-      const users = getUsers();
-      if (!users[email]) {
+      const storedUser = await resolveUserByEmail(email);
+
+      if (!storedUser) {
         const displayName = payload.name || 'Leitor Voraz';
-        users[email] = new User('', '', displayName, '');
+        const emailHash = await deriveEmailHash(email);
+        users[emailHash] = new User(emailHash, null, '', '', displayName, '');
         saveUsers(users);
       }
 
       const token = crypto.randomUUID();
       const expiresAt = Date.now() + SESSION_DURATION_MS;
-      saveSession(token, email, users[email].fullname, expiresAt);
+      saveSession(token, storedUser.emailHash, storedUser.fullname, expiresAt);
       window.location.href = '../pages/perfil.html';
     } catch (err) {
       console.error(err);
@@ -400,17 +478,28 @@
 
   initGoogleClient();
   setupGoogleButtonListeners();
+
   window.auth = {
     isLoggedIn: () => getSession() !== null,
     getCurrentUser: () => {
       const session = getSession();
-      return session
-        ? { email: session.email, fullname: session.fullname }
+      if (!session) return null;
+      const users = getUsers();
+      const storedUser = Object.values(users).find(
+        (u) => u.emailHash === session.email,
+      );
+      return storedUser
+        ? { email: storedUser.emailHash, fullname: storedUser.fullname }
         : null;
     },
-    logoutUser: () => clearSession(),
+    logoutUser: () => {
+      clearSession();
+      window.dispatchEvent(new CustomEvent('authStateChange'));
+    },
     getSession: getSession,
     updateProfile: (email, updates) => updateProfile(email, updates),
     getUsers: getUsers,
   };
+
+  window.dispatchEvent(new CustomEvent('authReady'));
 })();
