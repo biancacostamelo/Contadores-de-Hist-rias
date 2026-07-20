@@ -146,13 +146,13 @@ body {
   color: var(--color-primary);
   margin-bottom: 20px;
   margin-top: 80px;
+  margin: 20px 40px;
 }
 
 
 
 .galeria-container {
   max-width: 1440px;
-  margin: 0 100px;
   justify-content: center;
   margin-bottom: 50px;
 }
@@ -160,8 +160,9 @@ body {
 .postsGaleria {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
-  justify-content: space-between;
+  gap: 20px;
+  margin: 0 40px;
+  justify-content: space-around;
 }
 
 
@@ -260,9 +261,11 @@ body {
 
 .hist-post {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   gap: 30px;
+  margin: 0 40px;
 }
 
 .hist-post .posts-historia {
@@ -386,4 +389,11 @@ body {
 
 .hist-post .posts-historia:hover .sinopse {
   opacity: 0.95;
+}
+
+@media (max-width: 440px) {
+ .hist-post .posts-historia {
+    width: 600px;
+    height: 200px;
+}
 }
