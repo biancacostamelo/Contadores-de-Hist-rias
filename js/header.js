@@ -1,7 +1,7 @@
 const HeaderComponent = (() => {
   const render = (config = {}) => {
     const {
-      logoPath = '../assets/Logo principal.svg',
+      logoPath = '../assets/Logo-principal.svg',
       searchIconPath = '../assets/lupa-pesquisar',
       containerSelector = '.site-header-container',
     } = config;
