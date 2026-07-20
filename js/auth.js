@@ -436,18 +436,29 @@
         return;
       }
 
-      const storedUser = await resolveUserByEmail(email);
+      const users = getUsers();
+      let storedUser = await resolveUserByEmail(email);
 
       if (!storedUser) {
         const displayName = payload.name || 'Leitor Voraz';
         const emailHash = await deriveEmailHash(email);
-        users[emailHash] = new User(emailHash, null, '', '', displayName, '');
+
+        storedUser = new User(emailHash, null, '', '', displayName, '');
+        users[emailHash] = storedUser;
+
         saveUsers(users);
       }
 
       const token = crypto.randomUUID();
       const expiresAt = Date.now() + SESSION_DURATION_MS;
-      saveSession(token, storedUser.emailHash, storedUser.fullname, expiresAt);
+
+      saveSession(
+        token,
+        storedUser.emailHash,
+        storedUser.fullname || 'Leitor Voraz',
+        expiresAt,
+      );
+
       window.location.href = '../pages/perfil.html';
     } catch (err) {
       console.error(err);
