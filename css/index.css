@@ -172,7 +172,7 @@ body {
   background: var(--bg-home);
   border-left: 3px solid var(--color-primary);
   animation: cursor .8s infinite,
-             typing 4s steps(14) infinite;
+    typing 4s steps(14) infinite;
 }
 
 @keyframes cursor {
@@ -182,37 +182,47 @@ body {
 }
 
 @keyframes typing {
-  0%, 10% {
+
+  0%,
+  10% {
     width: calc(100% + 8px);
   }
 
-  45%, 55% {
+  45%,
+  55% {
     width: 0;
   }
 
-  90%, 100% {
+  90%,
+  100% {
     width: calc(100% + 8px);
   }
 }
 
 @keyframes words {
-  0%, 20% {
+
+  0%,
+  20% {
     content: "Desenvolva";
   }
 
-  21%, 40% {
+  21%,
+  40% {
     content: "Crie e Cresça";
   }
 
-  41%, 60% {
+  41%,
+  60% {
     content: "Aprenda junto";
   }
 
-  61%, 80% {
+  61%,
+  80% {
     content: "Compartilhe";
   }
 
-  81%, 100% {
+  81%,
+  100% {
     content: "Escreva";
   }
 }
@@ -326,7 +336,7 @@ body {
   gap: 40px;
   margin: 100px 40px;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .comuni {
@@ -437,7 +447,7 @@ body {
 .postsHome {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 0 40px;
   gap: 20px;
 }
@@ -668,8 +678,13 @@ body {
   color: var(--text-header);
 }
 
-@media (max-width: 1232px) {
-  .postsHome, .comuniHome{
-    justify-content: center;
+@media (max-width: 1000px) {
+  .pena,
+  .penaDois {
+    display: none;
+  }
+
+  .home-container {
+    margin: 0 40px;
   }
 }
