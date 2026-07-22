@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="../css/global.css">
 </head>
 
-<body>
+<body class="dark-theme">
     <div class="site-header-container"></div>
 
     <main class="opened__forum">
@@ -37,6 +38,26 @@
                     </details>
                 </div>
             </nav>
+            
+    <!-- css do perfil.css -->
+     <div class="edit-profile-section">
+    <button type="button" class="btn-update" id="create-new-post-btn">
+        <span aria-hidden="true"></span> Criar Publicação
+    </button>
+    </div>        
+    
+
+<dialog id="modal-criar-post" class="create-post-modal">
+  <form method="dialog">
+    <h2>➕ Criar Novo Post</h2>
+    <label for="input-novo-post">Publicação</label>
+    <textarea id="input-novo-post" placeholder="O que você quer publicar?" rows="4"></textarea>
+    <div class="modal-actions">
+      <button type="submit" id="btn-submit-post">Publicar</button>
+      <button type="submit" value="cancel" formnovalidate>Cancelar</button>
+    </div>
+  </form>
+</dialog>
 
             <article class="post-card" data-post-id="post-1">
                 <header class="post-header">
@@ -48,6 +69,7 @@
                     <button class="btn-more" aria-label="Mais opções deste post" aria-haspopup="menu">•••</button>
 
                     <nav class="context-menu" hidden aria-label="Menu do post">
+                        <button data-action="edit">✏️ Editar</button>
                         <button>💾 Salvar publicação</button>
                         <button>⚠️ Denunciar</button>
                         <button>👤 Bloquear usuário</button>
@@ -90,6 +112,7 @@
                     <button class="btn-more" aria-label="Mais opções deste post" aria-haspopup="menu">•••</button>
 
                     <nav class="context-menu" hidden aria-label="Menu do post">
+                        <button data-action="edit">✏️ Editar</button>
                         <button>💾 Salvar publicação</button>
                         <button>⚠️ Denunciar</button>
                         <button>👤 Bloquear usuário</button>
@@ -130,6 +153,20 @@
         </div>
       </div>
     </div>
+
+    <div id="error-alert-container" role="alert" aria-live="assertive" hidden></div>
+
+    <dialog id="delete-confirmation-modal" class="delete-confirmation-modal" role="dialog" aria-labelledby="delete-modal-title">
+      <form method="dialog">
+        <h2 id="delete-modal-title">Excluir comentário</h2>
+        <p>Tem certeza que deseja excluir este comentário?</p>
+        <blockquote class="delete-preview"></blockquote>
+        <div class="modal-actions">
+          <button type="submit" value="confirm">Excluir</button>
+          <button type="submit" value="cancel" formnovalidate>Cancelar</button>
+        </div>
+      </form>
+    </dialog>
 
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>

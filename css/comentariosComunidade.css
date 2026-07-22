@@ -19,7 +19,7 @@ main.opened__forum {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--text-header);
   text-align: center;
   min-width: 600px;
   padding: 20px;
@@ -56,10 +56,10 @@ main.opened__forum {
 }
 
 .feed article {
-  background: white;
+  background: var(--surface-4);
   border-radius: 20px;
   padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -75,7 +75,7 @@ article header {
 article header .user-avatar {
   width: 40px;
   height: 40px;
-  background-color: #ddd;
+  background-color: var(--surface-2);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -86,26 +86,26 @@ article header .user-info {
 
 article header h2 {
   font-size: 0.9rem;
-  color: #5c3a21;
+  color: var(--text-primary);
 }
 
 article header small {
   font-weight: normal;
-  color: #a08060;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
 article header time {
   display: block;
   font-size: 0.7rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 article header .btn-more {
   background: none;
   border: none;
   font-size: 1.2rem;
-  color: #666;
+  color: var(--text-secondary);
   cursor: pointer;
   margin-left: auto;
 }
@@ -114,9 +114,9 @@ article header nav {
   position: absolute;
   right: -10px;
   top: 35px;
-  background: #e3d3c3;
-  border: 1px solid #bfa895;
-  border-radius: 8px;
+  background: var(--surface-4);
+  border: 1px solid var(--border-color-two);
+  border-radius: var(--radius-sm);
   display: none;
   z-index: 5;
   overflow: hidden;
@@ -136,25 +136,25 @@ article header nav button {
   padding: 8px 12px;
   font-size: 0.75rem;
   text-align: left;
-  color: #4a2e1b;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 article header nav button.active {
-  background-color: #5c3a21;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--bg-main);
 }
 
 article .post-body {
-  background-color: #fcfbfa;
+  background-color: var(--surface-3);
   min-height: 150px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 15px;
 }
 
 article .post-body p {
   font-size: 0.95rem;
-  color: #333333;
+  color: var(--text-primary);
   line-height: 1.5;
   word-break: break-word;
 }
@@ -166,20 +166,20 @@ article footer {
 
 article footer button {
   flex: 1;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  background: var(--surface-4);
+  border: 1px solid var(--border-color-two);
+  border-radius: var(--radius-md);
   padding: 8px;
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 article footer button.liked {
-  background-color: #5c3a21;
+  background-color: var(--color-primary);
 }
 
 article footer button.liked .like-icon {
@@ -190,7 +190,7 @@ article footer button.liked .like-icon {
   display: none;
   margin-top: 15px;
   padding: 10px 5px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color-two);
 }
 
 .comments-section.show {
@@ -206,22 +206,22 @@ article footer button.liked .like-icon {
 .comment-form input {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
+  border: 1px solid var(--border-color-two);
+  border-radius: var(--radius-pill);
   font-size: 0.85rem;
   outline: none;
 }
 
 .comment-form input:focus {
-  border-color: #5c3a21;
+  border-color: var(--color-primary);
 }
 
 .comment-form button {
-  background-color: #5c3a21;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--bg-main);
   border: none;
   padding: 8px 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -266,7 +266,7 @@ article footer button.liked .like-icon {
 .avatar-initials {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--bg-main);
   background-color: var(--color-primary);
   border-radius: var(--radius-pill);
 }
@@ -315,25 +315,25 @@ details summary {
 }
 
 details summary {
-  background: white;
-  border: 1px solid #ccc;
+  background: var(--surface-4);
+  border: 1px solid var(--border-color-two);
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   cursor: pointer;
 }
 
 details summary:focus-visible {
-  outline: 2px solid #5c3a21;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 details > div {
   position: absolute;
-  background: white;
-  border: 1px solid #ccc;
+  background: var(--surface-4);
+  border: 1px solid var(--border-color-two);
   border-top: none;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   min-width: 80px;
   z-index: 10;
   display: none;
@@ -359,7 +359,7 @@ details[open] summary .arrow-down {
 }
 
 details > div a {
-  color: black;
+  color: var(--text-primary);
   padding: 6px 12px;
   text-decoration: none;
   display: block;
@@ -367,11 +367,10 @@ details > div a {
 }
 
 details > div a.active {
-  background-color: #5c3a21;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--bg-main);
 }
 
-/* ── Auth Modal ─────────────────────────────── */
 .auth-modal {
   position: fixed;
   inset: 0;
@@ -434,7 +433,9 @@ details > div a.active {
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
   font-weight: 600;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .auth-modal-link:hover {
@@ -448,11 +449,304 @@ details > div a.active {
   cursor: pointer;
   padding: 8px;
   border-radius: var(--radius-sm);
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .auth-modal-close-btn:hover {
   background-color: var(--surface-2);
   color: var(--text-primary);
   transform: scale(1.1);
+}
+
+.create-post-modal {
+  border: none;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  background: var(--surface-4);
+  max-width: 90vw;
+  width: 400px;
+}
+
+.create-post-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.create-post-modal textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid var(--border-color-two);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.edit-form {
+  background-color: var(--surface-3);
+  min-height: 150px;
+  border-radius: var(--radius-md);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.edit-textarea:focus {
+  box-shadow: 0 0 0 3px var(--color-primary-hover);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-save-edit,
+.btn-cancel-edit {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-save-edit {
+  background-color: var(--color-primary);
+  color: var(--bg-main);
+}
+
+.btn-save-edit:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.03);
+}
+
+.btn-cancel-edit {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color-two);
+}
+
+.btn-cancel-edit:hover {
+  background-color: var(--surface-2);
+  transform: scale(1.03);
+}
+
+.btn-edit-comment {
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color-two);
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-edit-comment:hover {
+  background-color: var(--surface-2);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: scale(1.03);
+}
+
+.btn-delete-comment {
+  margin-left: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-delete-comment:hover {
+  background-color: var(--color-error);
+  color: var(--bg-main);
+  border-color: var(--color-error);
+  filter: brightness(0.85);
+  transform: scale(1.03);
+}
+
+.edit-comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.edit-comment-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.edit-comment-textarea:focus {
+  box-shadow: 0 0 0 3px var(--color-primary-hover);
+}
+
+.edit-comment-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-save-edit-comment,
+.btn-cancel-edit-comment {
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.btn-save-edit-comment {
+  background-color: var(--color-primary);
+  color: var(--bg-main);
+}
+
+.btn-save-edit-comment:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.03);
+}
+
+.btn-cancel-edit-comment {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color-two);
+}
+
+.btn-cancel-edit-comment:hover {
+  background-color: var(--surface-2);
+  transform: scale(1.03);
+}
+
+.delete-confirmation-modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  background: var(--surface-4);
+  color: var(--text-primary);
+  max-width: min(420px, 90vw);
+  width: 100%;
+  display: hidden;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.delete-confirmation-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.delete-confirmation-modal h2 {
+  font-size: 1.1rem;
+  margin-block-start: 0;
+  color: var(--text-primary);
+}
+
+.delete-confirmation-modal p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-block: 0;
+}
+
+.delete-preview {
+  background-color: var(--surface-2);
+  border-left: 3px solid var(--color-error);
+  padding: 12px;
+  margin-block: 16px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+}
+
+.delete-confirmation-modal .modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-block-start: 16px;
+}
+
+.delete-confirmation-modal button[type='submit'] {
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.delete-confirmation-modal button[type='submit'][value='confirm'] {
+  background-color: var(--color-error);
+  color: var(--bg-main);
+}
+
+.delete-confirmation-modal button[type='submit'][value='confirm']:hover {
+  background-color: var(--color-error);
+  filter: brightness(0.85);
+  transform: scale(1.03);
+}
+
+.delete-confirmation-modal .modal-actions button:not([value='confirm']) {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color-two);
+}
+
+.delete-confirmation-modal .modal-actions button:not([value='confirm']):hover {
+  background-color: var(--surface-2);
+  transform: scale(1.03);
 }
