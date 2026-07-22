@@ -203,6 +203,11 @@ article footer button.liked .like-icon {
   margin-bottom: 12px;
 }
 
+.dropdown-btn {
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
 .comment-form input {
   flex: 1;
   background: var(--bg-main);
