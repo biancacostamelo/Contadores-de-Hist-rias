@@ -89,11 +89,14 @@ const HeaderComponent = (() => {
           </div>
           
           <div class="menu-opcoes" id="menu-opcoes">
-            <p id="btnTheme">Mudar tema</p>
-            <p>Configurações</p>
+          <div>
+            <a href="/index.html">Início</a>
+            <a href="/pages/topicos.html">Biblioteca</a>
+            <a href="/pages/comunidade.html">Comunidades</a>
           </div>
-
-         
+          <p id="btnTheme">Mudar tema</p>
+          <p>Configurações</p>
+          </div>
         </div>
       </section>
     </header>
