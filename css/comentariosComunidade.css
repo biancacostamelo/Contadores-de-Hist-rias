@@ -205,6 +205,8 @@ article footer button.liked .like-icon {
 
 .comment-form input {
   flex: 1;
+  background: var(--bg-main);
+  color: var(--text-primary);
   padding: 8px 12px;
   border: 1px solid var(--border-color-two);
   border-radius: var(--radius-pill);
@@ -466,12 +468,27 @@ details > div a.active {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   background: var(--surface-4);
-  max-width: 90vw;
-  width: 400px;
+  color: var(--text-primary);
+  max-width: min(420px, 90vw);
+  width: 100%;
+  margin: auto;
 }
 
 .create-post-modal::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.create-post-modal h2 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-block-start: 0;
+}
+
+.create-post-modal label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .create-post-modal textarea {
@@ -483,9 +500,15 @@ details > div a.active {
   font-family: inherit;
   margin-bottom: 1rem;
   box-sizing: border-box;
+  background-color: var(--surface-3);
+  color: var(--text-primary);
 }
 
-.modal-actions {
+.create-post-modal textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.create-post-modal .modal-actions {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
@@ -508,12 +531,17 @@ details > div a.active {
   border: 2px solid var(--color-primary);
   border-radius: var(--radius-sm);
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   line-height: 1.5;
   color: var(--text-primary);
+  background-color: var(--bg-main);
   resize: vertical;
   box-sizing: border-box;
   outline: none;
+}
+
+.edit-textarea::placeholder {
+  color: var(--text-secondary);
 }
 
 .edit-textarea:focus {
