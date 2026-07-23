@@ -21,8 +21,8 @@ main.opened__forum {
   align-items: center;
   color: var(--text-header);
   text-align: center;
-  min-width: 600px;
   padding: 20px;
+  margin-top: 90px;
 }
 
 .banner-content {
@@ -51,7 +51,6 @@ main.opened__forum {
   flex-direction: column;
   gap: 30px;
   padding: 0 15px;
-  min-width: 600px;
   width: 90%;
 }
 
