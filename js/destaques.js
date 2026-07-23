@@ -1,55 +1,82 @@
 (() => {
   'use strict';
 
-  const COVER_URL = '../assets/img/capaPadraoHistorias.png';
-
-  const DOM = {
-    grid: document.getElementById('destaquesGrid'),
+  const CONFIG = {
+    USERS_KEY: 'writersCommunity_users',
+    COVER_FALLBACK: '../assets/img/capaPadraoHistorias.png',
   };
 
-  function renderDestaqueCards(stories) {
-    if (!DOM.grid) return;
+  const state = { stories: [] };
 
-    if (stories.length === 0) {
-      DOM.grid.innerHTML =
-        '<p style="grid-column:1/-1;text-align:center;color:var(--color-text-muted);">Nenhuma história em destaque no momento.</p>';
+  function createCard(story) {
+    const card = document.createElement('a');
+    card.className = 'cardDestaque';
+    card.href = `../pages/historia.html?story=${story.index}`;
+    card.setAttribute('role', 'article');
+    card.setAttribute('aria-labelledby', `titulo-${story.id}`);
+    card.style.backgroundImage = `url('${story.cover || CONFIG.COVER_FALLBACK}')`;
+    console.log(story);
+    card.innerHTML = `
+      <div class="contentCard">
+        <div>
+          <h3 id="titulo-${story.id}">${story.title || 'Sem título'}</h3>
+          <p>${story.type || 'Conto'}</p>
+        </div>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function renderStories(container) {
+    if (!container) return;
+
+    if (!state.stories.length) {
+      container.innerHTML =
+        '<p class="empty-message">Nenhuma história em destaque no momento.</p>';
       return;
     }
 
-    DOM.grid.innerHTML = stories
-      .map(
-        (story, index) =>
-          `<a class="cardDestaque" href="../pages/historia.html?story=${index}" style="background-image:url('${COVER_URL}');">
-            <div class="contentCard">
-              <div>
-                <h3>${story.title || 'Sem título'}</h3>
-                <p>${story.type || 'Conto'}</p>
-              </div>
-            </div>
-          </a>`,
-      )
-      .join('');
+    container.replaceChildren(...state.stories.map(createCard));
   }
 
-  function loadDestaqueStories() {
-    const isLoggedIn = window.auth?.isLoggedIn();
-    let stories;
+  function loadStories() {
+    try {
+      const users = JSON.parse(localStorage.getItem(CONFIG.USERS_KEY)) || {};
 
-    if (isLoggedIn) {
-      const session = window.auth.getSession();
-      const allUsers = typeof window.auth.getUsers === 'function' ? window.auth.getUsers() : {};
-      const currentUser = session && allUsers[session.email];
-      stories = currentUser?.stories || [];
-    } else {
-      const allUsers = typeof window.auth.getUsers === 'function' ? window.auth.getUsers() : {};
-      const allStories = Object.values(allUsers)
-        .flatMap((user) => user.stories || [])
-        .slice(0, 9);
-      stories = allStories.length > 0 ? allStories : [];
+      const flatStories = Object.values(users)
+        .flatMap((u) => u.stories || [])
+        .slice(0, 50);
+
+      state.stories = Object.values(users)
+        .flatMap((user) => {
+          const stories = user?.stories || [];
+          return stories.map((story, idx) => ({
+            ...story,
+            id: `${user.emailHash}-${idx}`,
+            index: flatStories.indexOf(story),
+          }));
+        })
+        .sort(
+          (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+        );
+    } catch (e) {
+      console.warn('[Destaque] Erro ao carregar histórias:', e);
+      state.stories = [];
     }
-
-    renderDestaqueCards(stories);
   }
 
-  loadDestaqueStories();
+  function init(container) {
+    loadStories();
+    renderStories(container || document.getElementById('destaquesGrid'));
+  }
+
+  window.DestaqueList = {
+    loadDestaqueStories(container) {
+      if (container) renderStories(container);
+      else init();
+    },
+  };
+
+  document.addEventListener('DOMContentLoaded', () => init());
 })();

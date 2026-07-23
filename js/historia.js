@@ -1,67 +1,30 @@
 (() => {
   'use strict';
 
-  const CONFIG = {
-    STORAGE_KEY: 'historia_feedbacks',
-    FORMS: [
-      { panelId: 'painel-elogio', tipo: 'elogio' },
-      { panelId: 'painel-comentarios', tipo: 'comentario' },
-    ],
-    DOM_IDS: {
-      formContainer: 'form-container',
-      loginMessage: 'login-required-message',
-      feedbackList: '.feedback-list',
-      recebidosTitulo: '.recebidos-titulo',
-      btnToggleSidebar: 'btn-toggle-sidebar',
-      historiaSidebar: '.historia-sidebar',
-      tituloHistoria: 'titulo-historia',
-      categoriaLabel: 'historiaCategoria',
-      corpoContainer: 'historiaCorpoContainer',
-    },
+  const STORAGE_KEY = 'historia_feedbacks';
+
+  const $ = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+
+  const dom = {
+    formContainer: $('#form-container'),
+    loginMessage: $('#login-required-message'),
+    feedbackList: $('.feedback-list'),
+    recebidosTitulo: $('.recebidos-titulo'),
+    btnToggleSidebar: $('#btn-toggle-sidebar'),
+    historiaSidebar: $('.historia-sidebar'),
+    tituloHistoria: $('#titulo-historia'),
+    categoriaLabel: $('#historiaCategoria'),
+    corpoContainer: $('#historiaCorpoContainer'),
   };
 
-  const $ = (selector, root = document) =>
-    typeof selector === 'string' &&
-    !selector.includes('.') &&
-    !selector.includes(' ')
-      ? root.getElementById(selector)
-      : root.querySelector(selector);
-
-  const $$ = (selector, root = document) => [
-    ...root.querySelectorAll(selector),
-  ];
-
-  const dom = {};
-  Object.entries(CONFIG.DOM_IDS).forEach(([key, selector]) => {
-    dom[key] = $(selector);
-  });
-
-  class Feedback {
-    constructor(tipo, texto, autor) {
-      this.id = `fb-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-      this.tipo = tipo;
-      this.texto = texto.trim();
-      this.autor = autor.trim() || 'Anônimo';
-      this.data = new Date().toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    }
-  }
-
-  const AuthManager = {
+  const Auth = {
     isLoggedIn: () => !!window.auth?.isLoggedIn(),
     getUser: () => {
-      if (!AuthManager.isLoggedIn()) return null;
+      if (!Auth.isLoggedIn()) return null;
       const session = window.auth.getSession();
-      const allUsers =
-        typeof window.auth.getUsers === 'function'
-          ? window.auth.getUsers()
-          : {};
-      return session ? allUsers[session.email] : null;
+      const users = window.auth.getUsers?.() || {};
+      return session ? users[session.email] : null;
     },
     getUserName: () => window.auth?.getSession()?.fullname || 'Anônimo',
   };
@@ -70,41 +33,26 @@
     state: { stories: [], currentIndex: -1 },
 
     load() {
-      const user = AuthManager.getUser();
+      const users = window.auth?.getUsers?.() || {};
 
-      if (user) {
-        this.state.stories = user?.stories || [];
-      } else {
-        // Logged-out users see all community stories
-        const allUsers = typeof window.auth.getUsers === 'function' ? window.auth.getUsers() : {};
-        const allStories = Object.values(allUsers)
-          .flatMap((u) => u.stories || [])
-          .slice(0, 50);
-        this.state.stories = allStories;
-      }
+      // Always use the global flattened array so cross-user story links work.
+      this.state.stories = Object.values(users)
+        .flatMap((u) => u.stories || [])
+        .slice(0, 50);
 
-      const urlIndex = this._getUrlParamIndex();
-
-      if (this.state.stories.length === 0) {
-        this._renderEmpty();
-      } else if (
-        urlIndex >= 0 &&
-        urlIndex < this.state.stories.length
-      ) {
-        this.select(urlIndex);
-      } else {
-        // No valid URL param — show the first story by default
-        this.select(0);
-      }
-    },
-
-    _getUrlParamIndex() {
       const params = new URLSearchParams(window.location.search);
-      const index = parseInt(params.get('story'), 10);
-      return isNaN(index) ? -1 : index;
+      const urlIndex = parseInt(params.get('story'), 10);
+      const isValidIndex =
+        urlIndex >= 0 && urlIndex < this.state.stories.length;
+
+      if (!this.state.stories.length) {
+        this.renderEmpty();
+      } else {
+        this.select(isValidIndex ? urlIndex : 0);
+      }
     },
 
-    _renderEmpty() {
+    renderEmpty() {
       dom.corpoContainer.innerHTML =
         '<p class="empty-message">Nenhuma história encontrada. Crie sua história na página de perfil.</p>';
       if (dom.tituloHistoria) dom.tituloHistoria.hidden = true;
@@ -112,11 +60,10 @@
     },
 
     select(index) {
-      if (index < 0 || index >= this.state.stories.length) return;
-
       const story = this.state.stories[index];
-      this.state.currentIndex = index;
+      if (!story) return;
 
+      this.state.currentIndex = index;
       if (dom.categoriaLabel)
         dom.categoriaLabel.textContent = (story.type || 'Conto').toUpperCase();
       if (dom.tituloHistoria) {
@@ -124,108 +71,109 @@
         dom.tituloHistoria.textContent = story.title || 'Sem título';
       }
 
-      this._renderContent(story.content);
+      this.renderContent(story.content);
     },
 
-    _renderContent(rawHtml) {
-      const cleanContent = this._sanitize(rawHtml);
-      dom.corpoContainer.innerHTML = '';
+    renderContent(rawHtml) {
+      const cleanHtml = (rawHtml || '')
+        .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
+        .replace(/\bon\w+\s*=/g, '');
 
-      if (!cleanContent) {
+      dom.corpoContainer.innerHTML = '';
+      if (!cleanHtml) {
         dom.corpoContainer.innerHTML =
           '<p class="empty-message">Esta história não possui conteúdo ainda.</p>';
         return;
       }
 
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = cleanContent;
+      const temp = document.createElement('div');
+      temp.innerHTML = cleanHtml;
+      const children = [...temp.children];
 
-      const children = [...tempDiv.children];
-      if (children.length > 0) {
-        children.forEach((child) => {
-          const section = document.createElement('section');
-          section.className = 'paragrafo-secao';
-          section.append(...child.childNodes);
-          dom.corpoContainer.appendChild(section);
-        });
-      } else {
+      const nodesToAppend = children.length ? children : [temp];
+      nodesToAppend.forEach((node) => {
         const section = document.createElement('section');
         section.className = 'paragrafo-secao';
-        section.innerHTML = cleanContent;
+        if (children.length) section.append(...node.childNodes);
+        else section.innerHTML = cleanHtml;
         dom.corpoContainer.appendChild(section);
-      }
-    },
-
-    _sanitize(html) {
-      if (!html || typeof html !== 'string') return '';
-      return html
-        .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
-        .replace(/\bon\w+\s*=/g, '');
+      });
     },
   };
 
   const FeedbackManager = {
-    getAll() {
+    getAll: () => {
       try {
-        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY)) || [];
-      } catch (e) {
-        console.warn('[Feedback] Erro ao carregar do localStorage:', e);
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
         return [];
       }
     },
 
-    add(fb) {
+    add(tipo, texto, autor) {
       const list = this.getAll();
-      list.push(fb);
-      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(list));
-      this.renderItem(fb, true);
-      this._updateCounter(list.length);
+      const item = {
+        id: `fb-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        tipo,
+        texto: texto.trim(),
+        autor: autor.trim() || 'Anônimo',
+        data: new Date().toLocaleString('pt-BR', {
+          dateStyle: 'short',
+          timeStyle: 'short',
+        }),
+      };
+
+      list.push(item);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      this.renderItem(item, true);
+      this.updateCounter(list.length);
     },
 
     renderItem(dados, prepend = false) {
       if (!dom.feedbackList) return;
 
-      const item = document.createElement('li');
-      item.className = 'feedback-item';
-      item.dataset.id = dados.id;
-
       const isElogio = dados.tipo === 'elogio';
-      const badgeClass = isElogio ? 'elogio-badge' : 'melhoria-badge';
-      const badgeText = isElogio ? 'ELOGIO' : 'COMENTÁRIO';
+      const li = document.createElement('li');
+      li.className = 'feedback-item';
+      li.dataset.id = dados.id;
 
-      item.innerHTML = `
-        <span class="feedback-badge ${badgeClass}">${badgeText}</span>
+      li.innerHTML = `
+        <span class="feedback-badge ${isElogio ? 'elogio-badge' : 'melhoria-badge'}">
+          ${isElogio ? 'ELOGIO' : 'COMENTÁRIO'}
+        </span>
         <p class="feedback-texto"></p>
         <cite class="feedback-autor"></cite>
       `;
 
-      item.querySelector('.feedback-texto').textContent = dados.texto;
-      item.querySelector('.feedback-autor').textContent = `— ${dados.autor}`;
+      li.querySelector('.feedback-texto').textContent = dados.texto;
+      li.querySelector('.feedback-autor').textContent = `— ${dados.autor}`;
 
-      prepend
-        ? dom.feedbackList.prepend(item)
-        : dom.feedbackList.appendChild(item);
+      dom.feedbackList[prepend ? 'prepend' : 'appendChild'](li);
     },
 
     loadAll() {
       if (!dom.feedbackList) return;
       const list = this.getAll();
       dom.feedbackList.innerHTML = '';
-      list.forEach((dados) => this.renderItem(dados));
-      this._updateCounter(list.length);
+      list.forEach((fb) => this.renderItem(fb));
+      this.updateCounter(list.length);
     },
 
-    _updateCounter(count) {
-      if (dom.recebidosTitulo) {
+    updateCounter(count) {
+      if (dom.recebidosTitulo)
         dom.recebidosTitulo.textContent = `Feedbacks Recebidos (${count})`;
-      }
     },
   };
 
-  const FormHandler = {
-    setup() {
-      CONFIG.FORMS.forEach(({ panelId, tipo }) => {
-        const panel = $(panelId);
+  const UI = {
+    setupForms() {
+      const panels = [
+        { id: '#painel-elogio', tipo: 'elogio' },
+        { id: '#painel-comentarios', tipo: 'comentario' },
+      ];
+
+      panels.forEach(({ id, tipo }) => {
+        const panel = $(id);
         if (!panel) return;
 
         const textarea = $(
@@ -253,51 +201,41 @@
             return;
           }
 
-          const autor = autorInput?.value || AuthManager.getUserName();
-          const fb = new Feedback(tipo, text, autor);
-
-          FeedbackManager.add(fb);
-
+          FeedbackManager.add(
+            tipo,
+            text,
+            autorInput?.value || Auth.getUserName(),
+          );
           textarea.value = '';
-          this._resetAuthorFields();
-          this._showSuccess(btnEnviar);
+          this.resetAuthorFields();
+
+          const origText = btnEnviar.textContent;
+          btnEnviar.textContent = 'Enviado ✓';
+          btnEnviar.style.backgroundColor = '#388e3c';
+          setTimeout(() => {
+            btnEnviar.textContent = origText;
+            btnEnviar.style.backgroundColor = '';
+          }, 2000);
         });
       });
     },
 
-    _resetAuthorFields() {
-      const name = AuthManager.getUserName();
-      CONFIG.FORMS.forEach(({ panelId }) => {
-        const field = $('.feedback-autor-input', $(panelId));
-        if (field) field.value = name;
-      });
+    resetAuthorFields() {
+      const name = Auth.getUserName();
+      $$('.feedback-autor-input').forEach((field) => (field.value = name));
     },
 
-    _showSuccess(btn) {
-      const originalText = btn.textContent;
-      btn.textContent = 'Enviado ✓';
-      btn.style.backgroundColor = '#388e3c';
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.backgroundColor = '';
-      }, 2000);
-    },
-  };
-
-  const TabManager = {
-    init() {
+    setupTabs() {
       document.addEventListener('click', (e) => {
         const tabBtn = e.target.closest('.tab-btn[role]');
         if (!tabBtn) return;
-
-        const targetPanelId = tabBtn.getAttribute('aria-controls');
 
         $$('.feedback-tabs .tab-btn').forEach((btn) => {
           const isSelected = btn === tabBtn;
           const panel = $(btn.getAttribute('aria-controls'));
 
           btn.classList.toggle('active', isSelected);
-          btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+          btn.setAttribute('aria-selected', isSelected);
 
           if (panel) {
             panel.hidden = !isSelected;
@@ -306,10 +244,8 @@
         });
       });
     },
-  };
 
-  const SidebarToggle = {
-    init() {
+    setupSidebar() {
       if (!dom.btnToggleSidebar || !dom.historiaSidebar) return;
       dom.btnToggleSidebar.addEventListener('click', () => {
         const isHidden = dom.historiaSidebar.classList.toggle('is-hidden');
@@ -321,33 +257,21 @@
     },
   };
 
-  const AuthIntegration = {
-    handleState() {
-      const isLoggedIn = AuthManager.isLoggedIn();
+  document.addEventListener('DOMContentLoaded', () => {
+    UI.setupTabs();
+    UI.setupSidebar();
 
-      dom.formContainer?.classList.toggle('form-hidden', !isLoggedIn);
-      dom.loginMessage?.classList.toggle('login-required-hidden', isLoggedIn);
+    const isLoggedIn = Auth.isLoggedIn();
+    dom.formContainer?.classList.toggle('form-hidden', !isLoggedIn);
+    dom.loginMessage?.classList.toggle('login-required-hidden', isLoggedIn);
 
-      return isLoggedIn;
-    },
-  };
-
-  function init() {
-    TabManager.init();
-    SidebarToggle.init();
-
-    const isLoggedIn = AuthIntegration.handleState();
     if (isLoggedIn) {
-      FormHandler._resetAuthorFields();
-      FormHandler.setup();
-      if (typeof window.HistryCard?.render === 'function') {
-        window.HistryCard.render();
-      }
+      UI.resetAuthorFields();
+      UI.setupForms();
+      window.HistryCard?.render?.();
     }
 
     StoryManager.load();
     FeedbackManager.loadAll();
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
+  });
 })();
