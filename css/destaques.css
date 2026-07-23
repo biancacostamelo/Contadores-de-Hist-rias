@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
-/*Menu destaques*/
-
 .destaques {
   margin-top: 100px;
   display: flex;
@@ -15,30 +13,129 @@
   max-width: 1440px;
   margin: 0 auto;
   width: 100%;
-  height: 400px;
   display: grid;
   align-content: center;
   text-align: center;
+  padding-block: 2rem;
 }
 
 .titulo-destaques {
   font-family: 'Merriweather', serif;
-  font-size: 4rem;
+  font-size: clamp(2rem, 4vw, 4rem);
   font-weight: bold;
   color: var(--text-primary);
-}
-
-.subtitulo-destaque {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 2rem;
-  font-weight: 600;
- color: var(--text-secondary);
+  margin-block-start: 0;
 }
 
 .txtdestaque {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1rem;
   font-weight: 400;
- color: var(--text-secondary);
+  color: var(--text-secondary);
+  margin-block-end: 0;
 }
 
+.destaques-lista {
+  padding-inline: 5%;
+  padding-block: 2rem;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+.destaques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.cardDestaque {
+  background-color: var(--surface-1);
+  border-radius: 16px;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.13);
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background-size 2s ease-in-out,
+    background-color 2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardDestaque:hover {
+  background-color: #555555;
+  background-size: 115%;
+  transition:
+    background-size 3s ease-in-out,
+    background-color 3s ease-in-out;
+}
+
+.cardDestaque::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    transparent 100%
+  );
+  z-index: 1;
+}
+
+.cardDestaque .contentCard {
+  width: 100%;
+  color: #ffffff;
+  z-index: 2;
+  min-width: 0;
+}
+
+.cardDestaque .contentCard div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  overflow: hidden;
+  align-items: center;
+}
+
+.cardDestaque .contentCard h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardDestaque .contentCard p {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .destaques-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .destaques-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

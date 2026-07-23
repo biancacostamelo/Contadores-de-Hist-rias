@@ -20,6 +20,9 @@
     </div>
 
     <main class="page-historia">
+
+
+      
         <header class="historia-header">
             <a href="./galeria.html" class="btn-voltar" aria-label="Voltar para a comunidade">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -42,48 +45,10 @@
 
         <div class="historia-layout">
             <article class="historia-content" aria-labelledby="titulo-historia">
-                <span class="categoria-label">FANTASIA</span>
-                <h1 id="titulo-historia" class="historia-titulo">O Último Guardião da Floresta</h1>
-                <p class="historia-autor">por Mariana Costa</p>
+                <span id="historiaCategoria" class="categoria-label historiaCategoria">—</span>
+                <h1 id="titulo-historia" class="historia-titulo" hidden></h1>
 
-                <div class="historia-corpo">
-                    <section class="paragrafo-secao">
-                        <p>Na era em que as árvores falavam e os rios cantavam canções antigas, existia uma guardiã chamada Elara. Ela não carregava espada nem escudo — apenas um livro de folhas vivas, onde cada página continha a memória de uma espécie extinta.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>Quando o Grande Silêncio começou a se espalhar pelo reino, apagando os sons da natureza, foi Elara quem percebeu que as últimas palavras estavam escritas em suas páginas. Ela precisava encontrar o Último Guardião — um ser lendário que vivia no coração da Floresta dos Sussurros — para salvar o que restava do mundo.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>A jornada não foi fácil. Elara atravessou vales onde o vento esqueceu como sussurrar e montanhas onde as rochas haviam perdido a voz. Em cada lugar, encontrava vestígios de criaturas que outrora habitaram aquele reino — pegadas fantasmagóricas, penas que brilhavam por um instante e sumiam, ecos de risos que ninguém mais conseguia ouvir.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>No caminho, encontrou um pequeno ser chamado Luma, uma fada feita de luz fraca que dançava entre as folhas caídas. Luma não falava com palavras — comunicava-se através de cores e sensações. Mostrou a Elara visões do passado: rios cristalinos, florestas imponentes, animais de todos os tamanhos e formas vivendo em harmonia.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>Mais adiante, uma ponte suspensa sobre um abismo sem fundo. Do outro lado, Elara avistou a Floresta dos Sussurros — mas algo estava errado. As árvores estavam murchas, seus galhos secos apontavam para o céu como mãos pedindo ajuda. O silêncio era absoluto.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>Foi então que Elara encontrou o Último Guardião. Ele não era um ser grandioso nem poderoso — era um velho homem de olhos gentis, sentado ao lado de uma pequena fogueira que mal queimava. Seu nome era Orin, e ele era o último guardião da memória do mundo.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>"A floresta não está morta," disse Orin com voz suave. "Está apenas esperando que alguém se importe o suficiente para lembrar." Ele entregou a Elara uma semente dourada, brilhando com uma luz quente e acolhedora.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>"Plante esta semente no centro do reino," explicou Orin. "E enquanto você contar as histórias de tudo o que existiu, a floresta crescerá novamente — não apenas em árvores e folhas, mas em memórias, emoções e vida."</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>Elara voltou ao reino com Luma ao seu lado. Plantou a semente no centro da praça principal e começou a contar — contou sobre os rios que cantavam, as montanhas que sussurravam segredos antigos, os animais que dançavam sob a lua cheia. Cada palavra era uma semente de memória.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>E assim, lentamente, a floresta voltou. Primeiro brotaram pequenas mudas verdes. Depois, árvores jovens. Em seguida, flores coloridas e musgo macio. E com cada planta que crescia, os sons retornavam — o canto dos pássaros, o sussurro do vento entre as folhas, o riacho cantando sua canção antiga.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>Elara nunca mais parou de contar histórias. E assim que ela fez, novos guardiões surgiram — crianças que plantavam sementes de memórias em seus quintais, anciãos que compartilhavam contos sob as estrelas, viajantes que carregavam histórias de vila em vila.</p>
-                    </section>
-                    <section class="paragrafo-secao">
-                        <p>O Último Guardião, Orin, sorriu ao ver o mundo florescer novamente. E Elara soube, naquele momento, que a verdadeira magia não estava na semente dourada — estava em cada pessoa que se importava o suficiente para lembrar e compartilhar.</p>
-                    </section>
-                </div>
+                <div id="historiaCorpoContainer" class="historia-corpo"></div>
             </article>
 
             <aside class="historia-sidebar" aria-labelledby="titulo-feedbacks">
@@ -132,7 +97,6 @@
     <script src="../js/auth.js"></script>
     <script src="../js/historia.js"></script>
     <script src="../js/script.js"></script>
-
 
     <script>
         const btn = document.getElementById("btn-toggle-sidebar");
