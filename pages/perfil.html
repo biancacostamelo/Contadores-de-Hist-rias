@@ -145,6 +145,42 @@
           <div id="draftsContainer" class="drafts-list"></div>
         </div>
       </dialog>
+
+      <dialog class="edit-modal confirm-modal" id="editModalConfirmDraft" aria-labelledby="confirmDraftTitle">
+        <div class="modal-content">
+          <header class="modal-header">
+            <h2 class="modal-title" id="confirmDraftTitle">Limite de Rascunhos</h2>
+            <button type="button" class="btn-close-modal" id="btnCloseConfirmDraft" aria-label="Fechar">&times;</button>
+          </header>
+
+          <div class="confirm-body">
+            <p class="confirm-message">Você já tem o máximo de rascunhos (3). Deseja sobrescrever o mais antigo?</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-send btn-cancel-confirm" id="btnCancelConfirmDraft">Cancelar</button>
+            <button type="button" class="btn-send btn-override-confirm" id="btnOverrideConfirmDraft">Sim</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="edit-modal confirm-modal" id="editModalConfirmDeleteStory" aria-labelledby="confirmDeleteStoryTitle">
+        <div class="modal-content">
+          <header class="modal-header">
+            <h2 class="modal-title" id="confirmDeleteStoryTitle">Excluir História</h2>
+            <button type="button" class="btn-close-modal" id="btnCloseConfirmDeleteStory" aria-label="Fechar">&times;</button>
+          </header>
+
+          <div class="confirm-body">
+            <p class="confirm-message" id="confirmDeleteStoryMessage">Tem certeza que deseja excluir esta história permanentemente?</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-send btn-cancel-confirm" id="btnCancelConfirmDeleteStory">Cancelar</button>
+            <button type="button" class="btn-send btn-override-confirm" id="btnOverrideConfirmDeleteStory">Excluir</button>
+          </div>
+        </div>
+      </dialog>
     </section>
 
     <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
@@ -284,6 +320,7 @@
   <script src="../js/header.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/perfil.js"></script>
+  <script src="../js/vlibras.js"></script>
 </body>
 
 </html>

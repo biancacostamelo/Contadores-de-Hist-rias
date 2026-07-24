@@ -1,277 +1,354 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'historia_feedbacks';
+  const CONFIG = Object.freeze({
+    STORAGE_KEY: 'historia_feedbacks',
+    DB_NAME: 'writersCommunityImages',
+    STORE_NAME: 'images',
+    MAX_STORIES: 50,
+  });
 
-  const $ = (s, root = document) => root.querySelector(s);
-  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+  const select = (selector, scope = document) =>
+    scope?.querySelector(selector) ?? null;
+  const selectAll = (selector, scope = document) =>
+    Array.from(scope?.querySelectorAll(selector) ?? []);
 
-  const dom = {
-    formContainer: $('#form-container'),
-    loginMessage: $('#login-required-message'),
-    feedbackList: $('.feedback-list'),
-    recebidosTitulo: $('.recebidos-titulo'),
-    btnToggleSidebar: $('#btn-toggle-sidebar'),
-    historiaSidebar: $('.historia-sidebar'),
-    tituloHistoria: $('#titulo-historia'),
-    categoriaLabel: $('#historiaCategoria'),
-    corpoContainer: $('#historiaCorpoContainer'),
+  const DOM = {
+    formContainer: select('#form-container'),
+    loginMessage: select('#login-required-message'),
+    feedbackList: select('.feedback-list'),
+    recebidosTitulo: select('.recebidos-titulo'),
+    btnToggleSidebar: select('#btn-toggle-sidebar'),
+    historiaSidebar: select('.historia-sidebar'),
+    layout: select('.historia-layout'),
+    tituloHistoria: select('#titulo-historia'),
+    categoriaLabel: select('#historiaCategoria'),
+    corpoContainer: select('#historiaCorpoContainer'),
+
+    toggle: (element, className, force) =>
+      element?.classList.toggle(className, force),
+
+    createElement(tag, attributes = {}, children = []) {
+      const element = document.createElement(tag);
+      Object.entries(attributes).forEach(([key, value]) => {
+        if (key in element) element[key] = value;
+        else element.setAttribute(key, value);
+      });
+      children.forEach((child) =>
+        element.append(typeof child === 'string' ? child : child),
+      );
+      return element;
+    },
   };
 
-  const Auth = {
-    isLoggedIn: () => !!window.auth?.isLoggedIn(),
-    getUser: () => {
-      if (!Auth.isLoggedIn()) return null;
-      const session = window.auth.getSession();
-      const users = window.auth.getUsers?.() || {};
-      return session ? users[session.email] : null;
-    },
+  const AuthService = {
+    isLoggedIn: () => Boolean(window.auth?.isLoggedIn()),
     getUserName: () => window.auth?.getSession()?.fullname || 'Anônimo',
   };
 
-  const StoryManager = {
-    state: { stories: [], currentIndex: -1 },
+  const ImageStore = {
+    db: null,
+    async getDB() {
+      if (this.db) return this.db;
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(CONFIG.DB_NAME, 1);
+        request.onsuccess = () => resolve((this.db = request.result));
+        request.onerror = () => reject(request.error);
+      });
+    },
 
-    load() {
-      const users = window.auth?.getUsers?.() || {};
-
-      // Always use the global flattened array so cross-user story links work.
-      this.state.stories = Object.values(users)
-        .flatMap((u) => u.stories || [])
-        .slice(0, 50);
-
-      const params = new URLSearchParams(window.location.search);
-      const urlIndex = parseInt(params.get('story'), 10);
-      const isValidIndex =
-        urlIndex >= 0 && urlIndex < this.state.stories.length;
-
-      if (!this.state.stories.length) {
-        this.renderEmpty();
-      } else {
-        this.select(isValidIndex ? urlIndex : 0);
+    async loadImage(id) {
+      if (!id) return null;
+      try {
+        const db = await this.getDB();
+        return new Promise((resolve) => {
+          const request = db
+            .transaction(CONFIG.STORE_NAME, 'readonly')
+            .objectStore(CONFIG.STORE_NAME)
+            .get(id);
+          request.onsuccess = () => resolve(request.result?.data || null);
+          request.onerror = () => resolve(null);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar imagem:', error);
+        return null;
       }
+    },
+  };
+
+  const StoryManager = {
+    stories: [],
+    currentStoryIndex: 0,
+
+    async load() {
+      const users = window.auth?.getUsers?.() || {};
+      this.stories = Object.values(users)
+        .flatMap((user) => user.stories || [])
+        .slice(0, CONFIG.MAX_STORIES);
+
+      const urlIndex = Number.parseInt(
+        new URLSearchParams(window.location.search).get('story'),
+        10,
+      );
+      const isValidIndex =
+        Number.isInteger(urlIndex) &&
+        urlIndex >= 0 &&
+        urlIndex < this.stories.length;
+
+      if (!this.stories.length) return this.renderEmpty();
+      await this.select(isValidIndex ? urlIndex : 0);
     },
 
     renderEmpty() {
-      dom.corpoContainer.innerHTML =
-        '<p class="empty-message">Nenhuma história encontrada. Crie sua história na página de perfil.</p>';
-      if (dom.tituloHistoria) dom.tituloHistoria.hidden = true;
-      if (dom.categoriaLabel) dom.categoriaLabel.textContent = '—';
+      if (DOM.corpoContainer)
+        DOM.corpoContainer.innerHTML =
+          '<p class="empty-message">Nenhuma história encontrada.</p>';
+      if (DOM.tituloHistoria) DOM.tituloHistoria.hidden = true;
+      if (DOM.categoriaLabel) DOM.categoriaLabel.textContent = '—';
     },
 
-    select(index) {
-      const story = this.state.stories[index];
+    async select(index) {
+      this.currentStoryIndex = index;
+      const story = this.stories[index];
       if (!story) return;
 
-      this.state.currentIndex = index;
-      if (dom.categoriaLabel)
-        dom.categoriaLabel.textContent = (story.type || 'Conto').toUpperCase();
-      if (dom.tituloHistoria) {
-        dom.tituloHistoria.hidden = false;
-        dom.tituloHistoria.textContent = story.title || 'Sem título';
+      if (DOM.categoriaLabel)
+        DOM.categoriaLabel.textContent = (story.type || 'Conto').toUpperCase();
+      if (DOM.tituloHistoria) {
+        DOM.tituloHistoria.hidden = false;
+        DOM.tituloHistoria.textContent = story.title || 'Sem título';
       }
 
-      this.renderContent(story.content);
+      await this.renderContent(story.content);
     },
 
-    renderContent(rawHtml) {
-      const cleanHtml = (rawHtml || '')
-        .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
-        .replace(/\bon\w+\s*=/g, '');
+    async renderContent(rawHtml = '') {
+      if (!DOM.corpoContainer) return;
 
-      dom.corpoContainer.innerHTML = '';
+      const cleanHtml = rawHtml
+        .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
+        .replace(/\bon\w+\s*=/g, '')
+        .trim();
+
       if (!cleanHtml) {
-        dom.corpoContainer.innerHTML =
+        DOM.corpoContainer.innerHTML =
           '<p class="empty-message">Esta história não possui conteúdo ainda.</p>';
         return;
       }
 
-      const temp = document.createElement('div');
-      temp.innerHTML = cleanHtml;
-      const children = [...temp.children];
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = cleanHtml;
+      const children = tempDiv.children.length
+        ? [...tempDiv.children]
+        : [tempDiv];
 
-      const nodesToAppend = children.length ? children : [temp];
-      nodesToAppend.forEach((node) => {
-        const section = document.createElement('section');
-        section.className = 'paragrafo-secao';
-        if (children.length) section.append(...node.childNodes);
-        else section.innerHTML = cleanHtml;
-        dom.corpoContainer.appendChild(section);
+      const fragment = document.createDocumentFragment();
+      children.forEach((element) => {
+        fragment.appendChild(
+          DOM.createElement('section', {
+            className: 'paragrafo-secao',
+            innerHTML: element.innerHTML || cleanHtml,
+          }),
+        );
       });
+
+      DOM.corpoContainer.replaceChildren(fragment);
+      await this.restoreImages(DOM.corpoContainer);
+    },
+
+    async restoreImages(container) {
+      const imageElements = container.querySelectorAll('img[data-image-id]');
+      await Promise.all(
+        [...imageElements].map(async (img) => {
+          const src = await ImageStore.loadImage(img.dataset.imageId);
+          if (src) img.src = src;
+        }),
+      );
     },
   };
 
   const FeedbackManager = {
-    getAll: () => {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch {
-        return [];
-      }
-    },
+    getAll: () => JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]'),
+    getForStory: (storyIndex) =>
+      FeedbackManager.getAll().filter(
+        (feedback) => feedback.storyIndex === storyIndex,
+      ),
 
-    add(tipo, texto, autor) {
-      const list = this.getAll();
-      const item = {
-        id: `fb-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    add(tipo, texto, autor, storyIndex) {
+      const feedbacks = this.getAll();
+      const newFeedback = {
+        id: `fb-${Date.now()}`,
+        storyIndex,
         tipo,
         texto: texto.trim(),
         autor: autor.trim() || 'Anônimo',
-        data: new Date().toLocaleString('pt-BR', {
-          dateStyle: 'short',
-          timeStyle: 'short',
-        }),
       };
 
-      list.push(item);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-      this.renderItem(item, true);
-      this.updateCounter(list.length);
+      feedbacks.push(newFeedback);
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(feedbacks));
+
+      this.renderItem(newFeedback, true);
+      this.updateCounter(this.getForStory(storyIndex).length);
+    },
+
+    createFeedbackNode({ id, tipo, texto, autor }) {
+      const isElogio = tipo === 'elogio';
+      return DOM.createElement(
+        'li',
+        { className: 'feedback-item', 'data-id': id },
+        [
+          DOM.createElement('span', {
+            className: `feedback-badge ${isElogio ? 'elogio-badge' : 'melhoria-badge'}`,
+            textContent: isElogio ? 'ELOGIO' : 'COMENTÁRIO',
+          }),
+          DOM.createElement('p', {
+            className: 'feedback-texto',
+            textContent: texto,
+          }),
+          DOM.createElement('cite', {
+            className: 'feedback-autor',
+            textContent: `— ${autor}`,
+          }),
+        ],
+      );
     },
 
     renderItem(dados, prepend = false) {
-      if (!dom.feedbackList) return;
-
-      const isElogio = dados.tipo === 'elogio';
-      const li = document.createElement('li');
-      li.className = 'feedback-item';
-      li.dataset.id = dados.id;
-
-      li.innerHTML = `
-        <span class="feedback-badge ${isElogio ? 'elogio-badge' : 'melhoria-badge'}">
-          ${isElogio ? 'ELOGIO' : 'COMENTÁRIO'}
-        </span>
-        <p class="feedback-texto"></p>
-        <cite class="feedback-autor"></cite>
-      `;
-
-      li.querySelector('.feedback-texto').textContent = dados.texto;
-      li.querySelector('.feedback-autor').textContent = `— ${dados.autor}`;
-
-      dom.feedbackList[prepend ? 'prepend' : 'appendChild'](li);
+      if (!DOM.feedbackList) return;
+      const node = this.createFeedbackNode(dados);
+      DOM.feedbackList[prepend ? 'prepend' : 'appendChild'](node);
     },
 
     loadAll() {
-      if (!dom.feedbackList) return;
-      const list = this.getAll();
-      dom.feedbackList.innerHTML = '';
-      list.forEach((fb) => this.renderItem(fb));
-      this.updateCounter(list.length);
+      if (!DOM.feedbackList || !StoryManager.stories.length) return;
+      const feedbacks = this.getForStory(StoryManager.currentStoryIndex ?? 0);
+      DOM.feedbackList.replaceChildren(
+        ...feedbacks.map((feedback) => this.createFeedbackNode(feedback)),
+      );
+      this.updateCounter(feedbacks.length);
     },
 
-    updateCounter(count) {
-      if (dom.recebidosTitulo)
-        dom.recebidosTitulo.textContent = `Feedbacks Recebidos (${count})`;
+    updateCounter: (count) => {
+      if (DOM.recebidosTitulo)
+        DOM.recebidosTitulo.textContent = `Feedbacks Recebidos (${count})`;
     },
   };
 
   const UI = {
     setupForms() {
-      const panels = [
-        { id: '#painel-elogio', tipo: 'elogio' },
-        { id: '#painel-comentarios', tipo: 'comentario' },
-      ];
-
-      panels.forEach(({ id, tipo }) => {
-        const panel = $(id);
+      [
+        { selector: '#painel-elogio', tipo: 'elogio' },
+        { selector: '#painel-comentarios', tipo: 'comentario' },
+      ].forEach(({ selector, tipo }) => {
+        const panel = select(selector);
         if (!panel) return;
 
-        const textarea = $(
+        const textarea = select(
           '.feedback-textarea:not(.feedback-autor-input)',
           panel,
         );
-        const errorContainer = $('.feedback-erro', panel);
-        const autorInput = $('.feedback-autor-input', panel);
-        const btnEnviar = $('.btn-enviar-feedback', panel);
+        const btnEnviar = select('.btn-enviar-feedback', panel);
+        const errorMsg = select('.feedback-erro', panel);
+        const autorInput = select('.feedback-autor-input', panel);
 
         if (!textarea || !btnEnviar) return;
 
-        textarea.addEventListener('input', () => {
-          if (errorContainer) errorContainer.textContent = '';
-          textarea.classList.remove('invalid');
-        });
+        textarea.addEventListener(
+          'input',
+          () => errorMsg && (errorMsg.textContent = ''),
+        );
 
         btnEnviar.addEventListener('click', () => {
           const text = textarea.value.trim();
           if (!text) {
-            if (errorContainer)
-              errorContainer.textContent =
+            if (errorMsg)
+              errorMsg.textContent =
                 'Por favor, preencha este campo antes de enviar.';
-            textarea.focus();
-            return;
+            return textarea.focus();
           }
 
           FeedbackManager.add(
             tipo,
             text,
-            autorInput?.value || Auth.getUserName(),
+            autorInput?.value || AuthService.getUserName(),
+            StoryManager.currentStoryIndex ?? 0,
           );
           textarea.value = '';
           this.resetAuthorFields();
-
-          const origText = btnEnviar.textContent;
-          btnEnviar.textContent = 'Enviado ✓';
-          btnEnviar.style.backgroundColor = '#388e3c';
-          setTimeout(() => {
-            btnEnviar.textContent = origText;
-            btnEnviar.style.backgroundColor = '';
-          }, 2000);
+          this.animateButtonSuccess(btnEnviar);
         });
       });
     },
 
+    animateButtonSuccess(button) {
+      const originalText = button.textContent;
+      button.textContent = 'Enviado ✓';
+      button.style.backgroundColor = '#388e3c';
+      setTimeout(
+        () =>
+          Object.assign(button, {
+            textContent: originalText,
+            style: { backgroundColor: '' },
+          }),
+        2000,
+      );
+    },
+
     resetAuthorFields() {
-      const name = Auth.getUserName();
-      $$('.feedback-autor-input').forEach((field) => (field.value = name));
+      selectAll('.feedback-autor-input').forEach(
+        (field) => (field.value = AuthService.getUserName()),
+      );
     },
 
     setupTabs() {
-      document.addEventListener('click', (e) => {
-        const tabBtn = e.target.closest('.tab-btn[role]');
+      document.addEventListener('click', (event) => {
+        const tabBtn = event.target.closest('.tab-btn[role]');
         if (!tabBtn) return;
 
-        $$('.feedback-tabs .tab-btn').forEach((btn) => {
+        selectAll('.feedback-tabs .tab-btn').forEach((btn) => {
           const isSelected = btn === tabBtn;
-          const panel = $(btn.getAttribute('aria-controls'));
+          const panel = select(btn.getAttribute('aria-controls'));
 
-          btn.classList.toggle('active', isSelected);
+          DOM.toggle(btn, 'active', isSelected);
           btn.setAttribute('aria-selected', isSelected);
 
           if (panel) {
             panel.hidden = !isSelected;
-            panel.classList.toggle('active', isSelected);
+            DOM.toggle(panel, 'active', isSelected);
           }
         });
       });
     },
 
     setupSidebar() {
-      if (!dom.btnToggleSidebar || !dom.historiaSidebar) return;
-      dom.btnToggleSidebar.addEventListener('click', () => {
-        const isHidden = dom.historiaSidebar.classList.toggle('is-hidden');
-        dom.btnToggleSidebar.setAttribute(
-          'aria-label',
-          `${isHidden ? 'Mostrar' : 'Ocultar'} painel de feedbacks`,
-        );
+      DOM.btnToggleSidebar?.addEventListener('click', () => {
+        DOM.layout?.classList.toggle('expandido');
+        if (DOM.historiaSidebar) {
+          const isHidden = DOM.historiaSidebar.classList.toggle('is-hidden');
+          DOM.btnToggleSidebar.setAttribute(
+            'aria-label',
+            `${isHidden ? 'Mostrar' : 'Ocultar'} painel de feedbacks`,
+          );
+        }
       });
     },
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     UI.setupTabs();
     UI.setupSidebar();
 
-    const isLoggedIn = Auth.isLoggedIn();
-    dom.formContainer?.classList.toggle('form-hidden', !isLoggedIn);
-    dom.loginMessage?.classList.toggle('login-required-hidden', isLoggedIn);
+    const loggedIn = AuthService.isLoggedIn();
+    DOM.toggle(DOM.formContainer, 'form-hidden', !loggedIn);
+    DOM.toggle(DOM.loginMessage, 'login-required-hidden', loggedIn);
 
-    if (isLoggedIn) {
+    if (loggedIn) {
       UI.resetAuthorFields();
       UI.setupForms();
       window.HistryCard?.render?.();
     }
 
-    StoryManager.load();
+    await StoryManager.load();
     FeedbackManager.loadAll();
   });
 })();

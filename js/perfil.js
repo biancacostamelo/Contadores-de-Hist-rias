@@ -5,6 +5,65 @@
   const DEFAULT_PLACEHOLDER = '<p>Comece a escrever sua história aqui...</p>';
   const DEFAULT_IMG = '../assets/img/capaPadraoHistorias.png';
 
+  const DB_NAME = 'writersCommunityImages';
+  const STORE_NAME = 'images';
+
+  const imageStore = {
+    db: null,
+
+    async open() {
+      if (this.db) return this.db;
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = () => {
+          request.result.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        };
+        request.onsuccess = () => {
+          this.db = request.result;
+          resolve(this.db);
+        };
+        request.onerror = () => reject(request.error);
+      });
+    },
+
+    async save(file) {
+      await this.open();
+      const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const base64 =
+        typeof file === 'string' ? file : await convertToBase64(file);
+      return new Promise((resolve, reject) => {
+        const tx = this.db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put({ id, data: base64 });
+        req.onsuccess = () => resolve(id);
+        req.onerror = () => reject(req.error);
+      });
+    },
+
+    async load(id) {
+      if (!id) return null;
+      await this.open();
+      return new Promise((resolve) => {
+        const store = this.db.transaction(STORE_NAME).objectStore(STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result?.data || null);
+        request.onerror = () => resolve(null);
+      });
+    },
+
+    async remove(id) {
+      if (!id) return;
+      await this.open();
+      return new Promise((resolve) => {
+        const store = this.db
+          .transaction(STORE_NAME, 'readwrite')
+          .objectStore(STORE_NAME);
+        store.delete(id);
+        resolve();
+      });
+    },
+  };
+
   const state = {
     title: '',
     category: 'Conto',
@@ -13,22 +72,35 @@
     activeStoryIndex: null,
   };
 
+  const getEl = (id) => document.getElementById(id);
+
   const DOM = {
-    writingArea: document.getElementById('writingArea'),
-    titleInput: document.getElementById('storyTitleInput'),
-    categorySelect: document.getElementById('storyCategorySelect'),
-    styleSelect: document.getElementById('paragraphStyle'),
-    fontSizeSelect: document.getElementById('fontSizeSelect'),
+    writingArea: getEl('writingArea'),
+    titleInput: getEl('storyTitleInput'),
+    categorySelect: getEl('storyCategorySelect'),
+    styleSelect: getEl('paragraphStyle'),
+    fontSizeSelect: getEl('fontSizeSelect'),
     toolbar: document.querySelector('.editor-toolbar'),
-    btnInsertImage: document.getElementById('btnInsertImage'),
-    imageFileInput: document.getElementById('imageFileInput'),
-    storiesGrid: document.getElementById('storyContent'),
-    draftsContainer: document.getElementById('draftsContainer'),
-    btnPublishStory: document.getElementById('btnContinueEditor'),
-    btnSaveDraft: document.getElementById('btnSaveDraft'),
-    toastModal: document.getElementById('toastModal'),
-    toastMessage: document.getElementById('toastMessage'),
+    btnInsertImage: getEl('btnInsertImage'),
+    imageFileInput: getEl('imageFileInput'),
+    storiesGrid: getEl('storyContent'),
+    draftsContainer: getEl('draftsContainer'),
+    btnPublishStory: getEl('btnContinueEditor'),
+    btnSaveDraft: getEl('btnSaveDraft'),
+    toastModal: getEl('toastModal'),
+    toastMessage: getEl('toastMessage'),
+    confirmModal: getEl('editModalConfirmDraft'),
+    btnCloseConfirm: getEl('btnCloseConfirmDraft'),
+    btnCancelConfirm: getEl('btnCancelConfirmDraft'),
+    btnOverrideConfirm: getEl('btnOverrideConfirmDraft'),
+
+    confirmDeleteStoryModal: getEl('editModalConfirmDeleteStory'),
+    btnCloseConfirmDeleteStory: getEl('btnCloseConfirmDeleteStory'),
+    btnCancelConfirmDeleteStory: getEl('btnCancelConfirmDeleteStory'),
+    btnOverrideConfirmDeleteStory: getEl('btnOverrideConfirmDeleteStory'),
   };
+
+  const getCurrentUser = () => auth.getUsers()?.[auth.getSession()?.email];
 
   const escapeHTML = (str) =>
     String(str ?? '').replace(
@@ -45,11 +117,8 @@
 
   const validateImage = (file) => {
     if (!file?.name) return null;
-    if (
-      !['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(
-        file.type,
-      )
-    )
+    const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type))
       return 'Formato inválido. Apenas PNG, JPEG, WebP ou GIF.';
     return file.size > 5 * 1024 * 1024
       ? 'A imagem excede o limite de 5 MB.'
@@ -68,26 +137,101 @@
     if (!html || typeof html !== 'string') return '';
     const temp = document.createElement('div');
     temp.innerHTML = html;
+    const text = temp.textContent.trim();
     if (
-      temp.querySelector('p')?.textContent.trim() ===
-      'Comece a escrever sua história aqui...'
-    )
+      text === 'Comece a escrever sua história aqui...' ||
+      (!text && !temp.getElementsByTagName('img').length)
+    ) {
       return '';
-    if (!temp.textContent.trim() && !temp.getElementsByTagName('img').length)
-      return '';
-
+    }
     return temp.innerHTML
       .replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '')
       .replace(/\bon\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
   };
 
-  const updateEditorDOM = (title = '', category = 'Conto', content = '') => {
+  const extractAndStoreImages = async (html) => {
+    if (!html || typeof html !== 'string') return { content: '', images: {} };
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    const imgElements = Array.from(temp.querySelectorAll('img'));
+    const storedRefs = {};
+
+    for (const img of imgElements) {
+      const src = img.src || '';
+      if (src.startsWith('data:')) {
+        try {
+          const id = await imageStore.save(src);
+          storedRefs[src] = { type: 'img', id };
+          img.removeAttribute('src');
+          img.dataset.imageId = id;
+        } catch {
+          img.remove();
+        }
+      }
+    }
+
+    const cleanedHTML = temp.innerHTML
+      .replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '')
+      .replace(/\bon\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+
+    return { content: cleanedHTML, images: storedRefs };
+  };
+
+  const updateEditorDOM = async (
+    title = '',
+    category = 'Conto',
+    content = '',
+  ) => {
     Object.assign(state, { title, category, content });
     if (DOM.titleInput) DOM.titleInput.value = title;
     if (DOM.categorySelect) DOM.categorySelect.value = category;
-    if (DOM.writingArea)
+    if (DOM.writingArea) {
       DOM.writingArea.innerHTML = content || DEFAULT_PLACEHOLDER;
+      await restoreImagesInElement(DOM.writingArea);
+    }
   };
+
+  const showConfirmDialog = ({ title, message, confirmText } = {}) =>
+    new Promise((resolve) => {
+      if (!DOM.confirmModal) return resolve(false);
+
+      const titleEl = DOM.confirmModal.querySelector('h3, h2, .modal-title');
+      const msgEl = DOM.confirmModal.querySelector('p, .modal-message');
+
+      const originalTitle = titleEl?.textContent || '';
+      const originalMsg = msgEl?.textContent || '';
+      const originalConfirmText = DOM.btnOverrideConfirm?.textContent || '';
+
+      if (title && titleEl) titleEl.textContent = title;
+      if (message && msgEl) msgEl.textContent = message;
+      if (confirmText && DOM.btnOverrideConfirm)
+        DOM.btnOverrideConfirm.textContent = confirmText;
+
+      const handleClose = (result) => {
+        DOM.confirmModal.close();
+        if (titleEl) titleEl.textContent = originalTitle;
+        if (msgEl) msgEl.textContent = originalMsg;
+        if (DOM.btnOverrideConfirm)
+          DOM.btnOverrideConfirm.textContent = originalConfirmText;
+        resolve(result);
+      };
+
+      DOM.btnCloseConfirm?.addEventListener('click', () => handleClose(false), {
+        once: true,
+      });
+      DOM.btnCancelConfirm?.addEventListener(
+        'click',
+        () => handleClose(false),
+        { once: true },
+      );
+      DOM.btnOverrideConfirm?.addEventListener(
+        'click',
+        () => handleClose(true),
+        { once: true },
+      );
+
+      DOM.confirmModal.showModal();
+    });
 
   let toastTimeout = null;
   const showToast = (message, type = 'success') => {
@@ -99,113 +243,47 @@
     toastTimeout = setTimeout(() => DOM.toastModal.close(), 3000);
   };
 
-  const modais = {
-    name: {
-      modal: document.getElementById('editModalName'),
-      open: 'btnEditProfile',
-      close: ['btnCloseName', 'btnCancelName'],
-      input: 'newUsername',
-      err: 'username-error',
-      clear: (i, e) => {
-        i.value = '';
-        e.textContent = '';
-      },
-    },
-    bio: {
-      modal: document.getElementById('editModalBio'),
-      open: 'btnEditBio',
-      close: ['btnCloseBio', 'btnCancelBio'],
-      input: 'newBio',
-      err: 'bio-error',
-      clear: (i, e) => {
-        i.value = auth.getUsers()?.[auth.getSession()?.email]?.bio || '';
-        e.textContent = '';
-      },
-    },
-    avatar: {
-      modal: document.getElementById('editModalAvatar'),
-      open: 'btnUploadAvatar',
-      close: ['btnCloseAvatar', 'btnCancelAvatar'],
-      input: 'avatarInput',
-      err: 'avatar-error',
-    },
-    banner: {
-      modal: document.getElementById('editModalBanner'),
-      open: 'btnUploadBanner',
-      close: ['btnCloseBanner', 'btnCancelBanner'],
-      input: 'bannerInput',
-      err: 'banner-error',
-    },
-    stories: {
-      modal: document.getElementById('editModalStory'),
-      open: 'btnAddStory',
-      close: ['btnBackEditor'],
-      clear: () => updateEditorDOM(),
-    },
-  };
-
-  Object.values(modais).forEach(({ modal, open, close, input, err, clear }) => {
-    if (!modal) return;
-    document.getElementById(open)?.addEventListener('click', () => {
-      modal.showModal();
-      const inputEl = document.getElementById(input);
-      const errEl = document.getElementById(err);
-      if (clear) clear(inputEl, errEl);
-      else {
-        if (inputEl) inputEl.value = '';
-        if (errEl) errEl.textContent = '';
-      }
-      if (inputEl) setTimeout(() => inputEl.focus(), 100);
-    });
-
-    close.forEach((id) =>
-      document
-        .getElementById(id)
-        ?.addEventListener('click', () => modal.close()),
-    );
-
-    modal.addEventListener('click', (e) => {
-      const content = modal.querySelector('.modal-content, .toast-content');
-      if (!content || e.target.closest('#draftsContainer, [data-draft-index]'))
-        return;
-      const r = content.getBoundingClientRect();
-      if (
-        e.clientX < r.left ||
-        e.clientX > r.right ||
-        e.clientY < r.top ||
-        e.clientY > r.bottom
-      )
-        modal.close();
-    });
-  });
-
   const formsConfig = [
     {
       form: 'editProfileForm',
       input: 'newUsername',
       err: 'username-error',
       key: 'fullname',
-      modal: modais.name.modal,
+      modal: getEl('editModalName'),
+      openBtn: 'btnEditProfile',
+      closeBtns: ['btnCloseName', 'btnCancelName'],
       validate: (v) =>
         !v
           ? 'O nome é obrigatório.'
           : v.length < 3
             ? 'Mínimo de 3 caracteres.'
             : null,
+      clear: (i, e) => {
+        i.value = '';
+        e.textContent = '';
+      },
     },
     {
       form: 'editBioForm',
       input: 'newBio',
       err: 'bio-error',
       key: 'bio',
-      modal: modais.bio.modal,
+      modal: getEl('editModalBio'),
+      openBtn: 'btnEditBio',
+      closeBtns: ['btnCloseBio', 'btnCancelBio'],
+      clear: (i, e) => {
+        i.value = getCurrentUser()?.bio || '';
+        e.textContent = '';
+      },
     },
     {
       form: 'avatarUploadForm',
       input: 'avatarInput',
       err: 'avatar-error',
       key: 'avatar',
-      modal: modais.avatar.modal,
+      modal: getEl('editModalAvatar'),
+      openBtn: 'btnUploadAvatar',
+      closeBtns: ['btnCloseAvatar', 'btnCancelAvatar'],
       validate: validateImage,
     },
     {
@@ -213,54 +291,96 @@
       input: 'bannerInput',
       err: 'banner-error',
       key: 'banner',
-      modal: modais.banner.modal,
-      validate: validateImage,
-    },
-    {
-      form: 'imageUploadForm',
-      input: 'imageInput',
-      err: 'image-error',
-      key: 'galleryImages',
-      modal: document.getElementById('editModalImage'),
+      modal: getEl('editModalBanner'),
+      openBtn: 'btnUploadBanner',
+      closeBtns: ['btnCloseBanner', 'btnCancelBanner'],
       validate: validateImage,
     },
   ];
 
-  formsConfig.forEach(({ form, input, err, key, modal, validate }) => {
-    document.getElementById(form)?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const session = auth.getSession();
-      if (!session) return;
+  formsConfig.forEach(
+    ({ form, input, err, key, modal, openBtn, closeBtns, validate, clear }) => {
+      if (!modal) return;
 
-      const inputEl = document.getElementById(input);
-      const errorEl = document.getElementById(err);
-      let val = inputEl.files ? inputEl.files[0] : inputEl.value.trim();
-
-      if (validate) {
-        const errorMsg = validate(val);
-        if (errorMsg) {
-          if (errorEl) errorEl.textContent = errorMsg;
-          return inputEl.setAttribute('aria-invalid', 'true');
+      getEl(openBtn)?.addEventListener('click', () => {
+        modal.showModal();
+        const inputEl = getEl(input);
+        const errEl = getEl(err);
+        if (clear) clear(inputEl, errEl);
+        else {
+          if (inputEl) inputEl.value = '';
+          if (errEl) errEl.textContent = '';
         }
-      }
+        if (inputEl) setTimeout(() => inputEl.focus(), 100);
+      });
 
-      try {
-        if (inputEl.files) val = await convertToBase64(val);
-        const res = await auth.updateProfile(session.email, { [key]: val });
-        if (res.success) {
-          modal?.close();
-          loadUserProfile();
-        } else if (errorEl) errorEl.textContent = res.message;
-      } catch {
-        if (errorEl) errorEl.textContent = 'Erro ao processar as alterações.';
-      }
-    });
-  });
+      closeBtns?.forEach((id) =>
+        getEl(id)?.addEventListener('click', () => modal.close()),
+      );
+
+      modal.addEventListener('click', (e) => {
+        const content = modal.querySelector('.modal-content, .toast-content');
+        if (
+          !content ||
+          e.target.closest('#draftsContainer, [data-draft-index]')
+        )
+          return;
+        const r = content.getBoundingClientRect();
+        if (
+          e.clientX < r.left ||
+          e.clientX > r.right ||
+          e.clientY < r.top ||
+          e.clientY > r.bottom
+        ) {
+          modal.close();
+        }
+      });
+
+      getEl(form)?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const session = auth.getSession();
+        if (!session) return;
+
+        const inputEl = getEl(input);
+        const errorEl = getEl(err);
+        let val = inputEl.files ? inputEl.files[0] : inputEl.value.trim();
+
+        if (validate) {
+          const errorMsg = validate(val);
+          if (errorMsg) {
+            if (errorEl) errorEl.textContent = errorMsg;
+            return inputEl.setAttribute('aria-invalid', 'true');
+          }
+        }
+
+        try {
+          if ((key === 'avatar' || key === 'banner') && inputEl.files) {
+            const id = await imageStore.save(val);
+            val = { type: 'img', id };
+          }
+          const res = await auth.updateProfile(session.email, { [key]: val });
+          if (res.success) {
+            modal.close();
+            loadUserProfile();
+          } else if (errorEl) errorEl.textContent = res.message;
+        } catch {
+          if (errorEl) errorEl.textContent = 'Erro ao processar as alterações.';
+        }
+      });
+    },
+  );
 
   function initStoryEditor() {
-    modais.stories.modal?.addEventListener('toggle', () => {
-      if (modais.stories.modal.open)
-        renderDrafts(auth.getUsers()?.[auth.getSession()?.email]?.drafts || []);
+    const storyModal = getEl('editModalStory');
+    getEl('btnAddStory')?.addEventListener('click', () =>
+      storyModal?.showModal(),
+    );
+    getEl('btnBackEditor')?.addEventListener('click', () =>
+      storyModal?.close(),
+    );
+
+    storyModal?.addEventListener('toggle', () => {
+      if (storyModal.open) renderDrafts(getCurrentUser()?.drafts || []);
     });
 
     DOM.titleInput?.addEventListener(
@@ -303,14 +423,27 @@
       range.insertNode(span);
     });
 
-    DOM.toolbar?.addEventListener('mousedown', (e) => {
+    DOM.toolbar?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
-      e.preventDefault();
-      const action = btn.dataset.action.toLowerCase().includes('tack')
-        ? 'strikeThrough'
-        : btn.dataset.action;
-      document.execCommand(action, false, null);
+
+      const action = btn.dataset.action;
+      const sel = window.getSelection();
+
+      if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
+        return;
+
+      if (action.toLowerCase().includes('tack') || action === 'strikeThrough') {
+        const range = sel.getRangeAt(0);
+        if (!range.collapsed) {
+          const strikeNode = document.createElement('s');
+          strikeNode.appendChild(range.extractContents());
+          range.insertNode(strikeNode);
+        }
+      } else {
+        document.execCommand(action, false, null);
+      }
+
       DOM.writingArea?.focus();
     });
 
@@ -326,22 +459,28 @@
         if (err) return showToast(err, 'error');
 
         try {
+          const base64 = await convertToBase64(file);
+          const imgId = await imageStore.save(base64);
+
           const img = document.createElement('img');
-          img.src = await convertToBase64(file);
+          img.src = base64; // Exibe o Base64 na hora para aparecer imediatamente
           img.alt = 'Imagem inserida na história';
           img.style.cssText = 'max-width: 100%; height: auto;';
+          img.dataset.imageId = imgId;
 
           const sel = window.getSelection();
           if (sel.rangeCount > 0 && DOM.writingArea.contains(sel.anchorNode)) {
             const range = sel.getRangeAt(0);
             range.deleteContents();
             range.insertNode(img);
-          } else DOM.writingArea.appendChild(img);
+          } else {
+            DOM.writingArea.appendChild(img);
+          }
 
           DOM.imageFileInput.value = '';
           state.content = DOM.writingArea.innerHTML;
         } catch (e) {
-          console.error(e);
+          console.error('Erro ao inserir imagem:', e);
         }
       });
     }
@@ -380,11 +519,14 @@
     const session = auth.getSession();
     if (!session) return;
 
-    const drafts = [...(auth.getUsers()?.[session.email]?.drafts || [])];
+    const drafts = [...(getCurrentUser()?.drafts || [])];
+    const extracted = await extractAndStoreImages(
+      DOM.writingArea?.innerHTML || '',
+    );
     const payload = {
       title: DOM.titleInput?.value.trim() || 'Rascunho Sem Título',
       type: DOM.categorySelect?.value || 'Conto',
-      content: sanitizeHTML(DOM.writingArea?.innerHTML || ''),
+      content: sanitizeHTML(extracted.content),
       updatedAt: new Date().toLocaleTimeString('pt-BR', {
         hour: '2-digit',
         minute: '2-digit',
@@ -394,14 +536,13 @@
     if (state.activeDraftIndex !== null) {
       drafts[state.activeDraftIndex] = payload;
     } else {
-      if (
-        drafts.length >= MAX_DRAFTS &&
-        !confirm('Limite de rascunhos atingido. Sobrescrever o mais antigo?')
-      )
-        return;
-      if (drafts.length >= MAX_DRAFTS) drafts.pop();
+      if (drafts.length >= MAX_DRAFTS) {
+        const override = await showConfirmDialog();
+        if (!override) return;
+        drafts.pop();
+      }
       drafts.unshift(payload);
-      state.activeDraftIndex = 0;
+      state.activeDraftIndex = null;
     }
 
     if ((await auth.updateProfile(session.email, { drafts })).success) {
@@ -415,16 +556,18 @@
     const session = auth.getSession();
     if (!session) return;
 
-    const user = auth.getUsers()?.[session.email];
+    const user = getCurrentUser();
     const stories = [...(user?.stories || [])];
     const drafts = [...(user?.drafts || [])];
-    const title = DOM.titleInput?.value.trim() || 'Sem título';
 
+    const extracted = await extractAndStoreImages(
+      DOM.writingArea?.innerHTML || '',
+    );
     const payload = {
-      title,
+      title: DOM.titleInput?.value.trim() || 'Sem título',
       type: DOM.categorySelect?.value || 'Conto',
-      content: sanitizeHTML(DOM.writingArea?.innerHTML || ''),
-      cover: `${DEFAULT_IMG}`,
+      content: sanitizeHTML(extracted.content),
+      cover: DEFAULT_IMG,
     };
 
     if (state.activeStoryIndex !== null) {
@@ -442,35 +585,69 @@
 
     const res = await auth.updateProfile(session.email, { stories, drafts });
     if (res.success) {
-      modais.stories.modal.close();
+      getEl('editModalStory')?.close();
       state.activeStoryIndex = state.activeDraftIndex = null;
       loadUserProfile();
     } else showToast(res.message || 'Erro ao salvar história.', 'error');
   });
 
-  DOM.storiesGrid?.addEventListener('click', (e) => {
+  DOM.storiesGrid?.addEventListener('click', async (e) => {
+    const delBtn = e.target.closest('[data-delete-story-index]');
+    if (delBtn) {
+      e.stopPropagation();
+
+      const confirmed = await showConfirmDialog({
+        title: 'Excluir História',
+        message:
+          'Tem certeza que deseja excluir esta história permanentemente?',
+        confirmText: 'Excluir',
+      });
+
+      if (!confirmed) return;
+
+      const session = auth.getSession();
+      const stories = [...(getCurrentUser()?.stories || [])];
+      stories.splice(+delBtn.dataset.deleteStoryIndex, 1);
+      if ((await auth.updateProfile(session.email, { stories })).success) {
+        state.activeStoryIndex = null;
+        showToast('História excluída com sucesso!');
+        loadUserProfile();
+      }
+      return;
+    }
+
     const card = e.target.closest('[data-story-index]');
     if (!card || e.target.closest('.btn-edit-story, [data-action]')) return;
     const index = +card.dataset.storyIndex;
-    const story = auth.getUsers()?.[auth.getSession()?.email]?.stories?.[index];
+    const story = getCurrentUser()?.stories?.[index];
     if (!story) return;
 
     state.activeStoryIndex = index;
     state.activeDraftIndex = null;
-    modais.stories.modal.showModal();
-    updateEditorDOM(story.title, story.type, story.content);
+    getEl('editModalStory')?.showModal();
+    await updateEditorDOM(story.title, story.type, story.content);
   });
 
   DOM.draftsContainer?.addEventListener('click', async (e) => {
     const delBtn = e.target.closest('[data-delete-draft-index]');
     if (delBtn) {
       e.stopPropagation();
-      if (!confirm('Tem certeza que deseja excluir este rascunho?')) return;
+
+      const confirmed = await showConfirmDialog({
+        title: 'Excluir Rascunho',
+        message:
+          'Tem certeza que deseja excluir este rascunho permanentemente?',
+        confirmText: 'Excluir',
+      });
+
+      if (!confirmed) return;
+
       const session = auth.getSession();
-      const drafts = [...(auth.getUsers()?.[session.email]?.drafts || [])];
+      const drafts = [...(getCurrentUser()?.drafts || [])];
       drafts.splice(+delBtn.dataset.deleteDraftIndex, 1);
       if ((await auth.updateProfile(session.email, { drafts })).success) {
         state.activeDraftIndex = null;
+        showToast('Rascunho excluído com sucesso!');
         loadUserProfile();
       }
       return;
@@ -479,34 +656,108 @@
     const card = e.target.closest('[data-draft-index]');
     if (!card) return;
     const index = +card.dataset.draftIndex;
-    const draft = auth.getUsers()?.[auth.getSession()?.email]?.drafts?.[index];
+    const draft = getCurrentUser()?.drafts?.[index];
     if (!draft) return;
 
     state.activeDraftIndex = index;
     state.activeStoryIndex = null;
-    modais.stories.modal.showModal();
-    updateEditorDOM(draft.title, draft.type, draft.content);
+    getEl('editModalStory')?.showModal();
+    await updateEditorDOM(draft.title, draft.type, draft.content);
   });
 
-  function loadUserProfile() {
+  const migrateStoredImages = async (user) => {
+    if (!user || !auth.isLoggedIn()) return;
+    const session = auth.getSession();
+    let changed = false;
+
+    const processContent = async (content) => {
+      if (!content || typeof content !== 'string') return content;
+      const temp = document.createElement('div');
+      temp.innerHTML = content;
+      const imgElements = Array.from(temp.querySelectorAll('img'));
+      for (const img of imgElements) {
+        const src = img.src || '';
+        if (!src || !src.startsWith('data:')) continue;
+        try {
+          const id = await imageStore.save(src);
+          img.removeAttribute('src');
+          img.dataset.imageId = id;
+          changed = true;
+        } catch {}
+      }
+      return temp.innerHTML
+        .replace(/<script[^>]*>([\S\s]*?)<\/script>/gi, '')
+        .replace(/\bon\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+    };
+
+    const stories = user?.stories || [];
+    for (let i = 0; i < stories.length; i++) {
+      const newContent = await processContent(stories[i].content);
+      if (newContent !== stories[i].content) {
+        stories[i] = { ...stories[i], content: newContent };
+      }
+    }
+
+    const drafts = user?.drafts || [];
+    for (let i = 0; i < drafts.length; i++) {
+      const newContent = await processContent(drafts[i].content);
+      if (newContent !== drafts[i].content) {
+        drafts[i] = { ...drafts[i], content: newContent };
+      }
+    }
+
+    if (changed) {
+      await auth.updateProfile(session.email, { stories, drafts });
+    }
+  };
+
+  async function loadUserProfile() {
     const session = auth.getSession();
     if (!session) return;
-    const user = auth.getUsers()?.[session.email];
+    await imageStore.open();
+    await migrateStoredImages(getCurrentUser());
+    const user = getCurrentUser();
 
-    const nameEl = document.getElementById('perfilName');
-    const bioEl = document.getElementById('perfilBio');
-    const avatarEl = document.getElementById('avatarImg');
-    const bannerEl = document.getElementById('bannerBg');
+    const nameEl = getEl('perfilName');
+    const bioEl = getEl('perfilBio');
+    const avatarEl = getEl('avatarImg');
+    const bannerEl = getEl('bannerBg');
 
     if (nameEl) nameEl.textContent = session.fullname || 'Leitor Voraz';
     if (bioEl)
       bioEl.textContent = user?.bio || 'Leitor Voraz · Ofensiva de 0 Dias';
-    if (avatarEl) avatarEl.src = user?.avatar || DEFAULT_IMG;
-    if (bannerEl)
-      bannerEl.style.backgroundImage = `url('${user?.banner || DEFAULT_IMG}')`;
+    if (avatarEl) {
+      const avatarRef = user?.avatar;
+      if (
+        avatarRef &&
+        typeof avatarRef === 'object' &&
+        avatarRef.type === 'img'
+      ) {
+        const src = await imageStore.load(avatarRef.id);
+        avatarEl.src = src || DEFAULT_IMG;
+      } else {
+        avatarEl.src = avatarRef || DEFAULT_IMG;
+      }
+    }
+    if (bannerEl) {
+      const bannerRef = user?.banner;
+      if (
+        bannerRef &&
+        typeof bannerRef === 'object' &&
+        bannerRef.type === 'img'
+      ) {
+        const src = await imageStore.load(bannerRef.id);
+        bannerEl.style.backgroundImage = `url('${src || DEFAULT_IMG}')`;
+      } else {
+        bannerEl.style.backgroundImage = `url('${bannerRef || DEFAULT_IMG}')`;
+      }
+    }
 
     renderStories(user?.stories || []);
     renderDrafts(user?.drafts || []);
+
+    await restoreImagesInElement(DOM.storiesGrid);
+    await restoreImagesInElement(DOM.draftsContainer);
   }
 
   function renderDrafts(drafts) {
@@ -542,16 +793,26 @@
     DOM.storiesGrid.innerHTML = stories
       .map(
         (story, i) => `
-        <div class="cardPerfil" data-story-index="${i}" style="background-image: url(${DEFAULT_IMG}">
+        <div class="cardPerfil" data-story-index="${i}" style="background-image: url('${DEFAULT_IMG}');">
           <div class="contentCard">
             <div>
               <h3>${escapeHTML(story.title || 'Sem título')}</h3>
               <p>${escapeHTML(story.type || 'Gênero')}</p>
             </div>
+            <button class="btn-delete-story" data-delete-story-index="${i}" aria-label="Excluir ${escapeHTML(story.title || 'história')}">✕</button>
           </div>
         </div>`,
       )
       .join('');
+  }
+
+  async function restoreImagesInElement(element) {
+    if (!element) return;
+    const imgElements = element.querySelectorAll('img[data-image-id]');
+    for (const img of imgElements) {
+      const src = await imageStore.load(img.dataset.imageId);
+      if (src) img.src = src;
+    }
   }
 
   if (!auth.isLoggedIn()) {

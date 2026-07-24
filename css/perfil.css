@@ -22,9 +22,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0) 40%,
-      rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
   pointer-events: none;
 }
 
@@ -38,8 +40,8 @@
   gap: 16px;
 }
 
-.perfil-info>h1,
-.perfil-info>p {
+.perfil-info > h1,
+.perfil-info > p {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 8px 16px;
   border-radius: 8px;
@@ -609,12 +611,28 @@ textarea.form-input {
   color: var(--color-primary);
 }
 
-.btn-delete-draft {
-  background: none;
+.btn-delete-draft,
+.btn-delete-story {
+  background: var(--color-error);
   border: none;
-  color: red;
+  color: var(--color-bg-light);
   cursor: pointer;
-  font-weight: bold;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.btn-delete-story {
+  align-self: flex-end;
+  margin-top: 8px;
+}
+
+.btn-delete-draft:hover,
+.btn-delete-story:hover {
+  background-color: rgba(211, 47, 47, 0.1);
 }
 
 .btn-save-sketch {
@@ -656,10 +674,12 @@ textarea.form-input {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.85) 0%,
-      rgba(0, 0, 0, 0.3) 60%,
-      transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    transparent 100%
+  );
   z-index: 1;
 }
 
@@ -750,18 +770,52 @@ textarea.form-input {
   transform: scale(1.1);
 }
 
-.empty-message-modal{
+.empty-message-modal {
   color: var(--text-primary);
 }
 
-#draftsContainer{
+#draftsContainer {
   padding: 0 30px 40px 30px;
 }
 
-@media (max-width: 768px) {
+.confirm-modal {
+  width: min(420px, calc(100vw - 32px));
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-main);
+}
 
+.confirm-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.confirm-message {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+}
+
+.btn-cancel-confirm {
+  background-color: transparent;
+  border: 1.5px solid var(--color-border-light);
+  color: var(--color-text-muted);
+}
+
+.btn-cancel-confirm:hover {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark);
+}
+
+.btn-override-confirm {
+  background-color: var(--text-one);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
   .perfil-page,
-  .perfil-achievements, .story__content  {
+  .perfil-achievements,
+  .story__content {
     margin: 40px 20px;
   }
 
