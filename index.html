@@ -1,52 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./assets/Logo-principal.svg" />
+    <link rel="stylesheet" href="./css/global.css" />
+    <title>Contadores de Histórias | Home</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../assets/Logo Principal.svg" />
-  <link rel="stylesheet" href="/css/global.css">
-  <title>Home</title>
-</head>
-
-<body>
-  <!-- <ul>
-   <li> <a href="./pages/comunidade.html">comunidade</a></li>
-  <li>  <a href="./pages/comentariosComunidade.html">comentarioos comunidade</a></li>
-   <li> <a href="./pages/historia.html">historia</a></li>
-   <li> <a href="./pages/login.html">login</a></li>
-   <li> <a href="./pages/perfil.html">perfil</a></li>
-   <li> <a href="./pages/signUp.html">cadastrar</a></li>
-  </ul> -->
-
-  <body class="dark-theme">
+  <body>
     <!--Cabeçalho-->
-    <div class="site-header-container"></div>
+    <meu-header assets-path="./assets" base-path="./"></meu-header>
     <!-- submenu -->
     <section class="bottom-header">
       <div class="bottom-header-container">
         <div class="input-pesquisa">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="
-    color: var(--text-primary);">
-<g opacity=" 0.45">
-            <path d="M8.75008 15.8334C12.6622 15.8334 15.8334 12.6621 15.8334 8.75002C15.8334 4.83794 12.6622 1.66669 8.75008 1.66669C4.838 1.66669 1.66675 4.83794 1.66675 8.75002C1.66675 12.6621 4.838 15.8334 8.75008 15.8334Z" stroke="var(--text-primary)" stroke-width="2" stroke-linejoin="round" />
-            <path d="M11.1072 5.97625C10.798 5.66636 10.4305 5.42059 10.026 5.25306C9.62156 5.08553 9.18796 4.99953 8.75015 5C8.31234 4.99953 7.87874 5.08553 7.47425 5.25306C7.06976 5.42059 6.70233 5.66636 6.39307 5.97625M13.8426 13.8425L17.3781 17.3779" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </g>
-          </svg>
-
-          <input type="text" placeholder="Procurar por comunidades, títulos, autores..." />
+          <img src="./assets/lupa pesquisar.svg" alt="lupa" />
+          <input
+            type="text"
+            placeholder="Procurar por gêneros, títulos, autores..."
+          />
         </div>
 
         <nav class="navbar-bottom">
-          <a href="/index.html" class="ativado">Para Você</a>
+          <a href="#para-voce" class="ativado">Para Você</a>
           <a href="./pages/topicos.html">Descobrir</a>
           <a href="./pages/galeria.html">Galeria</a>
         </nav>
-
-        <div class="menu-opcoes" id="menu-opcoes">
-          <p id="btnTheme">Mudar tema</p>
-          <p>Configurações</p>
-        </div>
 
         <div class="ofensiva">
           <div class="icon-ofensiva">
@@ -57,15 +37,24 @@
       </div>
     </section>
     <!--Principal-->
-    <main class="main">
+    <main class="main-index">
       <section class="home">
         <!--Inicio da home page-->
         <div class="home-container">
-          <div class="pena">
-            <img src="./assets/Pena sem sombra esquerda.svg" alt="Pena" />
+          <div class="pena-light">
+            <img
+              src="./assets/Pena sem sombra esquerda.svg"
+              class="img-clara"
+              alt="Pena"
+            />
+            <img
+              src="./assets/Pena sem sombra esqueda dark.svg"
+              class="img-escura"
+              alt="Pena dark"
+            />
           </div>
           <div class="textos">
-            <p class="txt2">Seja bem vindo ao </p>
+            <p class="txt2">Seja bem vindo !</p>
             <h1 class="titulo">Contadores de Histórias</h1>
             <p class="typing-text"><span></span></p>
             <p class="txt">
@@ -73,12 +62,34 @@
               narrativa, e visual. Qual será sua criação ? Descubra agora !
             </p>
           </div>
-          <div class="penaDois">
-            <img src="./assets/Pena sem sombra.svg" alt="Pena" />
+          <div class="penaDois-light">
+            <img
+              src="./assets/Pena sem sombra.svg"
+              class="img-clara"
+              alt="Pena"
+            />
+            <img
+              src="./assets/Pena sem sombra dark.svg"
+              class="img-escura"
+              alt="Pena dark"
+            />
           </div>
           <div class="btn2">
-            <a href="./pages/historia.html" id="criar2">Comece a criar</a>
-            <a href="./pages/signUp.html" id="criar-conta">Criar conta</a>
+            <a href="./pages/historia.html" class="criar">Comece a criar</a>
+            <a href="./pages/signUp.html" class="entrar">Criar conta</a>
+          </div>
+
+          <div class="livro">
+            <img
+              src="./assets/livro logo variante 1.svg"
+              class="img-clara"
+              alt="Livro"
+            />
+            <img
+              src="./assets/Logo (footer) Variante 2.svg"
+              class="img-escura"
+              alt=""
+            />
           </div>
         </div>
       </section>
@@ -94,7 +105,11 @@
                   <div class="txtcomu">
                     <p>Criativos</p>
                   </div>
-                  <img src="./assets/img/Criativos.png" alt="Comunidade-img" class="foto-fundo" />
+                  <img
+                    src="./assets/img/Criativos.png"
+                    alt="Comunidade-img"
+                    class="foto-fundo"
+                  />
                 </div>
               </a>
               <a href="pages/comentariosComunidade.html">
@@ -102,7 +117,11 @@
                   <div class="txtcomu">
                     <p>Fanart</p>
                   </div>
-                  <img src="./assets/img/Desenho.jpeg" alt="Comunidade-img" class="foto-fundo" />
+                  <img
+                    src="./assets/img/Desenho.jpeg"
+                    alt="Comunidade-img"
+                    class="foto-fundo"
+                  />
                 </div>
               </a>
               <a href="pages/comentariosComunidade.html">
@@ -110,11 +129,17 @@
                   <div class="txtcomu">
                     <p>Mangá Club</p>
                   </div>
-                  <img src="./assets/img/Manga.png" alt="Comunidade-img" class="foto-fundo" />
+                  <img
+                    src="./assets/img/Manga.png"
+                    alt="Comunidade-img"
+                    class="foto-fundo"
+                  />
                 </div>
               </a>
             </div>
-            <div class="explore"><a href="./pages/comunidade.html">Explore +</a></div>
+            <div class="explore">
+              <a href="./pages/comunidade.html">Explore +</a>
+            </div>
           </div>
           <span class="linhaDois"></span>
         </div>
@@ -122,12 +147,16 @@
       <!--Posts-->
       <section class="home-post">
         <div class="posts-container">
-          <h2>Posts da comunidade</h2>
+          <h2 id="para-voce">Para você</h2>
           <div class="postsHome">
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post1.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post1.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -144,10 +173,17 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Homem Aranha</p>
-                        <p class="arroba-autor">Por crismiguel <br> @crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />
+                          @crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -158,7 +194,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post2.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post2.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -175,10 +215,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Coringa</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -189,7 +235,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post3.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post3.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -206,10 +256,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Capitão VS. Homem de ferro</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -220,7 +276,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post4.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post4.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -237,10 +297,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Capitão</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -251,7 +317,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post5.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post5.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -268,10 +338,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Spider</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -282,7 +358,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post6.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post6.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -299,11 +379,17 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Treino de Gohan</p>
-                        <p class="arroba-autor">Por crismiguel <br>
-                          @crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />
+                          @crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -314,7 +400,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post7.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post7.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -331,10 +421,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Baby Yoda</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -345,7 +441,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post8.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post8.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -362,10 +462,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Batman</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -376,7 +482,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post9.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post9.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -393,10 +503,17 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Venom!</p>
-                        <p class="arroba-autor">Por crismiguel <br> @crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />
+                          @crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -407,7 +524,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post10.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post10.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -424,10 +545,17 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">X-MEN</p>
-                        <p class="arroba-autor">Por crismiguel <br> @crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />
+                          @crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -438,7 +566,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post11.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post11.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -455,10 +587,17 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Caça-Fantasmas</p>
-                        <p class="arroba-autor">Por crismiguel <br> @crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />
+                          @crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -469,7 +608,11 @@
             <div class="posts">
               <a href="#">
                 <div class="imgpt">
-                  <img src="./assets/img/post12.jpeg" alt="Post" class="pt-img-fundo" />
+                  <img
+                    src="./assets/img/post12.jpeg"
+                    alt="Post"
+                    class="pt-img-fundo"
+                  />
                   <div class="overlay">
                     <div class="iconStats">
                       <div class="icon-item">
@@ -486,10 +629,16 @@
                       </div>
                     </div>
                     <div class="avatar">
-                      <img src="./assets/img/avatar-miguel.jpg" alt="Avatar" class="avatar-autor" />
+                      <img
+                        src="./assets/img/avatar-miguel.jpg"
+                        alt="Avatar"
+                        class="avatar-autor"
+                      />
                       <div class="txtautor">
                         <p class="nome">Rino</p>
-                        <p class="arroba-autor">Por crismiguel <br>@crismiguel</p>
+                        <p class="arroba-autor">
+                          Por crismiguel <br />@crismiguel
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -505,43 +654,47 @@
     </main>
 
     <!--Footer-->
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="logo-footer">
-        <img src="../assets/Logo (footer) Variante 2.svg" alt="Logo" />
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="logo-footer">
+          <img src="./assets/Logo (footer) Variante 2.svg" alt="Logo" />
+        </div>
+        <p class="txtlogo">Contadores de Histórias</p>
+        <nav class="nav-footer">
+          <div class="linkUm">
+            <a href="./pages/contadoresOriginals.html">Contadores Originals</a>
+            <a href="./pages/sobre.html">Sobre</a>
+            <a href="./pages/faqTermsPolitic.html">F.A.Q</a>
+            <a href="./pages/faqTermsPolitic.html#contatos">Contatos</a>
+            <a href="./pages/faqTermsPolitic.html#politica"
+              >Politica de privacidade</a
+            >
+          </div>
+          <div class="linkDois">
+            <a href="./pages/faqTermsPolitic.html#termos">Termos de uso</a>
+            <a
+              href="https://www.instagram.com/cont.adoresdehistorias?igsh=MWR0eTIzYmJjbXRibA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              ><div class="social">
+                <img src="./assets/Instagram.svg" alt="Instagram" /></div
+            ></a>
+            <a
+              href="https://www.tiktok.com/@contadores.de.his1?_r=1&_t=ZS-97f1KpD6OG1"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><div class="social">
+                <img src="./assets/tiktok.svg" alt="TikTok" /></div
+            ></a>
+          </div>
+        </nav>
+        <span class="linha-footer"></span>
+        <p class="copi">
+          © 2026 Contadores de Histórias. Todos os direitos reservados
+        </p>
       </div>
-      <p class="txtlogo">Contadores de Histórias</p>
-      <nav class="nav-footer">
-        <div class="linkUm">
-          <a href="../index.html">Home</a>
-          <a href="#">Contadores Originals</a>
-          <a href="#">Sobre</a>
-          <a href="#">Contatos</a>
-          <a href="#">Suporte</a>
-          <a href="#">Politica de privacidade</a>
-        </div>
-        <div class="linkDois">
-          <a href="#">Termos de uso</a>
-          <a href="https://www.instagram.com/cont.adoresdehistorias?igsh=MWR0eTIzYmJjbXRibA==" target="_blank" rel="noopener noreferrer">
-            <div class="social">
-              <img src="../assets/Instagram.svg" alt="Instagram" />
-            </div>
-          </a>
-          <a href="https://www.tiktok.com/@contadores.de.his1?_r=1&_t=ZS-97f1KpD6OG1" target="_blank" rel="noopener noreferrer">
-            <div class="social">
-              <img src="../assets/tiktok.svg" alt="TikTok" />
-            </div>
-          </a>
-        </div>
-      </nav>
-      <span class="linha-footer"></span>
-      <p class="copi">
-        © 2026 Contadores de Histórias. Todos os direitos reservados
-      </p>
-    </div>
-  </footer> 
-    <script src="/js/script.js"></script>
-    <script src="../js/header.js"></script>
+    </footer>
+    <script src="./js/header.js" defer></script>
+    <script src="./js/script.js"></script>
   </body>
-
 </html>

@@ -1,13 +1,20 @@
-const btnTheme = document.getElementById('btnTheme');
+const btnMenu = document.getElementById('btn-menu');
+const dropdownMenu = document.getElementById('dropdown-menu');
+const btnTheme = document.getElementById('btn-theme');
 
-btnTheme.addEventListener('click', (e) => {
-  document.body.classList.toggle('dark-theme');
-  document.body.classList.toggle('light-theme');
+btnMenu.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdownMenu.classList.toggle('active');
 });
 
-const btnSecondary = document.getElementById('menu-btn')
-const menuOpcoes = document.getElementById('menu-opcoes')
+btnTheme.addEventListener('click', (e) => {
+  e.stopPropagation();
 
-btnSecondary.addEventListener('click', (e) => {
-  menuOpcoes.classList.toggle('menu-opcoes-active')
-})
+  document.body.classList.toggle('dark-theme');
+});
+
+document.addEventListener('click', (e) => {
+  if (!dropdownMenu.contains(e.target) && !btnMenu.contains(e.target)) {
+    dropdownMenu.classList.remove('active');
+  }
+});

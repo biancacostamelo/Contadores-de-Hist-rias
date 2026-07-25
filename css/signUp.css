@@ -1,3 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+* {
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  overflow-x: hidden;
+}
+
+.header-somente-btn {
+  position: relative;
+  background-color: transparent;
+  width: 100%;
+  padding: 15px 30px;
+  box-sizing: border-box;
+}
+
+.header-somente-btn .header-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.header-somente-btn .dropdown-wrapper {
+  position: relative;
+}
+
+.header-somente-btn .btn-icon {
+  background: var(--surface-2-escura);
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  padding: 5px;
+}
+
+.header-somente-btn .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background-color: var(--surface-2-escura);
+  border: 1px solid var(--color-secundary);
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: none;
+}
+
+.header-somente-btn .dropdown-menu.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-somente-btn .dropdown-item {
+  color: var(--text-header);
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.header-somente-btn .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .cadastro-page {
   width: 100%;
   min-height: 100vh;
@@ -10,16 +98,29 @@
   position: relative;
 }
 
+.cadastro-page a img {
+  height: 70px;
+}
+
+.img-clara {
+  display: block;
+}
+.img-escura {
+  display: none;
+}
+
+body.dark-theme .img-clara {
+  display: none;
+}
+body.dark-theme .img-escura {
+  display: block;
+}
+
 .cadastro-page > p {
   color: var(--color-primary);
   font-weight: 600;
   font-size: larger;
   margin-bottom: 16px;
-}
-
-.cadastro-page__logo-img {
-  width: 75px;
-  cursor: pointer;
 }
 
 .cadastro-card {
@@ -36,7 +137,7 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-   padding: 60px 45px 40px 60px;
+  padding: 60px 45px 40px 60px;
 }
 
 .cadastro-card__header {
@@ -314,6 +415,6 @@
   }
 }
 
-.cadastro-form__login-redirect{
+.cadastro-form__login-redirect {
   color: var(--text-primary);
 }

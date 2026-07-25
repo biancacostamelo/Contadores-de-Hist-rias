@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-main);
+  background-color: var(--bg-home);
 }
 
 .destaques-container {
@@ -25,20 +25,19 @@
   font-family: 'Merriweather', serif;
   font-size: 4rem;
   font-weight: bold;
-  color: var(--text-primary);
+  color: var(--color-primary);
 }
 
 .subtitulo-destaque {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 2rem;
   font-weight: 600;
- color: var(--text-secondary);
+  color: var(--text-three);
 }
 
 .txtdestaque {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1rem;
   font-weight: 400;
- color: var(--text-secondary);
+  color: var(--text-one);
 }
-

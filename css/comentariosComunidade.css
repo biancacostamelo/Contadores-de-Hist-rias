@@ -13,16 +13,24 @@ main.opened__forum {
 
 .community-banner {
   background:
-    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
-    url('https://via.placeholder.com/600x180/333') no-repeat center center/cover;
-  border-radius: 0 0 30px 30px;
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.2) 60%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    url('../assets/img/Manga.png') no-repeat center center/cover;
+  border-radius: 30px;
+  margin: 30px auto 0 auto;
+  max-width: 969px;
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   color: white;
   text-align: center;
-  min-width: 600px;
-  padding: 20px;
+  height: 540px;
+  padding: 30px 20px;
 }
 
 .banner-content {
@@ -47,6 +55,8 @@ main.opened__forum {
 }
 
 .feed {
+  max-width: 1440px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -434,7 +444,9 @@ details > div a.active {
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
   font-weight: 600;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .auth-modal-link:hover {
@@ -448,7 +460,9 @@ details > div a.active {
   cursor: pointer;
   padding: 8px;
   border-radius: var(--radius-sm);
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .auth-modal-close-btn:hover {

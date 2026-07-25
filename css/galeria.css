@@ -25,68 +25,30 @@ body {
   overflow-x: hidden;
 }
 
-/*CABEÇALHO*/
+/*Submenu da galeria*/
 
-.header {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 100;
-  background-color: var(--surface-2);
-  height: 90px;
-  display: flex;
-  justify-content: center;
+section.submenu-galeria {
+  margin-top: 90px;
+  background-color: var(--surface-2-escura);
 }
 
-.home-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
+section.submenu-galeria .submenu-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 40px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
 }
-
-.logo {
-  padding: 11px 0px;
-}
-
-.img-logo {
-  width: 65px;
-  height: 68.53px;
-}
-
-.navbar {
-  display: flex;
-  gap: 50px;
-}
-
-.navbar a {
-  font-weight: bold;
-  text-decoration: underline 2px transparent;
-  text-underline-offset: 4px;
-  color: var(--text-header);
-  transition: 0.3s;
-}
-
-.navbar a:hover {
-  text-decoration: underline 2px var(--text-header);
-}
-
-.sub-menu {
-  background-color: var(--surface-2);
+section.submenu-galeria .sub-menu {
+  background-color: var(--surface-2-escura);
   border-top: 2px solid var(--text-header);
   height: 50px;
   width: 100%;
+  position: sticky;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  z-index: 90;
 }
 
-.sub-menu a {
+section.submenu-galeria .sub-menu a {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.975rem;
   font-weight: bold;
@@ -96,45 +58,13 @@ body {
   transition: 0.3s ease;
 }
 
-.sub-menu .active {
+section.submenu-galeria .sub-menu .active {
   text-decoration: underline 2px var(--text-header);
   text-underline-offset: 4px;
 }
 
-.sub-menu a:hover {
+section.submenu-galeria .sub-menu a:hover {
   text-decoration: underline 2px var(--text-header);
-}
-
-.display {
-  display: flex;
-  align-items: center;
-}
-
-.apertar {
-  width: 40px;
-  height: 20px;
-  border: 2px solid var(--color-primary);
-  border-radius: 10px;
-  background-color: var(--text-header);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0 2px;
-}
-
-.circulo {
-  width: 14px;
-  height: 14px;
-  background-color: var(--surface-2);
-  border-radius: 50%;
-}
-
-.btn {
-  display: flex;
-  width: 320px;
-  height: 50px;
-  justify-content: space-between;
-  gap: 15px;
 }
 
 /*Posts da galeria*/
@@ -144,26 +74,32 @@ body {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--color-primary);
-  margin-bottom: 20px;
-  margin-top: 80px;
+  margin: 50px 0px 30px 75px;
 }
-
-
 
 .galeria-container {
   max-width: 1440px;
-  margin: 0 100px;
+  margin: 0 auto;
+  display: grid;
   justify-content: center;
-  margin-bottom: 50px;
 }
 
 .postsGaleria {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 75px;
   gap: 30px;
-  justify-content: space-between;
 }
 
+.posts {
+  width: 300px;
+  height: 400px;
+  border: 2px solid var(--surface-2-escura);
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+  transition: 0.4s ease;
+}
 
 .posts:hover {
   border: 2px solid var(--text-header);
@@ -239,7 +175,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.05rem;
   font-weight: bold;
-  color: var(--text-header);
+  color: #f9f0ea;
   margin: 0;
 }
 
@@ -255,14 +191,16 @@ body {
 }
 
 .posts:hover .pt-img-fundo {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
+/*Posts histórias*/
 
 .hist-post {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 30px;
+  margin: 0 75px;
 }
 
 .hist-post .posts-historia {
@@ -274,7 +212,7 @@ body {
   position: relative;
   border-radius: 40px;
   overflow: hidden;
-  border: 2px solid var(--surface-2);
+  border: 2px solid var(--surface-2-escura);
   transition: border-color 0.4s ease;
 }
 
@@ -359,7 +297,7 @@ body {
 }
 
 .hist-post .detalhes-historia .andamento {
-  color: var(--text-header);
+  color: #f9f0ea;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   opacity: 0.85;
@@ -367,7 +305,7 @@ body {
 }
 
 .hist-post .detalhes-historia .sinopse {
-  color: #fdfdfd;
+  color: #f2e4ca;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   line-height: 1.4;
