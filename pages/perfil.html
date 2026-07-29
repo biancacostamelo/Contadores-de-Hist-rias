@@ -11,6 +11,7 @@
 
 <body>
   <div class="site-header-container"></div>
+
   <main class="perfil-page">
     <header class="perfil-banner">
       <div class="banner-bg" id="bannerBg"></div>
@@ -38,6 +39,9 @@
       </button>
       <button type="button" class="btn-update" id="btnEditBio">
         <span aria-hidden="true">✏️</span> Editar Bio
+      </button>
+      <button type="button" class="btn-update btn-create-community" id="btnCreateCommunity">
+        <span aria-hidden="true">🌐</span> Criar Comunidade
       </button>
     </div>
 
@@ -181,6 +185,24 @@
           </div>
         </div>
       </dialog>
+
+      <dialog class="edit-modal confirm-modal" id="editModalConfirmDeleteCommunity" aria-labelledby="confirmDeleteCommunityTitle">
+        <div class="modal-content">
+          <header class="modal-header">
+            <h2 class="modal-title" id="confirmDeleteCommunityTitle">Excluir Comunidade</h2>
+            <button type="button" class="btn-close-modal" id="btnCloseConfirmDeleteCommunity" aria-label="Fechar">&times;</button>
+          </header>
+
+          <div class="confirm-body">
+            <p class="confirm-message" id="confirmDeleteCommunityMessage">Tem certeza que deseja excluir esta comunidade permanentemente? Todos os membros serão removidos.</p>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-send btn-cancel-confirm" id="btnCancelConfirmDeleteCommunity">Cancelar</button>
+            <button type="button" class="btn-send btn-override-confirm" id="btnOverrideConfirmDeleteCommunity">Excluir</button>
+          </div>
+        </div>
+      </dialog>
     </section>
 
     <dialog class="edit-modal" id="editModalAvatar" aria-labelledby="editModalAvatarTitle">
@@ -279,11 +301,44 @@
         </form>
       </div>
     </dialog>
-  </main>
 
-  <section class="perfil-gallery" aria-label="Conteúdo das histórias">
-    <div id="storyContent" class="story__content"></div>
-  </section>
+    <dialog class="edit-modal" id="editModalCreateCommunity" aria-labelledby="createCommunityTitle">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="createCommunityTitle">Criar Nova Comunidade</h2>
+          <button type="button" class="btn-close-modal" id="btnCloseCreateCommunity" aria-label="Fechar">&times;</button>
+        </header>
+
+        <form class="edit-form" id="createCommunityForm">
+          <div class="form-field">
+            <label class="form-label" for="communityName">Nome da Comunidade</label>
+            <input type="text" class="form-input" id="communityName" maxlength="50" placeholder="Ex: Amantes de Fantasia" />
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="communityImage">Imagem da Comunidade (opcional)</label>
+            <input type="file" class="form-input-file" id="communityImageInput" accept="image/png, image/jpeg, image/webp, image/gif" />
+          </div>
+
+          <div id="community-error" class="field-error" role="alert"></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-send btn-cancel-confirm" id="btnCancelCreateCommunity">Cancelar</button>
+            <button type="submit" class="btn-send btn-override-confirm" id="btnSubmitCreateCommunity">Criar</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <section class="perfil-gallery" aria-label="Conteúdo das histórias">
+      <div id="storyContent" class="story__content"></div>
+    </section>
+
+    <section class="perfil-gallery" aria-label="Minhas comunidades">
+      <h2 class="community-title">Minhas Comunidades</h2>
+      <div id="communitiesList" class="story__content"></div>
+    </section>
+  </main>
 
   <section class="perfil-achievements" aria-label="Conquistas e medalhas">
     <h2 class="achievements-title">Conquistas e Medalhas</h2>
@@ -316,9 +371,9 @@
     </div>
   </dialog>
 
+  <script src="../js/auth.js"></script>
   <script src="../js/script.js"></script>
   <script src="../js/header.js"></script>
-  <script src="../js/auth.js"></script>
   <script src="../js/perfil.js"></script>
   <script src="../js/vlibras.js"></script>
 </body>

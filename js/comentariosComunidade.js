@@ -5,16 +5,51 @@ const CONFIG = {
     POSTS: 'comentariosComunidade_posts',
   },
   DEFAULT_AUTHOR: 'Leitor Voraz',
+  COMMUNITIES_KEY: 'writersCommunity_communities',
+  IMAGE_DB_NAME: 'writersCommunityImages',
+  IMAGE_STORE_NAME: 'images',
 };
 
-const state = { isLoggedIn: false };
+let activeCommunity = null;
+
+const imageStore = {
+  db: null,
+
+  async open() {
+    if (this.db) return this.db;
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(CONFIG.IMAGE_DB_NAME, 1);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore(CONFIG.IMAGE_STORE_NAME, { keyPath: 'id' });
+      };
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve(this.db);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  },
+
+  async load(id) {
+    if (!id) return null;
+    await this.open();
+    return new Promise((resolve) => {
+      const store = this.db.transaction(CONFIG.IMAGE_STORE_NAME).objectStore(CONFIG.IMAGE_STORE_NAME);
+      const request = store.get(id);
+      request.onsuccess = () => resolve(request.result?.data || null);
+      request.onerror = () => resolve(null);
+    });
+  },
+};
+
+const getCommunityKey = (name) =>
+  `${CONFIG.STORAGE_KEYS.POSTS}_${(name || '').replace(/\s+/g, '_').toLowerCase()}`;
 
 class StorageService {
   static read(key) {
     try {
       return JSON.parse(localStorage.getItem(key)) || {};
-    } catch (error) {
-      console.error(`[StorageService] Erro ao ler a chave "${key}":`, error);
+    } catch {
       return {};
     }
   }
@@ -22,144 +57,99 @@ class StorageService {
   static write(key, data) {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-    } catch (error) {
-      console.error(`[StorageService] Erro ao salvar a chave "${key}":`, error);
+    } catch (err) {
+      console.error(`[StorageService] Error writing "${key}":`, err);
     }
   }
 
-  static update(key, callback) {
+  static update(key, updater) {
     const data = this.read(key);
-    const updatedData = callback(data) || data;
-    this.write(key, updatedData);
-    return updatedData;
+    const updated = updater(data) || data;
+    this.write(key, updated);
+    return updated;
+  }
+}
+
+class CommunityService {
+  static getCommunities() {
+    try {
+      return JSON.parse(localStorage.getItem(CONFIG.COMMUNITIES_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  static getCommunity(name) {
+    const communities = this.getCommunities();
+    return communities.find((c) => c.name.toLowerCase() === (name || '').toLowerCase());
   }
 }
 
 class CommentService {
-  static getPostData(postId) {
-    const allPosts = StorageService.read(CONFIG.STORAGE_KEYS.POSTS);
-    return allPosts[postId] || { comments: [] };
+  static getStorageKey = () => getCommunityKey(activeCommunity);
+
+  static getPost(postId) {
+    return (
+      StorageService.read(this.getStorageKey())[postId] || { comments: [] }
+    );
   }
 
-  static getCommentsByPost(postId) {
-    const postData = this.getPostData(postId);
-    return Array.isArray(postData) ? postData : postData.comments || [];
-  }
-
-  static addComment(postId, commentText) {
+  static addComment(postId, text) {
     if (!window.auth?.isLoggedIn()) return null;
-
-    const session = window.auth.getSession();
-    const currentUser = window.auth.getCurrentUser();
-    const now = new Date();
-
+    const user = window.auth.getCurrentUser();
     const newComment = {
-      author: currentUser?.fullname || CONFIG.DEFAULT_AUTHOR,
-      text: commentText,
-      timestamp: now.toISOString(),
-      emailHash: session ? session.email : null,
+      author: user?.fullname || CONFIG.DEFAULT_AUTHOR,
+      text,
+      timestamp: new Date().toISOString(),
+      emailHash: window.auth.getSession()?.email || null,
     };
 
-    StorageService.update(CONFIG.STORAGE_KEYS.POSTS, (allPosts) => {
-      if (!allPosts[postId]) allPosts[postId] = { comments: [] };
-      if (Array.isArray(allPosts[postId]))
-        allPosts[postId] = { comments: [...allPosts[postId]] };
-      if (!Array.isArray(allPosts[postId].comments))
-        allPosts[postId].comments = [];
-
-      allPosts[postId].comments.push(newComment);
+    StorageService.update(this.getStorageKey(), (posts) => {
+      posts[postId] = posts[postId] || { comments: [] };
+      if (Array.isArray(posts[postId]))
+        posts[postId] = { comments: [...posts[postId]] };
+      posts[postId].comments = posts[postId].comments || [];
+      posts[postId].comments.push(newComment);
     });
 
     return newComment;
   }
 
-  static editPost(postId, newContent) {
-    let success = false;
-    StorageService.update(CONFIG.STORAGE_KEYS.POSTS, (allPosts) => {
-      if (allPosts[postId]) {
-        allPosts[postId].content = newContent.trim();
-        success = true;
-      }
+  static updatePostContent(postId, content) {
+    StorageService.update(this.getStorageKey(), (posts) => {
+      if (posts[postId]) posts[postId].content = content.trim();
     });
-    return success;
   }
 
-  static editComment(postId, commentElement, newContent) {
-    const commentsList = commentElement.closest('.comments-list');
-    if (!commentsList || !postId) return false;
+  static mutateComment(postId, commentEl, actionFn) {
+    const list = commentEl.closest('.comments-list');
+    const targetId = list?.closest('[data-post-id]')?.dataset.postId || postId;
+    if (!targetId) return;
 
-    const postIdAttr = commentsList
-      .closest('[data-post-id]')
-      ?.getAttribute('data-post-id');
-    if (!postIdAttr) return false;
-
-    StorageService.update(CONFIG.STORAGE_KEYS.POSTS, (allPosts) => {
-      if (allPosts[postIdAttr]) {
-        const commentIndex = Array.from(
-          commentsList.querySelectorAll('.comment-item'),
-        ).indexOf(commentElement);
-        if (
-          allPosts[postIdAttr].comments &&
-          allPosts[postIdAttr].comments[commentIndex]
-        ) {
-          allPosts[postIdAttr].comments[commentIndex].text = newContent.trim();
-        }
-      }
+    StorageService.update(this.getStorageKey(), (posts) => {
+      const comments = posts[targetId]?.comments;
+      if (!comments) return;
+      const index = Array.from(list.children).indexOf(commentEl);
+      if (index !== -1) actionFn(comments, index);
     });
 
-    FeedUI.renderCommentsList(postIdAttr);
-    return true;
+    FeedUI.renderCommentsList(targetId);
   }
 
-  static deleteComment(postId, commentElement) {
-    const commentsList = commentElement.closest('.comments-list');
-    if (!commentsList || !postId) return false;
-
-    const postIdAttr = commentsList
-      .closest('[data-post-id]')
-      ?.getAttribute('data-post-id');
-    if (!postIdAttr) return false;
-
-    StorageService.update(CONFIG.STORAGE_KEYS.POSTS, (allPosts) => {
-      if (allPosts[postIdAttr]) {
-        const commentIndex = Array.from(
-          commentsList.querySelectorAll('.comment-item'),
-        ).indexOf(commentElement);
-        if (
-          allPosts[postIdAttr].comments &&
-          allPosts[postIdAttr].comments[commentIndex]
-        ) {
-          allPosts[postIdAttr].comments.splice(commentIndex, 1);
-        }
-      }
-    });
-
-    FeedUI.renderCommentsList(postIdAttr);
-    return true;
+  static formatRelativeTime(date) {
+    const diffMs = new Date() - new Date(date);
+    const hours = Math.floor(Math.abs(diffMs) / 36e5);
+    const mins = Math.floor(Math.abs(diffMs) / 6e4) % 60;
+    return hours > 0 ? `há ${hours}h` : mins > 0 ? `há ${mins}min` : 'agora';
   }
 
-  static formatRelativeTime(dateInput) {
-    const diffMs = new Date() - new Date(dateInput);
-    const hours = Math.floor(Math.abs(diffMs) / 3600000);
-    const minutes = Math.floor(Math.abs(diffMs) / 60000) % 60;
-
-    if (hours > 0) return `há ${hours}h`;
-    if (minutes > 0) return `há ${minutes}min`;
-    return 'agora';
-  }
-
-  static generateAvatarHtml(author, avatar) {
-    if (avatar) {
-      return `<img src="${avatar}" alt="" width="36" height="36" loading="lazy">`;
-    }
-    const initials = (author || CONFIG.DEFAULT_AUTHOR)
+  static getInitials(name) {
+    return (name || CONFIG.DEFAULT_AUTHOR)
       .split(' ')
-      .map((word) => word[0])
+      .map((w) => w[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
-
-    return `<span class="avatar-initials">${initials}</span>`;
   }
 }
 
@@ -168,115 +158,101 @@ class LikeService {
     return Boolean(StorageService.read(CONFIG.STORAGE_KEYS.LIKES)[postId]);
   }
 
-  static toggleLike(postId) {
-    let newState = false;
-    StorageService.update(CONFIG.STORAGE_KEYS.LIKES, (allLikes) => {
-      allLikes[postId] = !allLikes[postId];
-      newState = allLikes[postId];
+  static toggle(postId) {
+    let state = false;
+    StorageService.update(CONFIG.STORAGE_KEYS.LIKES, (likes) => {
+      likes[postId] = !likes[postId];
+      state = likes[postId];
     });
-    return newState;
+    return state;
+  }
+}
+
+async function loadCommunityBanner() {
+  const bannerEl = document.getElementById('communityBannerImg');
+  if (!bannerEl) return;
+
+  const community = CommunityService.getCommunity(activeCommunity);
+  if (!community?.banner) return;
+
+  let src = null;
+  if (typeof community.banner === 'object' && community.banner.type === 'img') {
+    src = await imageStore.load(community.banner.id);
+  } else if (typeof community.banner === 'string') {
+    src = community.banner;
+  }
+
+  if (src) {
+    bannerEl.style.backgroundImage = `url('${src}')`;
   }
 }
 
 class FeedUI {
-  static checkAuthOrShowModal() {
+  static async initCommunityBanner() {
+    await loadCommunityBanner();
+  }
+
+  static checkAuth() {
     if (!window.auth?.isLoggedIn()) {
-      FeedUI.toggleAuthModal(true);
+      this.toggleAuthModal(true);
       return false;
     }
     return true;
   }
 
-  static initializeAllPosts() {
-    const feedContainer = document.querySelector('.feed');
-    if (!feedContainer) return;
-    FeedUI.rebuildFeedFromStorage(feedContainer);
-  }
+  static renderAllPosts() {
+    const feed = document.querySelector('.feed');
+    if (!feed) return;
 
-  static rebuildFeedFromStorage(feedContainer) {
-    const allPostsData = StorageService.read(CONFIG.STORAGE_KEYS.POSTS);
-
-    feedContainer.querySelectorAll('.post-card').forEach((card) => {
-      const postId = card.getAttribute('data-post-id');
-      if (allPostsData[postId]) card.remove();
-    });
+    const posts = StorageService.read(CommentService.getStorageKey());
+    feed.querySelectorAll('.post-card').forEach((card) => card.remove());
 
     const fragment = document.createDocumentFragment();
-
-    Object.entries(allPostsData).forEach(([postId, postObj]) => {
-      if (
-        postObj?.content &&
-        !document.querySelector(`[data-post-id="${postId}"]`)
-      ) {
-        const postElement = FeedUI.createPostCardElement(
-          postObj.content,
-          postId,
-          postObj.author,
-          postObj.timestamp,
+    Object.entries(posts).forEach(([id, data]) => {
+      if (data?.content)
+        fragment.appendChild(
+          this.buildPostCard(data.content, id, data.author, data.timestamp),
         );
-        fragment.appendChild(postElement);
-      }
     });
+    feed.appendChild(fragment);
 
-    const postModal = document.getElementById('modal-criar-post');
-    if (postModal) {
-      postModal.after(fragment);
-    } else {
-      feedContainer.prepend(fragment);
-    }
-
-    document.querySelectorAll('.post-card').forEach((postCard) => {
-      const postId = postCard.getAttribute('data-post-id');
-      this.renderCommentsList(postId);
-      this.updateLikeButtonState(postCard, LikeService.isLiked(postId));
-      this.updateCommentFormState(postCard);
-      this.toggleEditVisibility(postCard);
+    feed.querySelectorAll('.post-card').forEach((card) => {
+      const id = card.dataset.postId;
+      this.renderCommentsList(id);
+      this.updateLikeButton(card, LikeService.isLiked(id));
+      this.updateCommentFormState(card);
+      this.toggleEditVisibility(card);
     });
   }
 
-  static createPostCardElement(
-    content,
-    postId,
-    author = null,
-    timestamp = null,
-  ) {
-    const currentUser = window.auth?.getCurrentUser();
-    const authorName = author || currentUser?.fullname || 'Você';
-    const displayTime = timestamp
-      ? CommentService.formatRelativeTime(timestamp)
-      : 'agora';
+  static buildPostCard(content, id, author, timestamp) {
+    const user = window.auth?.getCurrentUser();
+    const name = author || user?.fullname || 'Você';
     const isoTime = timestamp || new Date().toISOString();
+    const tpl = document.createElement('template');
 
-    const template = document.createElement('template');
-    template.innerHTML = `
-      <article class="post-card" data-post-id="${postId}">
+    tpl.innerHTML = `
+      <article class="post-card" data-post-id="${id}">
         <header class="post-header">
           <div class="user-avatar" aria-hidden="true"></div>
           <div class="user-info">
             <h2><span class="author-name"></span> <small class="username"></small></h2>
-            <time datetime="${isoTime}" class="post-time">${displayTime}</time>
+            <time datetime="${isoTime}" class="post-time">${CommentService.formatRelativeTime(isoTime)}</time>
           </div>
-          <button class="btn-more" aria-label="Mais opções deste post" aria-haspopup="menu">•••</button>
+          <button class="btn-more" aria-label="Mais opções" aria-haspopup="menu">•••</button>
           <nav class="context-menu" hidden aria-label="Menu do post">
-            <button data-action="edit">✏️ Editar</button>
-            <button>💾 Salvar publicação</button>
-            <button>⚠️ Denunciar</button>
-            <button>👤 Bloquear usuário</button>
+            <button data-action="edit-post">✏️ Editar</button>
+            <button data-action="save-post">💾 Salvar publicação</button>
+            <button data-action="report-post">⚠️ Denunciar</button>
+            <button data-action="block-user">👤 Bloquear usuário</button>
           </nav>
         </header>
-
-        <div class="post-body">
-          <p class="post-content"></p>
-        </div>
-
+        <div class="post-body"><p class="post-content"></p></div>
         <footer class="post-actions">
-          <button class="action-btn like-btn" aria-label="Curtir" aria-pressed="false">
-            <span class="heart-icon">🤍</span>
-          </button>
+          <button class="action-btn like-btn" aria-label="Curtir" aria-pressed="false"><span class="heart-icon">🤍</span></button>
           <button class="action-btn comment-toggle-btn" aria-label="Comentar">💬</button>
           <button class="action-btn" aria-label="Ler mangá">📖</button>
         </footer>
-
         <div class="comments-section">
           <div class="comment-form">
             <input type="text" class="comment-input" placeholder="Escreva um comentário...">
@@ -287,218 +263,157 @@ class FeedUI {
       </article>
     `.trim();
 
-    const element = template.content.firstElementChild;
-    element.querySelector('.author-name').textContent = authorName;
-    element.querySelector('.username').textContent = `@${authorName}`;
-    element.querySelector('.post-content').textContent = content;
-
-    return element;
+    const el = tpl.content.firstElementChild;
+    el.querySelector('.author-name').textContent = name;
+    el.querySelector('.username').textContent = `@${name}`;
+    el.querySelector('.post-content').textContent = content;
+    return el;
   }
 
-  static addNewPost(content) {
-    if (!window.auth?.isLoggedIn()) return false;
-
-    const postId = `post-${Date.now()}`;
-    const currentUser = window.auth?.getCurrentUser();
+  static addPost(content) {
+    if (!this.checkAuth()) return false;
+    const id = `post-${Date.now()}`;
+    const author = window.auth?.getCurrentUser()?.fullname || 'Você';
     const timestamp = new Date().toISOString();
-    const author = currentUser?.fullname || 'Você';
 
-    StorageService.update(CONFIG.STORAGE_KEYS.POSTS, (allPosts) => {
-      allPosts[postId] = { content, author, timestamp, comments: [] };
+    StorageService.update(CommentService.getStorageKey(), (posts) => {
+      posts[id] = { content, author, timestamp, comments: [] };
     });
 
-    const postElement = FeedUI.createPostCardElement(
-      content,
-      postId,
-      author,
-      timestamp,
-    );
+    const card = this.buildPostCard(content, id, author, timestamp);
     const postModal = document.getElementById('modal-criar-post');
-    const feedContainer = document.querySelector('.feed');
+    const feed = document.querySelector('.feed');
 
-    if (postModal) {
-      postModal.after(postElement);
-    } else if (feedContainer) {
-      feedContainer.prepend(postElement);
-    }
+    if (postModal) postModal.after(card);
+    else feed?.prepend(card);
 
-    this.renderCommentsList(postId);
-    this.updateLikeButtonState(postElement, false);
-    this.updateCommentFormState(postElement);
-    this.toggleEditVisibility(postElement);
+    this.renderCommentsList(id);
+    this.updateLikeButton(card, false);
+    this.updateCommentFormState(card);
+    this.toggleEditVisibility(card);
+    return true;
   }
 
   static renderCommentsList(postId) {
-    const listContainer = document.querySelector(
+    const container = document.querySelector(
       `[data-post-id="${postId}"] .comments-list`,
     );
-    if (!listContainer) return;
+    if (!container) return;
 
-    const comments = CommentService.getCommentsByPost(postId);
-    const allUsers = window.auth?.getUsers() || {};
+    const comments = CommentService.getPost(postId).comments || [];
+    const users = window.auth?.getUsers() || {};
     const currentUser = window.auth?.getCurrentUser();
     const isLoggedIn = Boolean(window.auth?.isLoggedIn());
 
-    listContainer.innerHTML = '';
-
-    comments.forEach((comment) => {
+    const items = comments.map((c) => {
       const li = document.createElement('li');
       li.className = 'comment-item';
       li.setAttribute('role', 'listitem');
 
-      const avatarDiv = document.createElement('div');
-      avatarDiv.className = 'comment-avatar';
-      const avatarUrl =
-        comment.emailHash && allUsers[comment.emailHash]?.avatar;
-      if (avatarUrl) {
-        const img = document.createElement('img');
-        img.src = avatarUrl;
-        img.alt = '';
-        img.width = 36;
-        img.height = 36;
-        img.loading = 'lazy';
-        avatarDiv.appendChild(img);
-      } else {
-        const authorName = comment.author || CONFIG.DEFAULT_AUTHOR;
-        const initials = authorName
-          .split(' ')
-          .map((word) => word[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2);
-        const span = document.createElement('span');
-        span.className = 'avatar-initials';
-        span.textContent = initials;
-        avatarDiv.appendChild(span);
-      }
+      const avatarUrl = c.emailHash && users[c.emailHash]?.avatar;
+      const avatarHtml = avatarUrl
+        ? `<img src="${avatarUrl}" alt="" width="36" height="36" loading="lazy">`
+        : `<span class="avatar-initials">${CommentService.getInitials(c.author)}</span>`;
 
-      const commentBody = document.createElement('div');
-      commentBody.className = 'comment-body';
+      const isOwner = isLoggedIn && currentUser?.email === c.emailHash;
+      const actionsHtml = isOwner
+        ? `<button class="btn-edit-comment" data-action="edit-comment" aria-label="Editar">✏️ Editar</button>
+           <button class="btn-delete-comment" data-action="delete-comment" aria-label="Excluir">🗑️ Excluir</button>`
+        : '';
 
-      const header = document.createElement('header');
-      header.className = 'comment-header';
+      li.innerHTML = `
+        <div class="comment-avatar">${avatarHtml}</div>
+        <div class="comment-body">
+          <header class="comment-header">
+            <span class="comment-username"></span>
+            <time class="comment-time" datetime="${c.timestamp}">${CommentService.formatRelativeTime(c.timestamp)}</time>
+            ${actionsHtml}
+          </header>
+          <p class="comment-text"></p>
+        </div>
+      `;
 
-      const usernameSpan = document.createElement('span');
-      usernameSpan.className = 'comment-username';
-      usernameSpan.textContent = comment.author || CONFIG.DEFAULT_AUTHOR;
-      header.appendChild(usernameSpan);
-
-      const timeEl = document.createElement('time');
-      timeEl.className = 'comment-time';
-      timeEl.setAttribute('datetime', comment.timestamp);
-      timeEl.textContent = CommentService.formatRelativeTime(comment.timestamp);
-      header.appendChild(timeEl);
-
-      if (isLoggedIn && currentUser?.email === comment.emailHash) {
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn-edit-comment';
-        editBtn.setAttribute('aria-label', 'Editar comentário');
-        editBtn.textContent = '✏️ Editar';
-        header.appendChild(editBtn);
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-delete-comment';
-        deleteBtn.setAttribute('aria-label', 'Excluir comentário');
-        deleteBtn.textContent = '🗑️ Excluir';
-        header.appendChild(deleteBtn);
-      }
-
-      commentBody.appendChild(header);
-
-      const textP = document.createElement('p');
-      textP.className = 'comment-text';
-      textP.textContent = comment.text;
-      commentBody.appendChild(textP);
-
-      li.appendChild(avatarDiv);
-      li.appendChild(commentBody);
-      listContainer.appendChild(li);
+      li.querySelector('.comment-username').textContent =
+        c.author || CONFIG.DEFAULT_AUTHOR;
+      li.querySelector('.comment-text').textContent = c.text;
+      return li;
     });
+
+    container.replaceChildren(...items);
   }
 
-  static isPostOwner(postCard) {
-    const postId = postCard.getAttribute('data-post-id');
-    const postData = CommentService.getPostData(postId);
-    const currentUser = window.auth?.getCurrentUser();
-
+  static isOwner(card) {
+    const post = CommentService.getPost(card.dataset.postId);
+    const user = window.auth?.getCurrentUser();
     return Boolean(
       window.auth?.isLoggedIn() &&
-      postData?.author &&
-      postData.author === currentUser?.fullname,
+      post?.author &&
+      post.author === user?.fullname,
     );
   }
 
-  static toggleEditVisibility(postCard) {
-    const editBtn = postCard.querySelector('[data-action="edit"]');
-    if (editBtn) editBtn.hidden = !FeedUI.isPostOwner(postCard);
+  static toggleEditVisibility(card) {
+    const btn = card.querySelector('[data-action="edit-post"]');
+    if (btn) btn.hidden = !this.isOwner(card);
   }
 
-  static updateCommentFormState(postCard) {
-    const isLoggedIn = Boolean(window.auth?.isLoggedIn());
-    const commentInput = postCard.querySelector('.comment-input');
-    const sendButton = postCard.querySelector('.send-comment-btn');
+  static updateCommentFormState(card) {
+    const loggedIn = Boolean(window.auth?.isLoggedIn());
+    const input = card.querySelector('.comment-input');
+    const btn = card.querySelector('.send-comment-btn');
 
-    if (commentInput) {
-      commentInput.disabled = !isLoggedIn;
-      commentInput.placeholder = isLoggedIn
+    if (input) {
+      input.disabled = !loggedIn;
+      input.placeholder = loggedIn
         ? 'Escreva um comentário...'
         : 'Faça login para comentar';
     }
-
-    if (sendButton) {
-      sendButton.hidden = !isLoggedIn;
-      sendButton.setAttribute(
-        'aria-label',
-        isLoggedIn ? 'Enviar comentário' : '',
-      );
+    if (btn) {
+      btn.hidden = !loggedIn;
+      btn.setAttribute('aria-label', loggedIn ? 'Enviar comentário' : '');
     }
   }
 
-  static updateLikeButtonState(postCard, isLiked) {
-    const likeBtn = postCard.querySelector('.like-btn');
-    if (!likeBtn) return;
-
-    likeBtn.classList.toggle('liked', isLiked);
-    likeBtn.setAttribute('aria-pressed', String(isLiked));
-
-    const heartIcon = likeBtn.querySelector('.heart-icon');
-    if (heartIcon) heartIcon.textContent = isLiked ? '❤️' : '🤍';
+  static updateLikeButton(card, isLiked) {
+    const btn = card.querySelector('.like-btn');
+    if (!btn) return;
+    btn.classList.toggle('liked', isLiked);
+    btn.setAttribute('aria-pressed', String(isLiked));
+    const icon = btn.querySelector('.heart-icon');
+    if (icon) icon.textContent = isLiked ? '❤️' : '🤍';
   }
 
-  static showAccessibleError(message) {
-    const errorContainer = document.getElementById('error-alert-container');
-    if (errorContainer) {
-      errorContainer.textContent = message;
-      errorContainer.hidden = false;
-      setTimeout(() => {
-        errorContainer.textContent = '';
-        errorContainer.hidden = true;
-      }, 5000);
-    }
+  static showAccessibleError(msg) {
+    const container = document.getElementById('error-alert-container');
+    if (!container) return;
+    container.textContent = msg;
+    container.hidden = false;
+    setTimeout(() => {
+      container.textContent = '';
+      container.hidden = true;
+    }, 5000);
   }
 
-  static submitNewComment(postCard) {
-    const inputElement = postCard.querySelector('.comment-input');
-    const commentText = inputElement?.value.trim();
-    if (!commentText) return;
+  static submitComment(card) {
+    const input = card.querySelector('.comment-input');
+    const text = input?.value.trim();
+    if (!text) return;
 
-    const postId = postCard.getAttribute('data-post-id');
-    CommentService.addComment(postId, commentText);
-    this.renderCommentsList(postId);
-    inputElement.value = '';
+    CommentService.addComment(card.dataset.postId, text);
+    this.renderCommentsList(card.dataset.postId);
+    input.value = '';
   }
 
-  static toggleAuthModal(shouldOpen) {
-    const authModal = document.querySelector(CONFIG.AUTH_MODAL_SELECTOR);
-    if (!authModal) return;
-
-    authModal.hidden = !shouldOpen;
-    if (shouldOpen) authModal.querySelector('[data-close]')?.focus();
+  static toggleAuthModal(show) {
+    const modal = document.querySelector(CONFIG.AUTH_MODAL_SELECTOR);
+    if (!modal) return;
+    modal.hidden = !show;
+    if (show) modal.querySelector('[data-close]')?.focus();
   }
 
-  static closeAllContextMenus(exceptMenu = null) {
+  static closeContextMenus(except = null) {
     document.querySelectorAll('.context-menu.show').forEach((menu) => {
-      if (menu === exceptMenu) return;
+      if (menu === except) return;
       menu.classList.remove('show');
       menu.hidden = true;
       menu
@@ -508,271 +423,212 @@ class FeedUI {
     });
   }
 
-  static handleContextMenuToggle(postCard, moreButtonElement) {
-    const contextMenu = postCard.querySelector('.context-menu');
-    if (!contextMenu) return;
-
-    this.closeAllContextMenus(contextMenu);
-    const isNowOpen = contextMenu.classList.toggle('show');
-    contextMenu.hidden = !isNowOpen;
-    moreButtonElement.setAttribute('aria-expanded', String(isNowOpen));
+  static toggleContextMenu(card, btn) {
+    const menu = card.querySelector('.context-menu');
+    if (!menu) return;
+    this.closeContextMenus(menu);
+    const isOpen = menu.classList.toggle('show');
+    menu.hidden = !isOpen;
+    btn.setAttribute('aria-expanded', String(isOpen));
   }
 
-  static handlePostBodyClick(postCard) {
-    if (!FeedUI.checkAuthOrShowModal()) return;
-
-    const commentInput = postCard.querySelector('.comment-input');
-    if (commentInput && !commentInput.disabled) {
-      commentInput.focus();
-    }
-  }
-
-  static openEditModal(postCard) {
-    const postId = postCard.getAttribute('data-post-id');
-    const postData = CommentService.getPostData(postId);
-    const postBody = postCard.querySelector('.post-body');
-
-    if (!postData.content || !postBody) return;
-
-    const originalContent = postData.content;
-    const editForm = document.createElement('form');
-    editForm.className = 'edit-form';
-    editForm.innerHTML = `
-      <textarea class="edit-textarea" rows="4"></textarea>
+  static inlineEditor({ targetEl, initialValue, onSave }) {
+    const form = document.createElement('form');
+    form.className = 'edit-inline-form';
+    form.innerHTML = `
+      <textarea class="edit-textarea" rows="3"></textarea>
       <div class="edit-actions">
-        <button type="button" class="btn-save-edit">💾 Salvar</button>
-        <button type="button" class="btn-cancel-edit">Cancelar</button>
+        <button type="button" class="btn-save">💾 Salvar</button>
+        <button type="button" class="btn-cancel">Cancelar</button>
       </div>
     `;
 
-    const textarea = editForm.querySelector('.edit-textarea');
-    textarea.value = originalContent;
-    postBody.replaceWith(editForm);
+    const textarea = form.querySelector('.edit-textarea');
+    textarea.value = initialValue;
+    targetEl.replaceWith(form);
     textarea.focus();
 
     const handleSave = () => {
-      const newContent = textarea.value.trim();
-      if (!newContent) {
-        FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
-        return;
-      }
-      CommentService.editPost(postId, newContent);
-      FeedUI.initializeAllPosts();
+      const val = textarea.value.trim();
+      if (!val)
+        return FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
+      onSave(val);
     };
 
-    editForm.addEventListener('click', (event) => {
-      event.stopPropagation();
-
-      if (event.target.matches('.btn-save-edit')) handleSave();
-      if (event.target.matches('.btn-cancel-edit')) {
-        const restoredBody = document.createElement('div');
-        restoredBody.className = 'post-body';
-        restoredBody.innerHTML = `<p class="post-content"></p>`;
-        restoredBody.querySelector('.post-content').textContent =
-          originalContent;
-        editForm.replaceWith(restoredBody);
-      }
+    form.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (e.target.matches('.btn-save')) handleSave();
+      if (e.target.matches('.btn-cancel')) form.replaceWith(targetEl);
     });
 
-    textarea.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' && event.ctrlKey) {
-        event.preventDefault();
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        e.preventDefault();
         handleSave();
       }
     });
   }
 
-  static openEditComment(commentItem, postId) {
-    const commentText = commentItem.querySelector('.comment-text');
-    if (!commentText) return;
+  static openEditModal(card) {
+    const id = card.dataset.postId;
+    const post = CommentService.getPost(id);
+    const body = card.querySelector('.post-body');
+    if (!post.content || !body) return;
 
-    const originalContent = commentText.textContent;
-    const capturedCommentItem = commentItem.closest('.comment-item');
-    const editForm = document.createElement('form');
-    editForm.className = 'edit-comment-form';
-    editForm.innerHTML = `
-      <textarea class="edit-comment-textarea" rows="3"></textarea>
-      <div class="edit-comment-actions">
-        <button type="button" class="btn-save-edit-comment">💾 Salvar</button>
-        <button type="button" class="btn-cancel-edit-comment">Cancelar</button>
-      </div>
-    `;
-
-    const textarea = editForm.querySelector('.edit-comment-textarea');
-    textarea.value = originalContent;
-    commentText.replaceWith(editForm);
-    textarea.focus();
-
-    const handleSave = () => {
-      const newContent = textarea.value.trim();
-      if (!newContent) {
-        FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
-        return;
-      }
-      CommentService.editComment(postId, capturedCommentItem, newContent);
-    };
-
-    editForm.addEventListener('click', (event) => {
-      event.stopPropagation();
-
-      if (event.target.matches('.btn-save-edit-comment')) handleSave();
-      if (event.target.matches('.btn-cancel-edit-comment')) {
-        const restoredText = document.createElement('p');
-        restoredText.className = 'comment-text';
-        restoredText.textContent = originalContent;
-        editForm.replaceWith(restoredText);
-      }
-    });
-
-    textarea.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' && event.ctrlKey) {
-        event.preventDefault();
-        handleSave();
-      }
+    this.inlineEditor({
+      targetEl: body,
+      initialValue: post.content,
+      onSave: (val) => {
+        CommentService.updatePostContent(id, val);
+        FeedUI.renderAllPosts();
+      },
     });
   }
 
-  static openDeleteComment(commentItem, postId) {
-    const commentText = commentItem.querySelector('.comment-text');
+  static openEditComment(commentEl, postId) {
+    const textEl = commentEl.querySelector('.comment-text');
+    if (!textEl) return;
+
+    this.inlineEditor({
+      targetEl: textEl,
+      initialValue: textEl.textContent,
+      onSave: (val) =>
+        CommentService.mutateComment(
+          postId,
+          commentEl,
+          (arr, idx) => (arr[idx].text = val),
+        ),
+    });
+  }
+
+  static openDeleteComment(commentEl, postId) {
+    const textEl = commentEl.querySelector('.comment-text');
     const modal = document.getElementById('delete-confirmation-modal');
-    if (!modal || !commentText) return;
+    if (!modal || !textEl) return;
 
-    const previewBlock = modal.querySelector('.delete-preview');
-    if (previewBlock) previewBlock.textContent = commentText.textContent;
+    const preview = modal.querySelector('.delete-preview');
+    if (preview) preview.textContent = textEl.textContent;
 
-    const handleConfirm = (e) => {
-      if (e.submitter?.value === 'cancel') {
-        modal.removeEventListener('submit', handleConfirm);
-        return;
-      }
+    modal.addEventListener(
+      'submit',
+      (e) => {
+        if (e.submitter?.value !== 'cancel') {
+          e.preventDefault();
+          CommentService.mutateComment(postId, commentEl, (arr, idx) =>
+            arr.splice(idx, 1),
+          );
+          commentEl.remove();
+          modal.close();
+        }
+      },
+      { once: true },
+    );
 
-      e.preventDefault();
-      CommentService.deleteComment(postId, commentItem);
-      commentItem.remove();
-      modal.close();
-      modal.removeEventListener('submit', handleConfirm);
-    };
-
-    modal.addEventListener('submit', handleConfirm);
     modal.showModal();
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  FeedUI.initializeAllPosts();
+  const params = new URLSearchParams(window.location.search);
+  activeCommunity = params.get('name');
+  const memberCount = params.get('memberCount');
 
-  const createPostBtn = document.getElementById('create-new-post-btn');
+  if (activeCommunity) {
+    const nameEl = document.getElementById('community-name');
+    if (nameEl) nameEl.textContent = activeCommunity;
+  }
+
+  if (memberCount) {
+    const statsEl = document.getElementById('community-stats');
+    if (statsEl)
+      statsEl.textContent = `${Number(memberCount).toLocaleString('pt-BR')} participantes`;
+  }
+
+  FeedUI.initCommunityBanner();
+  FeedUI.renderAllPosts();
+
   const postModal = document.querySelector('#modal-criar-post');
   const postInput = document.querySelector('#input-novo-post');
 
-  createPostBtn?.addEventListener('click', () => {
-    if (!FeedUI.checkAuthOrShowModal()) return;
-    postModal?.showModal();
-    postInput?.focus();
-  });
+  document
+    .getElementById('create-new-post-btn')
+    ?.addEventListener('click', () => {
+      if (!FeedUI.checkAuth()) return;
+      postModal?.showModal();
+      postInput?.focus();
+    });
 
   postModal?.querySelector('form')?.addEventListener('submit', (e) => {
     if (e.submitter?.value === 'cancel') return;
-
     e.preventDefault();
     const content = postInput?.value.trim();
-
-    if (!content) {
-      FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
-      return;
-    }
-
-    if (FeedUI.addNewPost(content)) {
-      postModal.close();
-    }
+    if (!content)
+      return FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
+    if (FeedUI.addPost(content)) postModal.close();
   });
 
   postModal?.addEventListener('close', () => {
     if (postInput) postInput.value = '';
   });
 
-  const feedContainer = document.querySelector('.feed');
-  feedContainer?.addEventListener('click', (event) => {
-    const target = event.target;
-    const postCard = target.closest('.post-card');
-    if (!postCard) return;
+  const feed = document.querySelector('.feed');
 
-    if (target.closest('.post-body')) {
-      FeedUI.handlePostBodyClick(postCard);
+  feed?.addEventListener('click', (e) => {
+    const card = e.target.closest('.post-card');
+    if (!card) return;
+
+    const postId = card.dataset.postId;
+    const actionTarget = e.target.closest('[data-action]');
+    const action = actionTarget?.dataset.action;
+
+    if (e.target.closest('.post-body')) {
+      if (FeedUI.checkAuth()) card.querySelector('.comment-input')?.focus();
       return;
     }
 
-    if (target.closest('.comment-toggle-btn')) {
-      event.stopPropagation();
-      const postId = postCard.getAttribute('data-post-id');
+    if (e.target.closest('.comment-toggle-btn')) {
+      e.stopPropagation();
       FeedUI.renderCommentsList(postId);
-      postCard.querySelector('.comments-section')?.classList.toggle('show');
+      card.querySelector('.comments-section')?.classList.toggle('show');
       return;
     }
 
-    if (target.closest('.like-btn')) {
-      const postId = postCard.getAttribute('data-post-id');
-      const isLikedNow = LikeService.toggleLike(postId);
-      FeedUI.updateLikeButtonState(postCard, isLikedNow);
+    if (e.target.closest('.like-btn')) {
+      FeedUI.updateLikeButton(card, LikeService.toggle(postId));
       return;
     }
 
-    if (target.matches('.send-comment-btn')) {
-      if (!FeedUI.checkAuthOrShowModal()) return;
-      FeedUI.submitNewComment(postCard);
+    if (e.target.matches('.send-comment-btn')) {
+      if (FeedUI.checkAuth()) FeedUI.submitComment(card);
       return;
     }
 
-    if (target.matches('.btn-more')) {
-      event.stopPropagation();
-      FeedUI.handleContextMenuToggle(postCard, target);
+    if (e.target.matches('.btn-more')) {
+      e.stopPropagation();
+      FeedUI.toggleContextMenu(card, e.target);
       return;
     }
 
-    if (target.matches('.btn-edit-comment')) {
-      event.stopPropagation();
-      const commentItem = target.closest('.comment-item');
-      if (!commentItem) return;
-      const editPostId = postCard.getAttribute('data-post-id');
-      FeedUI.openEditComment(commentItem, editPostId);
-      return;
-    }
+    if (action) {
+      e.stopPropagation();
 
-    if (target.matches('.btn-delete-comment')) {
-      event.stopPropagation();
-      const commentItem = target.closest('.comment-item');
-      if (!commentItem) return;
-      const deletePostId = postCard.getAttribute('data-post-id');
-      FeedUI.openDeleteComment(commentItem, deletePostId);
-      return;
-    }
-
-    const actionButton = target.closest('.context-menu button');
-    if (actionButton) {
-      event.stopPropagation();
-      actionButton
-        .closest('.context-menu')
-        ?.querySelectorAll('button')
-        .forEach((btn) => btn.classList.remove('active'));
-      actionButton.classList.add('active');
-
-      if (actionButton.textContent.includes('Bloquear')) {
-        postCard.remove();
-      } else if (
-        actionButton.dataset.action === 'edit' ||
-        actionButton.textContent.includes('Editar')
-      ) {
-        if (!FeedUI.checkAuthOrShowModal()) return;
-        FeedUI.openEditModal(postCard);
+      if (action === 'edit-comment') {
+        FeedUI.openEditComment(e.target.closest('.comment-item'), postId);
+      } else if (action === 'delete-comment') {
+        FeedUI.openDeleteComment(e.target.closest('.comment-item'), postId);
+      } else if (action === 'edit-post') {
+        if (FeedUI.checkAuth()) FeedUI.openEditModal(card);
+      } else if (action === 'block-user') {
+        card.remove();
       }
     }
   });
 
-  feedContainer?.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter' && event.target.matches('.comment-input')) {
-      if (!FeedUI.checkAuthOrShowModal()) return;
-      event.preventDefault();
-      FeedUI.submitNewComment(event.target.closest('.post-card'));
+  feed?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && e.target.matches('.comment-input')) {
+      if (!FeedUI.checkAuth()) return;
+      e.preventDefault();
+      FeedUI.submitComment(e.target.closest('.post-card'));
     }
   });
 
@@ -780,15 +636,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => FeedUI.toggleAuthModal(false));
   });
 
-  document.addEventListener('keydown', (event) => {
-    const authModal = document.querySelector(CONFIG.AUTH_MODAL_SELECTOR);
-    if (event.key === 'Escape' && authModal && !authModal.hidden) {
-      FeedUI.toggleAuthModal(false);
-    }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') FeedUI.toggleAuthModal(false);
   });
 
-  document.addEventListener('click', () => FeedUI.closeAllContextMenus());
+  document.addEventListener('click', () => FeedUI.closeContextMenus());
 
-  window.addEventListener('authStateChange', () => FeedUI.initializeAllPosts());
-  window.addEventListener('storage', () => FeedUI.initializeAllPosts());
+  window.addEventListener('authStateChange', () => FeedUI.renderAllPosts());
+  window.addEventListener('storage', () => FeedUI.renderAllPosts());
 });
