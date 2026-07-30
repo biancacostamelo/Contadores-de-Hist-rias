@@ -298,6 +298,22 @@
     },
   ];
 
+  const communityFormConfig = {
+    form: 'createCommunityForm',
+    input: 'communityName',
+    imageInput: 'communityImageInput',
+    err: 'community-error',
+    modal: getEl('editModalCreateCommunity'),
+    openBtn: 'btnCreateCommunity',
+    closeBtns: ['btnCloseCreateCommunity', 'btnCancelCreateCommunity'],
+    validate: (v) =>
+      !v
+        ? 'O nome da comunidade é obrigatório.'
+        : v.length < 3
+          ? 'Mínimo de 3 caracteres.'
+          : null,
+  };
+
   formsConfig.forEach(
     ({ form, input, err, key, modal, openBtn, closeBtns, validate, clear }) => {
       if (!modal) return;
@@ -369,6 +385,105 @@
       });
     },
   );
+
+  const communityModal = getEl('editModalCreateCommunity');
+  if (communityModal) {
+    getEl('btnCreateCommunity')?.addEventListener('click', () => {
+      communityModal.showModal();
+      const inputEl = getEl('communityName');
+      const errEl = getEl('community-error');
+      if (inputEl) inputEl.value = '';
+      if (errEl) errEl.textContent = '';
+      if (inputEl) setTimeout(() => inputEl.focus(), 100);
+    });
+
+    ['btnCloseCreateCommunity', 'btnCancelCreateCommunity'].forEach((id) =>
+      getEl(id)?.addEventListener('click', () => communityModal.close()),
+    );
+
+    communityModal.addEventListener('click', (e) => {
+      const content = communityModal.querySelector('.modal-content');
+      if (
+        !content ||
+        e.target.closest('#draftsContainer, [data-draft-index]')
+      )
+        return;
+      const r = content.getBoundingClientRect();
+      if (
+        e.clientX < r.left ||
+        e.clientX > r.right ||
+        e.clientY < r.top ||
+        e.clientY > r.bottom
+      ) {
+        communityModal.close();
+      }
+    });
+
+    getEl('createCommunityForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const session = auth.getSession();
+      if (!session) return;
+
+      const inputEl = getEl('communityName');
+      const errEl = getEl('community-error');
+      let val = inputEl.value.trim();
+
+      const errorMsg = communityFormConfig.validate(val);
+      if (errorMsg) {
+        if (errEl) errEl.textContent = errorMsg;
+        return inputEl.setAttribute('aria-invalid', 'true');
+      }
+
+      try {
+        let imageRef = null;
+        const imageInputEl = getEl('communityImageInput');
+        if (imageInputEl?.files?.[0]) {
+          const imgFile = imageInputEl.files[0];
+          const imgErr = validateImage(imgFile);
+          if (!imgErr) {
+            const imgId = await imageStore.save(imgFile);
+            imageRef = { type: 'img', id: imgId };
+          }
+        }
+
+        const communityData = {
+          name: val,
+          createdAt: new Date().toLocaleDateString('pt-BR'),
+          ...(imageRef && { image: imageRef }),
+        };
+
+        // Add to global communities list (used by comunidade.html)
+        const globalCommunities = JSON.parse(localStorage.getItem('writersCommunity_communities') || '[]');
+        const newGlobalCommunity = {
+          id: `comm_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          ...communityData,
+          memberCount: 1,
+        };
+        globalCommunities.unshift(newGlobalCommunity);
+        localStorage.setItem('writersCommunity_communities', JSON.stringify(globalCommunities));
+
+        // Add to user's personal communities list (used by perfil.html)
+        const currentUser = getCurrentUser();
+        const userCommunities = [...(currentUser?.communities || [])];
+        const newPersonalCommunity = {
+          id: newGlobalCommunity.id,
+          ...communityData,
+        };
+        userCommunities.unshift(newPersonalCommunity);
+
+        const res = await auth.updateProfile(session.email, {
+          communities: userCommunities,
+        });
+        if (res.success) {
+          communityModal.close();
+          loadUserProfile();
+        } else if (errEl) errEl.textContent = res.message;
+      } catch {
+        if (errEl)
+          errEl.textContent = 'Erro ao criar a comunidade.';
+      }
+    });
+  }
 
   function initStoryEditor() {
     const storyModal = getEl('editModalStory');
@@ -665,6 +780,34 @@
     await updateEditorDOM(draft.title, draft.type, draft.content);
   });
 
+  const communitiesList = getEl('communitiesList');
+  if (communitiesList) {
+    communitiesList.addEventListener('click', async (e) => {
+      const delBtn = e.target.closest('[data-delete-community-index]');
+      if (delBtn) {
+        e.stopPropagation();
+
+        const confirmed = await showConfirmDialog({
+          title: 'Excluir Comunidade',
+          message:
+            'Tem certeza que deseja excluir esta comunidade permanentemente? Todos os membros serão removidos.',
+          confirmText: 'Excluir',
+        });
+
+        if (!confirmed) return;
+
+        const session = auth.getSession();
+        const communities = [...(getCurrentUser()?.communities || [])];
+        communities.splice(+delBtn.dataset.deleteCommunityIndex, 1);
+        if ((await auth.updateProfile(session.email, { communities })).success) {
+          showToast('Comunidade excluída com sucesso!');
+          loadUserProfile();
+        }
+        return;
+      }
+    });
+  }
+
   const migrateStoredImages = async (user) => {
     if (!user || !auth.isLoggedIn()) return;
     const session = auth.getSession();
@@ -711,8 +854,52 @@
     }
   };
 
-  async function loadUserProfile() {
+  async function loadUserProfile(viewEmailHash = null) {
     const session = auth.getSession();
+    const isOwnProfile = !viewEmailHash && session;
+
+    if (!isOwnProfile && viewEmailHash) {
+      await imageStore.open();
+      const users = auth.getUsers();
+      const user = users?.[viewEmailHash];
+      if (!user) return;
+
+      const nameEl = getEl('perfilName');
+      const bioEl = getEl('perfilBio');
+      const avatarEl = getEl('avatarImg');
+      const bannerEl = getEl('bannerBg');
+
+      if (nameEl) nameEl.textContent = user.fullname || 'Membro';
+      if (bioEl) bioEl.textContent = user.bio || 'Escritor apaixonado';
+      if (avatarEl) {
+        const avatarRef = user.avatar;
+        if (avatarRef && typeof avatarRef === 'object' && avatarRef.type === 'img') {
+          const src = await imageStore.load(avatarRef.id);
+          avatarEl.src = src || DEFAULT_IMG;
+        } else {
+          avatarEl.src = avatarRef || DEFAULT_IMG;
+        }
+      }
+      if (bannerEl) {
+        const bannerRef = user.banner;
+        if (bannerRef && typeof bannerRef === 'object' && bannerRef.type === 'img') {
+          const src = await imageStore.load(bannerRef.id);
+          bannerEl.style.backgroundImage = `url('${src || DEFAULT_IMG}')`;
+        } else {
+          bannerEl.style.backgroundImage = `url('${bannerRef || DEFAULT_IMG}')`;
+        }
+      }
+
+      renderStories(user.stories || [], true);
+      renderDrafts(user.drafts || [], true);
+      renderCommunities(user.communities || [], true);
+
+      await restoreImagesInElement(DOM.storiesGrid);
+      await restoreImagesInElement(DOM.draftsContainer);
+      await restoreImagesInElement(getEl('communitiesList'));
+      return;
+    }
+
     if (!session) return;
     await imageStore.open();
     await migrateStoredImages(getCurrentUser());
@@ -753,14 +940,16 @@
       }
     }
 
-    renderStories(user?.stories || []);
-    renderDrafts(user?.drafts || []);
+    renderStories(user?.stories || [], false);
+    renderDrafts(user?.drafts || [], false);
+    renderCommunities(user?.communities || [], false);
 
     await restoreImagesInElement(DOM.storiesGrid);
     await restoreImagesInElement(DOM.draftsContainer);
+    await restoreImagesInElement(getEl('communitiesList'));
   }
 
-  function renderDrafts(drafts) {
+  function renderDrafts(drafts, isReadOnly = false) {
     if (!DOM.draftsContainer) return;
     if (!drafts.length) {
       DOM.draftsContainer.innerHTML = `<p class="empty-message-modal">Nenhum rascunho salvo no momento (máximo de ${MAX_DRAFTS}).</p>`;
@@ -775,15 +964,14 @@
             <div>
               <h4 class="draft-title">${escapeHTML(draft.title)}</h4>
               <span class="draft-meta">${escapeHTML(draft.type)} • Editado às ${escapeHTML(draft.updatedAt)}</span>
-            </div>
-            <button class="btn-delete-draft" data-delete-draft-index="${i}" aria-label="Excluir rascunho ${escapeHTML(draft.title)}">✕</button>
+            </div>${isReadOnly ? '' : `<button class="btn-delete-draft" data-delete-draft-index="${i}" aria-label="Excluir rascunho ${escapeHTML(draft.title)}">✕</button>`}
           </div>
         </div>`,
       )
       .join('');
   }
 
-  function renderStories(stories) {
+  function renderStories(stories, isReadOnly = false) {
     if (!DOM.storiesGrid) return;
     if (!stories.length) {
       DOM.storiesGrid.innerHTML = `<p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">Nenhuma história adicionada ainda.</p>`;
@@ -798,8 +986,30 @@
             <div>
               <h3>${escapeHTML(story.title || 'Sem título')}</h3>
               <p>${escapeHTML(story.type || 'Gênero')}</p>
-            </div>
-            <button class="btn-delete-story" data-delete-story-index="${i}" aria-label="Excluir ${escapeHTML(story.title || 'história')}">✕</button>
+            </div>${isReadOnly ? '' : `<button class="btn-delete-story" data-delete-story-index="${i}" aria-label="Excluir ${escapeHTML(story.title || 'história')}">✕</button>`}
+          </div>
+        </div>`,
+      )
+      .join('');
+  }
+
+  function renderCommunities(communities, isReadOnly = false) {
+    const communitiesList = getEl('communitiesList');
+    if (!communitiesList) return;
+    if (!communities.length) {
+      communitiesList.innerHTML = `<p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">Nenhuma comunidade criada ainda.</p>`;
+      return;
+    }
+
+    communitiesList.innerHTML = communities
+      .map(
+        (community, i) => `
+        <div class="cardPerfil" data-community-index="${i}" style="background-image: url('${DEFAULT_IMG}');">
+          <div class="contentCard">
+            <div>
+              <h3>${escapeHTML(community.name || 'Sem nome')}</h3>
+              <p>${escapeHTML(community.createdAt || 'Data não informada')}</p>
+            </div>${isReadOnly ? '' : `<button class="btn-delete-story" data-delete-community-index="${i}" aria-label="Excluir ${escapeHTML(community.name || 'comunidade')}">✕</button>`}
           </div>
         </div>`,
       )
@@ -815,8 +1025,30 @@
     }
   }
 
-  if (!auth.isLoggedIn()) {
-    window.location.href = '../pages/login.html';
+  const emailParam = new URLSearchParams(window.location.search).get('view');
+  const isLoggedIn = auth.isLoggedIn();
+
+  if (!isLoggedIn) {
+    if (emailParam) {
+      loadUserProfile(emailParam);
+      document.querySelectorAll('.edit-profile-section, .btn-update').forEach((el) => el.style.display = 'none');
+      document.querySelectorAll('dialog.edit-modal').forEach((modal) => modal.style.display = 'none');
+      document.getElementById('storyEditorArea')?.setAttribute('contenteditable', 'false');
+      const uploadBtns = document.getElementById('btnUploadBanner');
+      const avatarBtn = document.getElementById('btnUploadAvatar');
+      if (uploadBtns) uploadBtns.style.display = 'none';
+      if (avatarBtn) avatarBtn.style.display = 'none';
+    } else {
+      window.location.href = '../pages/login.html';
+    }
+  } else if (emailParam) {
+    loadUserProfile(emailParam);
+    document.querySelectorAll('.edit-profile-section, .btn-update').forEach((el) => el.style.display = 'none');
+    document.querySelectorAll('dialog.edit-modal').forEach((modal) => modal.style.display = 'none');
+    const uploadBtns = document.getElementById('btnUploadBanner');
+    const avatarBtn = document.getElementById('btnUploadAvatar');
+    if (uploadBtns) uploadBtns.style.display = 'none';
+    if (avatarBtn) avatarBtn.style.display = 'none';
   } else {
     loadUserProfile();
     initStoryEditor();

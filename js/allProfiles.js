@@ -154,7 +154,6 @@
     const users = Storage.get(CONFIG.STORAGE_KEYS.USERS) || {};
     const activeEmail = SessionManager.getActiveUserEmail();
 
-    // Filtra para remover apenas o usuário atual caso esteja logado
     const filteredUsers = Object.entries(users).filter(
       ([email]) => !activeEmail || email !== activeEmail,
     );
