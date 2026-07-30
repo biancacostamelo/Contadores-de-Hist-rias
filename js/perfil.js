@@ -707,6 +707,9 @@
   });
 
   DOM.storiesGrid?.addEventListener('click', async (e) => {
+    const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+    if (isReadOnlyMode) return;
+
     const delBtn = e.target.closest('[data-delete-story-index]');
     if (delBtn) {
       e.stopPropagation();
@@ -744,6 +747,9 @@
   });
 
   DOM.draftsContainer?.addEventListener('click', async (e) => {
+    const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+    if (isReadOnlyMode) return;
+
     const delBtn = e.target.closest('[data-delete-draft-index]');
     if (delBtn) {
       e.stopPropagation();
@@ -783,6 +789,9 @@
   const communitiesList = getEl('communitiesList');
   if (communitiesList) {
     communitiesList.addEventListener('click', async (e) => {
+      const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+      if (isReadOnlyMode) return;
+
       const delBtn = e.target.closest('[data-delete-community-index]');
       if (delBtn) {
         e.stopPropagation();

@@ -1,4 +1,4 @@
-const CONFIG = {
+const CONFIG = Object.freeze({
   AUTH_MODAL_SELECTOR: '.auth-modal',
   STORAGE_KEYS: {
     LIKES: 'comentariosComunidade_likes',
@@ -8,19 +8,78 @@ const CONFIG = {
   COMMUNITIES_KEY: 'writersCommunity_communities',
   IMAGE_DB_NAME: 'writersCommunityImages',
   IMAGE_STORE_NAME: 'images',
-};
+});
 
-let activeCommunity = null;
+class Comment {
+  constructor({
+    author,
+    text,
+    timestamp = new Date().toISOString(),
+    emailHash = null,
+  }) {
+    this.author = author || CONFIG.DEFAULT_AUTHOR;
+    this.text = text;
+    this.timestamp = timestamp;
+    this.emailHash = emailHash;
+  }
 
-const imageStore = {
-  db: null,
+  get initials() {
+    return this.author
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
+  get relativeTime() {
+    const diffMs = new Date() - new Date(this.timestamp);
+    const hours = Math.floor(Math.abs(diffMs) / 36e5);
+    const mins = Math.floor(Math.abs(diffMs) / 6e4) % 60;
+
+    if (hours > 0) return `há ${hours}h`;
+    if (mins > 0) return `há ${mins}min`;
+    return 'agora';
+  }
+}
+
+class Post {
+  constructor({
+    id,
+    content,
+    author,
+    timestamp = new Date().toISOString(),
+    comments = [],
+    authorEmailHash = null,
+  }) {
+    this.id = id || `post-${Date.now()}`;
+    this.content = content;
+    this.author = author || 'Você';
+    this.timestamp = timestamp;
+    this.comments = comments.map((c) =>
+      c instanceof Comment ? c : new Comment(c),
+    );
+    this.authorEmailHash = authorEmailHash;
+  }
+
+  get relativeTime() {
+    return new Comment({ timestamp: this.timestamp }).relativeTime;
+  }
+}
+
+class ImageRepository {
+  constructor() {
+    this.db = null;
+  }
 
   async open() {
     if (this.db) return this.db;
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(CONFIG.IMAGE_DB_NAME, 1);
       request.onupgradeneeded = () => {
-        request.result.createObjectStore(CONFIG.IMAGE_STORE_NAME, { keyPath: 'id' });
+        request.result.createObjectStore(CONFIG.IMAGE_STORE_NAME, {
+          keyPath: 'id',
+        });
       };
       request.onsuccess = () => {
         this.db = request.result;
@@ -28,22 +87,51 @@ const imageStore = {
       };
       request.onerror = () => reject(request.error);
     });
-  },
+  }
 
   async load(id) {
     if (!id) return null;
-    await this.open();
-    return new Promise((resolve) => {
-      const store = this.db.transaction(CONFIG.IMAGE_STORE_NAME).objectStore(CONFIG.IMAGE_STORE_NAME);
-      const request = store.get(id);
-      request.onsuccess = () => resolve(request.result?.data || null);
-      request.onerror = () => resolve(null);
-    });
-  },
-};
+    try {
+      await this.open();
+      return new Promise((resolve) => {
+        const transaction = this.db.transaction(CONFIG.IMAGE_STORE_NAME);
+        const store = transaction.objectStore(CONFIG.IMAGE_STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result?.data || null);
+        request.onerror = () => resolve(null);
+      });
+    } catch (err) {
+      console.error('[ImageRepository] Erro ao carregar imagem:', err);
+      return null;
+    }
+  }
 
-const getCommunityKey = (name) =>
-  `${CONFIG.STORAGE_KEYS.POSTS}_${(name || '').replace(/\s+/g, '_').toLowerCase()}`;
+  async resolveAvatarUrl(emailHash, authorName) {
+    const users = window.auth?.getUsers() || {};
+    let avatarRef = null;
+
+    if (emailHash && users[emailHash]) {
+      avatarRef = users[emailHash].avatar;
+    } else if (authorName) {
+      const matchedUser = Object.values(users).find(
+        (u) => u.fullname === authorName,
+      );
+      avatarRef = matchedUser?.avatar;
+    }
+
+    if (!avatarRef) return null;
+
+    if (typeof avatarRef === 'object' && avatarRef.type === 'img') {
+      return await this.load(avatarRef.id);
+    }
+    if (typeof avatarRef === 'string') {
+      return avatarRef;
+    }
+    return null;
+  }
+}
+
+const imageRepository = new ImageRepository();
 
 class StorageService {
   static read(key) {
@@ -58,7 +146,7 @@ class StorageService {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (err) {
-      console.error(`[StorageService] Error writing "${key}":`, err);
+      console.error(`[StorageService] Erro ao gravar "${key}":`, err);
     }
   }
 
@@ -69,8 +157,20 @@ class StorageService {
     return updated;
   }
 }
-
 class CommunityService {
+  static activeCommunity = null;
+
+  static setActiveCommunity(name) {
+    this.activeCommunity = name;
+  }
+
+  static get StorageKey() {
+    const name = (this.activeCommunity || '')
+      .replace(/\s+/g, '_')
+      .toLowerCase();
+    return `${CONFIG.STORAGE_KEYS.POSTS}_${name}`;
+  }
+
   static getCommunities() {
     try {
       return JSON.parse(localStorage.getItem(CONFIG.COMMUNITIES_KEY)) || [];
@@ -80,76 +180,80 @@ class CommunityService {
   }
 
   static getCommunity(name) {
-    const communities = this.getCommunities();
-    return communities.find((c) => c.name.toLowerCase() === (name || '').toLowerCase());
-  }
-}
-
-class CommentService {
-  static getStorageKey = () => getCommunityKey(activeCommunity);
-
-  static getPost(postId) {
-    return (
-      StorageService.read(this.getStorageKey())[postId] || { comments: [] }
+    return this.getCommunities().find(
+      (c) => c.name.toLowerCase() === (name || '').toLowerCase(),
     );
   }
+}
+class PostService {
+  static getPost(postId) {
+    const data = StorageService.read(CommunityService.StorageKey)[postId];
+    return data ? new Post(data) : new Post({ id: postId });
+  }
 
-  static addComment(postId, text) {
+  static getAllPosts() {
+    const data = StorageService.read(CommunityService.StorageKey);
+    return Object.entries(data)
+      .filter(([_, value]) => Boolean(value?.content))
+      .map(([id, value]) => new Post({ id, ...value }));
+  }
+
+  static createPost(content) {
     if (!window.auth?.isLoggedIn()) return null;
-    const user = window.auth.getCurrentUser();
-    const newComment = {
-      author: user?.fullname || CONFIG.DEFAULT_AUTHOR,
-      text,
-      timestamp: new Date().toISOString(),
-      emailHash: window.auth.getSession()?.email || null,
-    };
 
-    StorageService.update(this.getStorageKey(), (posts) => {
-      posts[postId] = posts[postId] || { comments: [] };
-      if (Array.isArray(posts[postId]))
-        posts[postId] = { comments: [...posts[postId]] };
-      posts[postId].comments = posts[postId].comments || [];
-      posts[postId].comments.push(newComment);
+    const user = window.auth.getCurrentUser();
+    const session = window.auth.getSession();
+    const post = new Post({
+      content,
+      author: user?.fullname,
+      authorEmailHash: session?.email || null,
     });
 
-    return newComment;
+    StorageService.update(CommunityService.StorageKey, (posts) => {
+      posts[post.id] = post;
+    });
+
+    return post;
   }
 
   static updatePostContent(postId, content) {
-    StorageService.update(this.getStorageKey(), (posts) => {
+    StorageService.update(CommunityService.StorageKey, (posts) => {
       if (posts[postId]) posts[postId].content = content.trim();
     });
   }
 
-  static mutateComment(postId, commentEl, actionFn) {
-    const list = commentEl.closest('.comments-list');
-    const targetId = list?.closest('[data-post-id]')?.dataset.postId || postId;
-    if (!targetId) return;
+  static addComment(postId, text) {
+    if (!window.auth?.isLoggedIn()) return null;
 
-    StorageService.update(this.getStorageKey(), (posts) => {
-      const comments = posts[targetId]?.comments;
-      if (!comments) return;
-      const index = Array.from(list.children).indexOf(commentEl);
-      if (index !== -1) actionFn(comments, index);
+    const user = window.auth.getCurrentUser();
+    const comment = new Comment({
+      author: user?.fullname,
+      text,
+      emailHash: window.auth.getSession()?.email || null,
     });
 
-    FeedUI.renderCommentsList(targetId);
+    StorageService.update(CommunityService.StorageKey, (posts) => {
+      posts[postId] = posts[postId] || { comments: [] };
+      if (!Array.isArray(posts[postId].comments)) posts[postId].comments = [];
+      posts[postId].comments.push(comment);
+    });
+
+    return comment;
   }
 
-  static formatRelativeTime(date) {
-    const diffMs = new Date() - new Date(date);
-    const hours = Math.floor(Math.abs(diffMs) / 36e5);
-    const mins = Math.floor(Math.abs(diffMs) / 6e4) % 60;
-    return hours > 0 ? `há ${hours}h` : mins > 0 ? `há ${mins}min` : 'agora';
+  static mutateComment(postId, commentIndex, actionFn) {
+    StorageService.update(CommunityService.StorageKey, (posts) => {
+      const comments = posts[postId]?.comments;
+      if (comments && comments[commentIndex]) {
+        actionFn(comments, commentIndex);
+      }
+    });
   }
 
-  static getInitials(name) {
-    return (name || CONFIG.DEFAULT_AUTHOR)
-      .split(' ')
-      .map((w) => w[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+  static deletePost(postId) {
+    StorageService.update(CommunityService.StorageKey, (posts) => {
+      delete posts[postId];
+    });
   }
 }
 
@@ -168,28 +272,27 @@ class LikeService {
   }
 }
 
-async function loadCommunityBanner() {
-  const bannerEl = document.getElementById('communityBannerImg');
-  if (!bannerEl) return;
-
-  const community = CommunityService.getCommunity(activeCommunity);
-  if (!community?.banner) return;
-
-  let src = null;
-  if (typeof community.banner === 'object' && community.banner.type === 'img') {
-    src = await imageStore.load(community.banner.id);
-  } else if (typeof community.banner === 'string') {
-    src = community.banner;
-  }
-
-  if (src) {
-    bannerEl.style.backgroundImage = `url('${src}')`;
-  }
-}
-
 class FeedUI {
-  static async initCommunityBanner() {
-    await loadCommunityBanner();
+  static async loadCommunityBanner() {
+    const bannerEl = document.getElementById('communityBannerImg');
+    if (!bannerEl) return;
+
+    const community = CommunityService.getCommunity(
+      CommunityService.activeCommunity,
+    );
+    if (!community?.banner) return;
+
+    let src = null;
+    if (
+      typeof community.banner === 'object' &&
+      community.banner.type === 'img'
+    ) {
+      src = await imageRepository.load(community.banner.id);
+    } else if (typeof community.banner === 'string') {
+      src = community.banner;
+    }
+
+    if (src) bannerEl.style.backgroundImage = `url('${src}')`;
   }
 
   static checkAuth() {
@@ -200,20 +303,18 @@ class FeedUI {
     return true;
   }
 
-  static renderAllPosts() {
+  static async renderAllPosts() {
     const feed = document.querySelector('.feed');
     if (!feed) return;
 
-    const posts = StorageService.read(CommentService.getStorageKey());
+    const posts = PostService.getAllPosts();
     feed.querySelectorAll('.post-card').forEach((card) => card.remove());
 
     const fragment = document.createDocumentFragment();
-    Object.entries(posts).forEach(([id, data]) => {
-      if (data?.content)
-        fragment.appendChild(
-          this.buildPostCard(data.content, id, data.author, data.timestamp),
-        );
-    });
+    for (const post of posts) {
+      const card = await this.buildPostCard(post);
+      fragment.appendChild(card);
+    }
     feed.appendChild(fragment);
 
     feed.querySelectorAll('.post-card').forEach((card) => {
@@ -225,23 +326,23 @@ class FeedUI {
     });
   }
 
-  static buildPostCard(content, id, author, timestamp) {
+  static async buildPostCard(post) {
     const user = window.auth?.getCurrentUser();
-    const name = author || user?.fullname || 'Você';
-    const isoTime = timestamp || new Date().toISOString();
+    const name = post.author || user?.fullname || 'Você';
     const tpl = document.createElement('template');
 
     tpl.innerHTML = `
-      <article class="post-card" data-post-id="${id}">
+      <article class="post-card" data-post-id="${post.id}">
         <header class="post-header">
           <div class="user-avatar" aria-hidden="true"></div>
           <div class="user-info">
             <h2><span class="author-name"></span> <small class="username"></small></h2>
-            <time datetime="${isoTime}" class="post-time">${CommentService.formatRelativeTime(isoTime)}</time>
+            <time datetime="${post.timestamp}" class="post-time">${post.relativeTime}</time>
           </div>
           <button class="btn-more" aria-label="Mais opções" aria-haspopup="menu">•••</button>
           <nav class="context-menu" hidden aria-label="Menu do post">
             <button data-action="edit-post">✏️ Editar</button>
+            <button data-action="delete-post">🗑️ Excluir publicação</button>
             <button data-action="save-post">💾 Salvar publicação</button>
             <button data-action="report-post">⚠️ Denunciar</button>
             <button data-action="block-user">👤 Bloquear usuário</button>
@@ -266,95 +367,105 @@ class FeedUI {
     const el = tpl.content.firstElementChild;
     el.querySelector('.author-name').textContent = name;
     el.querySelector('.username').textContent = `@${name}`;
-    el.querySelector('.post-content').textContent = content;
+    el.querySelector('.post-content').textContent = post.content;
+
+    const avatarEl = el.querySelector('.user-avatar');
+    if (avatarEl) {
+      const avatarUrl = await imageRepository.resolveAvatarUrl(
+        post.authorEmailHash,
+        name,
+      );
+      avatarEl.innerHTML = avatarUrl
+        ? `<img src="${avatarUrl}" alt="" width="40" height="40" loading="lazy">`
+        : `<span class="author-avatar-initials" aria-hidden="true">${new Comment({ author: name }).initials}</span>`;
+    }
+
     return el;
   }
 
-  static addPost(content) {
-    if (!this.checkAuth()) return false;
-    const id = `post-${Date.now()}`;
-    const author = window.auth?.getCurrentUser()?.fullname || 'Você';
-    const timestamp = new Date().toISOString();
-
-    StorageService.update(CommentService.getStorageKey(), (posts) => {
-      posts[id] = { content, author, timestamp, comments: [] };
-    });
-
-    const card = this.buildPostCard(content, id, author, timestamp);
-    const postModal = document.getElementById('modal-criar-post');
-    const feed = document.querySelector('.feed');
-
-    if (postModal) postModal.after(card);
-    else feed?.prepend(card);
-
-    this.renderCommentsList(id);
-    this.updateLikeButton(card, false);
-    this.updateCommentFormState(card);
-    this.toggleEditVisibility(card);
-    return true;
-  }
-
-  static renderCommentsList(postId) {
+  static async renderCommentsList(postId) {
     const container = document.querySelector(
       `[data-post-id="${postId}"] .comments-list`,
     );
     if (!container) return;
 
-    const comments = CommentService.getPost(postId).comments || [];
-    const users = window.auth?.getUsers() || {};
+    const post = PostService.getPost(postId);
     const currentUser = window.auth?.getCurrentUser();
     const isLoggedIn = Boolean(window.auth?.isLoggedIn());
 
-    const items = comments.map((c) => {
-      const li = document.createElement('li');
-      li.className = 'comment-item';
-      li.setAttribute('role', 'listitem');
+    const items = await Promise.all(
+      post.comments.map(async (c) => {
+        const li = document.createElement('li');
+        li.className = 'comment-item';
+        li.setAttribute('role', 'listitem');
 
-      const avatarUrl = c.emailHash && users[c.emailHash]?.avatar;
-      const avatarHtml = avatarUrl
-        ? `<img src="${avatarUrl}" alt="" width="36" height="36" loading="lazy">`
-        : `<span class="avatar-initials">${CommentService.getInitials(c.author)}</span>`;
+        const avatarUrl = await imageRepository.resolveAvatarUrl(
+          c.emailHash,
+          c.author,
+        );
+        const avatarHtml = avatarUrl
+          ? `<img src="${avatarUrl}" alt="" width="36" height="36" loading="lazy">`
+          : `<span class="avatar-initials">${c.initials}</span>`;
 
-      const isOwner = isLoggedIn && currentUser?.email === c.emailHash;
-      const actionsHtml = isOwner
-        ? `<button class="btn-edit-comment" data-action="edit-comment" aria-label="Editar">✏️ Editar</button>
-           <button class="btn-delete-comment" data-action="delete-comment" aria-label="Excluir">🗑️ Excluir</button>`
-        : '';
+        const isOwner = isLoggedIn && currentUser?.email === c.emailHash;
+        const actionsHtml = isOwner
+          ? `<button class="btn-edit-comment" data-action="edit-comment" aria-label="Editar">✏️ Editar</button>
+             <button class="btn-delete-comment" data-action="delete-comment" aria-label="Excluir">🗑️ Excluir</button>`
+          : '';
 
-      li.innerHTML = `
-        <div class="comment-avatar">${avatarHtml}</div>
-        <div class="comment-body">
-          <header class="comment-header">
-            <span class="comment-username"></span>
-            <time class="comment-time" datetime="${c.timestamp}">${CommentService.formatRelativeTime(c.timestamp)}</time>
-            ${actionsHtml}
-          </header>
-          <p class="comment-text"></p>
-        </div>
-      `;
+        li.innerHTML = `
+          <div class="comment-avatar">${avatarHtml}</div>
+          <div class="comment-body">
+            <header class="comment-header">
+              <span class="comment-username"></span>
+              <time class="comment-time" datetime="${c.timestamp}">${c.relativeTime}</time>
+              ${actionsHtml}
+            </header>
+            <p class="comment-text"></p>
+          </div>
+        `;
 
-      li.querySelector('.comment-username').textContent =
-        c.author || CONFIG.DEFAULT_AUTHOR;
-      li.querySelector('.comment-text').textContent = c.text;
-      return li;
-    });
+        li.querySelector('.comment-username').textContent = c.author;
+        li.querySelector('.comment-text').textContent = c.text;
+        return li;
+      }),
+    );
 
     container.replaceChildren(...items);
   }
 
   static isOwner(card) {
-    const post = CommentService.getPost(card.dataset.postId);
-    const user = window.auth?.getCurrentUser();
+    const post = PostService.getPost(card.dataset.postId);
+    const session = window.auth?.getSession();
     return Boolean(
       window.auth?.isLoggedIn() &&
-      post?.author &&
-      post.author === user?.fullname,
+      post?.authorEmailHash &&
+      session?.email === post.authorEmailHash,
+    );
+  }
+
+  static isCommentOwner(commentEl) {
+    const commentIndex = Array.from(
+      commentEl.closest('.comments-list').children,
+    ).indexOf(commentEl);
+    const postId = commentEl.closest('.post-card')?.dataset.postId;
+    const post = PostService.getPost(postId);
+    if (!post || !post.comments[commentIndex]) return false;
+
+    const session = window.auth?.getSession();
+    return Boolean(
+      window.auth?.isLoggedIn() &&
+      post.comments[commentIndex].emailHash &&
+      session?.email === post.comments[commentIndex].emailHash,
     );
   }
 
   static toggleEditVisibility(card) {
-    const btn = card.querySelector('[data-action="edit-post"]');
-    if (btn) btn.hidden = !this.isOwner(card);
+    const editBtn = card.querySelector('[data-action="edit-post"]');
+    const deleteBtn = card.querySelector('[data-action="delete-post"]');
+    const isOwner = this.isOwner(card);
+    if (editBtn) editBtn.hidden = !isOwner;
+    if (deleteBtn) deleteBtn.hidden = !isOwner;
   }
 
   static updateCommentFormState(card) {
@@ -399,7 +510,7 @@ class FeedUI {
     const text = input?.value.trim();
     if (!text) return;
 
-    CommentService.addComment(card.dataset.postId, text);
+    PostService.addComment(card.dataset.postId, text);
     this.renderCommentsList(card.dataset.postId);
     input.value = '';
   }
@@ -471,7 +582,7 @@ class FeedUI {
 
   static openEditModal(card) {
     const id = card.dataset.postId;
-    const post = CommentService.getPost(id);
+    const post = PostService.getPost(id);
     const body = card.querySelector('.post-body');
     if (!post.content || !body) return;
 
@@ -479,7 +590,7 @@ class FeedUI {
       targetEl: body,
       initialValue: post.content,
       onSave: (val) => {
-        CommentService.updatePostContent(id, val);
+        PostService.updatePostContent(id, val);
         FeedUI.renderAllPosts();
       },
     });
@@ -487,24 +598,30 @@ class FeedUI {
 
   static openEditComment(commentEl, postId) {
     const textEl = commentEl.querySelector('.comment-text');
-    if (!textEl) return;
+    const list = commentEl.closest('.comments-list');
+    const commentIndex = Array.from(list.children).indexOf(commentEl);
+
+    if (!textEl || commentIndex === -1) return;
 
     this.inlineEditor({
       targetEl: textEl,
       initialValue: textEl.textContent,
-      onSave: (val) =>
-        CommentService.mutateComment(
-          postId,
-          commentEl,
-          (arr, idx) => (arr[idx].text = val),
-        ),
+      onSave: (val) => {
+        PostService.mutateComment(postId, commentIndex, (comments, idx) => {
+          comments[idx].text = val;
+        });
+        FeedUI.renderCommentsList(postId);
+      },
     });
   }
 
   static openDeleteComment(commentEl, postId) {
     const textEl = commentEl.querySelector('.comment-text');
     const modal = document.getElementById('delete-confirmation-modal');
-    if (!modal || !textEl) return;
+    const list = commentEl.closest('.comments-list');
+    const commentIndex = Array.from(list.children).indexOf(commentEl);
+
+    if (!modal || !textEl || commentIndex === -1) return;
 
     const preview = modal.querySelector('.delete-preview');
     if (preview) preview.textContent = textEl.textContent;
@@ -514,10 +631,41 @@ class FeedUI {
       (e) => {
         if (e.submitter?.value !== 'cancel') {
           e.preventDefault();
-          CommentService.mutateComment(postId, commentEl, (arr, idx) =>
-            arr.splice(idx, 1),
-          );
+          PostService.mutateComment(postId, commentIndex, (comments, idx) => {
+            comments.splice(idx, 1);
+          });
           commentEl.remove();
+          modal.close();
+        }
+      },
+      { once: true },
+    );
+
+    modal.showModal();
+  }
+
+  static openDeletePost(card) {
+    const postId = card.dataset.postId;
+    const post = PostService.getPost(postId);
+    const body = card.querySelector('.post-body');
+    const modal = document.getElementById('delete-confirmation-modal');
+
+    if (!modal || !body || !post?.content) return;
+
+    const preview = modal.querySelector('.delete-preview');
+    if (preview) {
+      const p = document.createElement('p');
+      p.textContent = post.content;
+      preview.replaceWith(p);
+    }
+
+    modal.addEventListener(
+      'submit',
+      (e) => {
+        if (e.submitter?.value !== 'cancel') {
+          e.preventDefault();
+          PostService.deletePost(postId);
+          card.remove();
           modal.close();
         }
       },
@@ -528,52 +676,83 @@ class FeedUI {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  activeCommunity = params.get('name');
-  const memberCount = params.get('memberCount');
+class AppController {
+  static init() {
+    const params = new URLSearchParams(window.location.search);
+    CommunityService.setActiveCommunity(params.get('name'));
+    const memberCount = params.get('memberCount');
 
-  if (activeCommunity) {
-    const nameEl = document.getElementById('community-name');
-    if (nameEl) nameEl.textContent = activeCommunity;
+    if (CommunityService.activeCommunity) {
+      const nameEl = document.getElementById('community-name');
+      if (nameEl) nameEl.textContent = CommunityService.activeCommunity;
+    }
+
+    if (memberCount) {
+      const statsEl = document.getElementById('community-stats');
+      if (statsEl)
+        statsEl.textContent = `${Number(memberCount).toLocaleString('pt-BR')} participantes`;
+    }
+
+    FeedUI.loadCommunityBanner();
+    FeedUI.renderAllPosts();
+    this.bindEvents();
   }
 
-  if (memberCount) {
-    const statsEl = document.getElementById('community-stats');
-    if (statsEl)
-      statsEl.textContent = `${Number(memberCount).toLocaleString('pt-BR')} participantes`;
-  }
+  static bindEvents() {
+    const postModal = document.querySelector('#modal-criar-post');
+    const postInput = document.querySelector('#input-novo-post');
+    const feed = document.querySelector('.feed');
 
-  FeedUI.initCommunityBanner();
-  FeedUI.renderAllPosts();
+    document
+      .getElementById('create-new-post-btn')
+      ?.addEventListener('click', () => {
+        if (!FeedUI.checkAuth()) return;
+        postModal?.showModal();
+        postInput?.focus();
+      });
 
-  const postModal = document.querySelector('#modal-criar-post');
-  const postInput = document.querySelector('#input-novo-post');
+    postModal?.querySelector('form')?.addEventListener('submit', (e) => {
+      if (e.submitter?.value === 'cancel') return;
+      e.preventDefault();
 
-  document
-    .getElementById('create-new-post-btn')
-    ?.addEventListener('click', () => {
-      if (!FeedUI.checkAuth()) return;
-      postModal?.showModal();
-      postInput?.focus();
+      const content = postInput?.value.trim();
+      if (!content)
+        return FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
+
+      if (PostService.createPost(content)) {
+        postModal.close();
+        FeedUI.renderAllPosts();
+      }
     });
 
-  postModal?.querySelector('form')?.addEventListener('submit', (e) => {
-    if (e.submitter?.value === 'cancel') return;
-    e.preventDefault();
-    const content = postInput?.value.trim();
-    if (!content)
-      return FeedUI.showAccessibleError('O conteúdo não pode estar vazio.');
-    if (FeedUI.addPost(content)) postModal.close();
-  });
+    postModal?.addEventListener('close', () => {
+      if (postInput) postInput.value = '';
+    });
 
-  postModal?.addEventListener('close', () => {
-    if (postInput) postInput.value = '';
-  });
+    feed?.addEventListener('click', (e) => this.handleFeedClick(e));
+    feed?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.matches('.comment-input')) {
+        if (!FeedUI.checkAuth()) return;
+        e.preventDefault();
+        FeedUI.submitComment(e.target.closest('.post-card'));
+      }
+    });
 
-  const feed = document.querySelector('.feed');
+    document.querySelectorAll('[data-close]').forEach((btn) => {
+      btn.addEventListener('click', () => FeedUI.toggleAuthModal(false));
+    });
 
-  feed?.addEventListener('click', (e) => {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') FeedUI.toggleAuthModal(false);
+    });
+
+    document.addEventListener('click', () => FeedUI.closeContextMenus());
+
+    window.addEventListener('authStateChange', () => FeedUI.renderAllPosts());
+    window.addEventListener('storage', () => FeedUI.renderAllPosts());
+  }
+
+  static handleFeedClick(e) {
     const card = e.target.closest('.post-card');
     if (!card) return;
 
@@ -613,35 +792,26 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
 
       if (action === 'edit-comment') {
-        FeedUI.openEditComment(e.target.closest('.comment-item'), postId);
+        const commentEl = e.target.closest('.comment-item');
+        if (!FeedUI.isCommentOwner(commentEl)) return;
+        FeedUI.openEditComment(commentEl, postId);
       } else if (action === 'delete-comment') {
-        FeedUI.openDeleteComment(e.target.closest('.comment-item'), postId);
+        const commentEl = e.target.closest('.comment-item');
+        if (!FeedUI.isCommentOwner(commentEl)) return;
+        FeedUI.openDeleteComment(commentEl, postId);
       } else if (action === 'edit-post') {
-        if (FeedUI.checkAuth()) FeedUI.openEditModal(card);
+        if (!FeedUI.checkAuth()) return;
+        if (!FeedUI.isOwner(card)) return;
+        FeedUI.openEditModal(card);
+      } else if (action === 'delete-post') {
+        if (!FeedUI.checkAuth()) return;
+        if (!FeedUI.isOwner(card)) return;
+        FeedUI.openDeletePost(card);
       } else if (action === 'block-user') {
         card.remove();
       }
     }
-  });
+  }
+}
 
-  feed?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && e.target.matches('.comment-input')) {
-      if (!FeedUI.checkAuth()) return;
-      e.preventDefault();
-      FeedUI.submitComment(e.target.closest('.post-card'));
-    }
-  });
-
-  document.querySelectorAll('[data-close]').forEach((btn) => {
-    btn.addEventListener('click', () => FeedUI.toggleAuthModal(false));
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') FeedUI.toggleAuthModal(false);
-  });
-
-  document.addEventListener('click', () => FeedUI.closeContextMenus());
-
-  window.addEventListener('authStateChange', () => FeedUI.renderAllPosts());
-  window.addEventListener('storage', () => FeedUI.renderAllPosts());
-});
+document.addEventListener('DOMContentLoaded', () => AppController.init());
