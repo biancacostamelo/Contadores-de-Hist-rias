@@ -385,6 +385,32 @@
   margin-block-start: 8px;
 }
 
+.btn-delete-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline: 12px;
+  padding-block: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #d32f2f;
+  background-color: rgba(211, 47, 47, 0.1);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-delete-feedback:hover {
+  background-color: rgba(211, 47, 47, 0.2);
+}
+
+.btn-delete-feedback:active {
+  transform: scale(0.95);
+}
+
 @media (min-width: 768px) {
   .historia-layout {
     grid-template-columns: 2fr 1fr;

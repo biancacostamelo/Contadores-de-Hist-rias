@@ -174,6 +174,13 @@
         (feedback) => feedback.storyIndex === storyIndex,
       ),
 
+    delete(id, storyIndex) {
+      const feedbacks = this.getAll();
+      const filtered = feedbacks.filter((fb) => fb.id !== id);
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(filtered));
+      this.loadAll(storyIndex);
+    },
+
     add(tipo, texto, autor, storyIndex) {
       const feedbacks = this.getAll();
       const newFeedback = {
@@ -193,6 +200,11 @@
 
     createFeedbackNode({ id, tipo, texto, autor }) {
       const isElogio = tipo === 'elogio';
+      const currentUser = AuthService.isLoggedIn()
+        ? AuthService.getUserName()
+        : null;
+      const showDeleteButton = currentUser && autor === currentUser;
+
       return DOM.createElement(
         'li',
         { className: 'feedback-item', 'data-id': id },
@@ -209,7 +221,20 @@
             className: 'feedback-autor',
             textContent: `— ${autor}`,
           }),
-        ],
+          showDeleteButton
+            ? DOM.createElement(
+                'button',
+                {
+                  className: 'btn-delete-feedback',
+                  'data-id': id,
+                  type: 'button',
+                  title: 'Excluir feedback',
+                  ariaLabel: 'Excluir feedback',
+                  textContent: 'Excluir',
+                },
+              )
+            : null,
+        ].filter(Boolean),
       );
     },
 
@@ -235,6 +260,24 @@
   };
 
   const UI = {
+    setupDeleteButtons() {
+      DOM.feedbackList?.addEventListener('click', (event) => {
+        const deleteBtn = event.target.closest('.btn-delete-feedback');
+        if (!deleteBtn) return;
+
+        const id = deleteBtn.dataset.id;
+        const feedbackItem = deleteBtn.closest('.feedback-item');
+        if (!id || !feedbackItem) return;
+
+        const confirmDelete = window.confirm(
+          'Tem certeza que deseja excluir este feedback?',
+        );
+        if (!confirmDelete) return;
+
+        FeedbackManager.delete(id, StoryManager.currentStoryIndex ?? 0);
+      });
+    },
+
     setupForms() {
       [
         { selector: '#painel-elogio', tipo: 'elogio' },
@@ -349,6 +392,7 @@
     }
 
     await StoryManager.load();
+    UI.setupDeleteButtons();
     FeedbackManager.loadAll();
   });
 })();

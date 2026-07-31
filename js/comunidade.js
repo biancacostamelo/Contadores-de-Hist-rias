@@ -1,112 +1,243 @@
-(() => {
-  'use strict';
-
-  const KEYS = {
+'use strict';
+const CONFIG = Object.freeze({
+  STORAGE_KEYS: {
     COMMUNITIES: 'writersCommunity_communities',
     MEMBERS: 'writersCommunity_members',
-  };
-  const DEFAULT_AVATAR = '../assets/img/perfilComunidade.png';
+  },
+  ASSETS: {
+    DEFAULT_AVATAR: '../assets/img/perfilComunidade.png',
+  },
+});
 
-  const getStorage = (key, fallback) =>
-    JSON.parse(localStorage.getItem(key)) ?? fallback;
-  const setStorage = (key, val) =>
-    localStorage.setItem(key, JSON.stringify(val));
-  const getCurrentUserEmail = () =>
-    window.auth?.isLoggedIn()
-      ? (window.auth.getSession()?.email ?? null)
-      : null;
+class Sanitizer {
+  static #replacements = Object.freeze({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  });
 
-  const escapeHTML = (str = '') =>
-    String(str).replace(
-      /[&<>"']/g,
-      (m) =>
-        ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-        })[m],
-    );
+  static escape(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/[&<>"']/g, (char) => this.#replacements[char]);
+  }
+}
 
-  const isMember = (communityId, email) =>
-    Boolean(
-      email && getStorage(KEYS.MEMBERS, {})[communityId]?.includes(email),
-    );
+class StorageService {
+  static get(key, fallback = null) {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : fallback;
+    } catch {
+      return fallback;
+    }
+  }
 
-  const updateMembership = (communityId, action) => {
-    const email = getCurrentUserEmail();
+  static set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.error(`StorageService: Failed to write key "${key}"`, err);
+    }
+  }
+
+  static remove(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (err) {
+      console.error(`StorageService: Failed to remove key "${key}"`, err);
+    }
+  }
+}
+
+class AuthService {
+  static isLoggedIn() {
+    try {
+      return Boolean(window?.auth?.isLoggedIn?.());
+    } catch (err) {
+      console.warn('AuthService: Error checking login state', err);
+      return false;
+    }
+  }
+
+  static getActiveUserEmail() {
+    try {
+      if (!this.isLoggedIn()) return null;
+      return window?.auth?.getSession?.()?.email ?? null;
+    } catch (err) {
+      console.warn('AuthService: Error getting active user email', err);
+      return null;
+    }
+  }
+}
+
+class CommunityService {
+  static getCommunities() {
+    return StorageService.get(CONFIG.STORAGE_KEYS.COMMUNITIES, []);
+  }
+
+  static isMember(communityId, email) {
+    if (!email || !communityId) return false;
+    const members = StorageService.get(CONFIG.STORAGE_KEYS.MEMBERS, {});
+    return Boolean(members?.[communityId]?.includes(email));
+  }
+
+  static updateMembership(communityId, action) {
+    const email = AuthService.getActiveUserEmail();
     if (!email || !communityId) return false;
 
-    const communities = getStorage(KEYS.COMMUNITIES, []);
+    const communities = this.getCommunities();
     const community = communities.find((c) => c.id === communityId);
     if (!community) return false;
 
-    const members = getStorage(KEYS.MEMBERS, {});
-    const list = new Set(members[communityId] || []);
+    const members = StorageService.get(CONFIG.STORAGE_KEYS.MEMBERS, {});
+    const memberList = new Set(members?.[communityId] ?? []);
 
-    if (action === 'join') list.add(email);
-    if (action === 'leave') list.delete(email);
+    if (action === 'join') {
+      memberList.add(email);
+    } else if (action === 'leave') {
+      memberList.delete(email);
+    } else {
+      return false;
+    }
 
-    members[communityId] = [...list];
-    community.memberCount = members[communityId].length;
+    members[communityId] = [...memberList];
 
-    setStorage(KEYS.MEMBERS, members);
-    setStorage(KEYS.COMMUNITIES, communities);
+    const index = communities.findIndex((c) => c.id === communityId);
+    if (index !== -1) {
+      communities[index].memberCount = memberList.size;
+    }
+
+    StorageService.set(CONFIG.STORAGE_KEYS.MEMBERS, members);
+    StorageService.set(CONFIG.STORAGE_KEYS.COMMUNITIES, communities);
     return true;
-  };
+  }
+}
 
-  const createCardHTML = (community, email) => {
-    const safeName = escapeHTML(community.name);
-    const userIsMember = isMember(community.id, email);
-    const query = new URLSearchParams({
-      name: community.name,
-      memberCount: String(community.memberCount),
+class CommunityCard {
+  static create(community, email) {
+    const safeName = Sanitizer.escape(community?.name || 'Comunidade');
+    const isMember = CommunityService.isMember(community.id, email);
+
+    const queryParams = new URLSearchParams({
+      name: community.name ?? '',
+      memberCount: String(community.memberCount ?? 0),
     });
 
-    const actionButton = email
-      ? `<button class="btn-card-comunidade btn-${userIsMember ? 'leave' : 'join'}" data-community-id="${community.id}" aria-label="${userIsMember ? 'Sair de' : 'Participar de'} ${safeName}">${userIsMember ? 'Sair' : 'Participar'}</button>`
-      : '';
+    let actionButtonHTML = '';
+    if (typeof email === 'string' && email.length > 0) {
+      const btnClass = isMember ? 'leave' : 'join';
+      const btnLabel = isMember ? 'Sair de' : 'Participar de';
+      const btnText = isMember ? 'Sair' : 'Participar';
 
-    return `
-      <a href="./comentariosComunidade.html?${query}" class="cardComunidade-link" data-community-id="${community.id}">
-        <div class="cardComunidade">
-          <img src="${DEFAULT_AVATAR}" alt="${safeName}" />
-          <div class="contentCard">
-            <div class="card-info">
-              <h3>${safeName}</h3>
-              ${!email ? '<p class="status-membro">Faça login para participar</p>' : ''}
-              <p>+${community.memberCount} seguidores</p>
-            </div>
-            <div class="card-actions">${actionButton}</div>
+      actionButtonHTML = `
+        <button class="btn-card-comunidade btn-${btnClass}" data-community-id="${community.id}" aria-label="${btnLabel} ${safeName}">${btnText}</button>
+      `;
+    } else {
+      actionButtonHTML = `<p class="status-membro">Faça login para participar</p>`;
+    }
+
+    const card = document.createElement('a');
+    card.href = `./comentariosComunidade.html?${queryParams.toString()}`;
+    card.className = 'cardComunidade-link';
+    card.dataset.communityId = community.id;
+
+    card.innerHTML = `
+      <div class="cardComunidade">
+        <img src="${CONFIG.ASSETS.DEFAULT_AVATAR}" alt="${safeName}" />
+        <div class="contentCard">
+          <div class="card-info">
+            <h3>${safeName}</h3>
+            ${actionButtonHTML}
+            <p>+${community.memberCount ?? 0} seguidores</p>
           </div>
+          <div class="card-actions">${actionButtonHTML}</div>
         </div>
-      </a>`;
-  };
+      </div>
+    `;
 
-  const render = () => {
-    const container = document.getElementById('communitiesList');
-    if (!container) return;
+    return card;
+  }
+}
 
-    const communities = getStorage(KEYS.COMMUNITIES, []);
-    const email = getCurrentUserEmail();
+class CommunitiesGrid {
+  #containerId = 'communitiesList';
 
-    container.innerHTML = communities.length
-      ? communities.map((c) => createCardHTML(c, email)).join('')
-      : `<p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">Nenhuma comunidade criada ainda. Vá ao seu perfil para criar uma nova.</p>`;
-  };
+  render() {
+    const container = document.getElementById(this.#containerId);
+    if (!container) {
+      console.warn('CommunitiesGrid: Container not found.');
+      return;
+    }
 
-  const container = document.getElementById('communitiesList');
-  container?.addEventListener('click', (e) => {
-    const button = e.target.closest('.btn-join, .btn-leave');
+    let communities;
+    try {
+      communities = CommunityService.getCommunities();
+    } catch (err) {
+      console.error('CommunitiesGrid: Error fetching communities', err);
+      container.innerHTML =
+        '<p style="text-align:center;color:var(--color-error);padding:40px 0;">Erro ao carregar comunidades.</p>';
+      return;
+    }
+
+    const email = AuthService.getActiveUserEmail();
+
+    if (Array.isArray(communities) && communities.length > 0) {
+      try {
+        const cards = communities.map((community) =>
+          CommunityCard.create(community, email),
+        );
+        container.replaceChildren(...cards);
+      } catch (err) {
+        console.error('CommunitiesGrid: Error rendering cards', err);
+        container.innerHTML =
+          '<p style="text-align:center;color:var(--color-error);padding:40px 0;">Erro ao renderizar comunidades.</p>';
+      }
+    } else {
+      container.innerHTML = `
+        <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">
+          Nenhuma comunidade criada ainda. Vá ao seu perfil para criar uma nova.
+        </p>
+      `;
+    }
+
+    this.#bindEventDelegation(container);
+  }
+
+  #bindEventDelegation(container) {
+    container.addEventListener('click', (event) => this.#handleAction(event));
+
+    container.addEventListener('keydown', (event) => {
+      if (['Enter', ' ', 'Space'].includes(event.key)) {
+        this.#handleAction(event);
+      }
+    });
+  }
+
+  #handleAction(event) {
+    const button = event.target.closest('.btn-card-comunidade');
     if (!button) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
 
-    const action = button.classList.contains('btn-join') ? 'join' : 'leave';
-    if (updateMembership(button.dataset.communityId, action)) render();
-  });
+    const communityId = button.dataset.communityId;
+    const action = button.classList.contains('btn-leave') ? 'leave' : 'join';
 
-  render();
-})();
+    try {
+      if (CommunityService.updateMembership(communityId, action)) {
+        this.render();
+      }
+    } catch (err) {
+      console.error('CommunitiesGrid: Error updating membership', err);
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = new CommunitiesGrid();
+  grid.render();
+});
+
+window.CommunitiesGrid = CommunitiesGrid;

@@ -13,8 +13,6 @@
   margin: 20px 40px;
 }
 
-
-
 .galeria-container {
   max-width: 1440px;
   justify-content: center;
@@ -28,7 +26,6 @@
   margin: 0 40px;
   justify-content: space-around;
 }
-
 
 .posts:hover {
   border: 2px solid var(--text-header);
@@ -233,7 +230,8 @@
   margin-bottom: 8px;
 }
 
-.hist-post .detalhes-historia .sinopse {
+.hist-post .detalhes-historia .sinopse,
+.detalhes-historia .sinopse {
   color: #fdfdfd;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
@@ -256,8 +254,8 @@
 }
 
 @media (max-width: 440px) {
- .hist-post .posts-historia {
+  .hist-post .posts-historia {
     width: 600px;
     height: 200px;
-}
+  }
 }

@@ -9,23 +9,33 @@
   const state = { stories: [] };
 
   function createCard(story) {
-    const card = document.createElement('a');
-    card.className = 'cardDestaque';
-    card.href = `../pages/historia.html?story=${story.index}`;
-    card.setAttribute('role', 'article');
-    card.setAttribute('aria-labelledby', `titulo-${story.id}`);
-    card.style.backgroundImage = `url('${story.cover || CONFIG.COVER_FALLBACK}')`;
-    console.log(story);
-    card.innerHTML = `
-      <div class="contentCard">
-        <div>
-          <h3 id="titulo-${story.id}">${story.title || 'Sem título'}</h3>
-          <p>${story.type || 'Conto'}</p>
+    const wrapper = document.createElement('a');
+    wrapper.href = `../pages/historia.html?story=${story.index}`;
+    wrapper.setAttribute('role', 'article');
+    wrapper.setAttribute('aria-labelledby', `titulo-${story.id}`);
+
+    const generoLabel = (story.type || 'Conto').toUpperCase();
+    const statusLabel = story.status || 'Em desenvolvimento';
+    const sinopseText = story.synopsis || '';
+
+    wrapper.innerHTML = `
+      <div class="posts-historia">
+        <div class="imgpt">
+          <img src="${story.cover || CONFIG.COVER_FALLBACK}" alt="${story.title}" class="pt-img-fundo" />
+          <div class="overlay-historia">
+            <div class="iconStats"></div>
+            <div class="detalhes-historia">
+              <span class="genero">${generoLabel}</span>
+              <h3 id="titulo-${story.id}" class="titulo-capa">${story.title || 'Sem título'}</h3>
+              <span class="andamento">${statusLabel}</span>
+              ${sinopseText ? `<p class="sinopse">${sinopseText}</p>` : ''}
+            </div>
+          </div>
         </div>
       </div>
     `;
 
-    return card;
+    return wrapper;
   }
 
   function renderStories(container) {
@@ -68,7 +78,7 @@
 
   function init(container) {
     loadStories();
-    renderStories(container || document.getElementById('destaquesGrid'));
+    renderStories(container || document.querySelector('#hist-post'));
   }
 
   window.DestaqueList = {
