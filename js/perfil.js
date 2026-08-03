@@ -392,8 +392,11 @@
       communityModal.showModal();
       const inputEl = getEl('communityName');
       const errEl = getEl('community-error');
+      const imageErrorEl = getEl('community-image-error');
       if (inputEl) inputEl.value = '';
       if (errEl) errEl.textContent = '';
+      if (imageErrorEl) imageErrorEl.textContent = '';
+      if (getEl('communityImageInput')) getEl('communityImageInput').value = '';
       if (inputEl) setTimeout(() => inputEl.focus(), 100);
     });
 
@@ -403,10 +406,7 @@
 
     communityModal.addEventListener('click', (e) => {
       const content = communityModal.querySelector('.modal-content');
-      if (
-        !content ||
-        e.target.closest('#draftsContainer, [data-draft-index]')
-      )
+      if (!content || e.target.closest('#draftsContainer, [data-draft-index]'))
         return;
       const r = content.getBoundingClientRect();
       if (
@@ -437,14 +437,23 @@
       try {
         let imageRef = null;
         const imageInputEl = getEl('communityImageInput');
-        if (imageInputEl?.files?.[0]) {
-          const imgFile = imageInputEl.files[0];
-          const imgErr = validateImage(imgFile);
-          if (!imgErr) {
-            const imgId = await imageStore.save(imgFile);
-            imageRef = { type: 'img', id: imgId };
-          }
+        const imageErrorEl = getEl('community-image-error');
+
+        if (!imageInputEl?.files?.[0]) {
+          if (imageErrorEl)
+            imageErrorEl.textContent = 'A imagem da comunidade é obrigatória.';
+          return;
         }
+
+        const imgFile = imageInputEl.files[0];
+        const imgErr = validateImage(imgFile);
+        if (imgErr) {
+          if (imageErrorEl) imageErrorEl.textContent = imgErr;
+          return;
+        }
+
+        const imgId = await imageStore.save(imgFile);
+        imageRef = { type: 'img', id: imgId };
 
         const communityData = {
           name: val,
@@ -452,17 +461,20 @@
           ...(imageRef && { image: imageRef }),
         };
 
-        // Add to global communities list (used by comunidade.html)
-        const globalCommunities = JSON.parse(localStorage.getItem('writersCommunity_communities') || '[]');
+        const globalCommunities = JSON.parse(
+          localStorage.getItem('writersCommunity_communities') || '[]',
+        );
         const newGlobalCommunity = {
           id: `comm_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           ...communityData,
           memberCount: 1,
         };
         globalCommunities.unshift(newGlobalCommunity);
-        localStorage.setItem('writersCommunity_communities', JSON.stringify(globalCommunities));
+        localStorage.setItem(
+          'writersCommunity_communities',
+          JSON.stringify(globalCommunities),
+        );
 
-        // Add to user's personal communities list (used by perfil.html)
         const currentUser = getCurrentUser();
         const userCommunities = [...(currentUser?.communities || [])];
         const newPersonalCommunity = {
@@ -479,8 +491,9 @@
           loadUserProfile();
         } else if (errEl) errEl.textContent = res.message;
       } catch {
-        if (errEl)
-          errEl.textContent = 'Erro ao criar a comunidade.';
+        const imageErrorEl = getEl('community-image-error');
+        if (imageErrorEl)
+          imageErrorEl.textContent = 'Erro ao criar a comunidade.';
       }
     });
   }
@@ -578,7 +591,7 @@
           const imgId = await imageStore.save(base64);
 
           const img = document.createElement('img');
-          img.src = base64; // Exibe o Base64 na hora para aparecer imediatamente
+          img.src = base64;
           img.alt = 'Imagem inserida na história';
           img.style.cssText = 'max-width: 100%; height: auto;';
           img.dataset.imageId = imgId;
@@ -707,7 +720,8 @@
   });
 
   DOM.storiesGrid?.addEventListener('click', async (e) => {
-    const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+    const isReadOnlyMode =
+      document.querySelector('.edit-profile-section')?.style.display === 'none';
     if (isReadOnlyMode) return;
 
     const delBtn = e.target.closest('[data-delete-story-index]');
@@ -747,7 +761,8 @@
   });
 
   DOM.draftsContainer?.addEventListener('click', async (e) => {
-    const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+    const isReadOnlyMode =
+      document.querySelector('.edit-profile-section')?.style.display === 'none';
     if (isReadOnlyMode) return;
 
     const delBtn = e.target.closest('[data-delete-draft-index]');
@@ -789,7 +804,9 @@
   const communitiesList = getEl('communitiesList');
   if (communitiesList) {
     communitiesList.addEventListener('click', async (e) => {
-      const isReadOnlyMode = document.querySelector('.edit-profile-section')?.style.display === 'none';
+      const isReadOnlyMode =
+        document.querySelector('.edit-profile-section')?.style.display ===
+        'none';
       if (isReadOnlyMode) return;
 
       const delBtn = e.target.closest('[data-delete-community-index]');
@@ -808,7 +825,9 @@
         const session = auth.getSession();
         const communities = [...(getCurrentUser()?.communities || [])];
         communities.splice(+delBtn.dataset.deleteCommunityIndex, 1);
-        if ((await auth.updateProfile(session.email, { communities })).success) {
+        if (
+          (await auth.updateProfile(session.email, { communities })).success
+        ) {
           showToast('Comunidade excluída com sucesso!');
           loadUserProfile();
         }
@@ -882,7 +901,11 @@
       if (bioEl) bioEl.textContent = user.bio || 'Escritor apaixonado';
       if (avatarEl) {
         const avatarRef = user.avatar;
-        if (avatarRef && typeof avatarRef === 'object' && avatarRef.type === 'img') {
+        if (
+          avatarRef &&
+          typeof avatarRef === 'object' &&
+          avatarRef.type === 'img'
+        ) {
           const src = await imageStore.load(avatarRef.id);
           avatarEl.src = src || DEFAULT_IMG;
         } else {
@@ -891,7 +914,11 @@
       }
       if (bannerEl) {
         const bannerRef = user.banner;
-        if (bannerRef && typeof bannerRef === 'object' && bannerRef.type === 'img') {
+        if (
+          bannerRef &&
+          typeof bannerRef === 'object' &&
+          bannerRef.type === 'img'
+        ) {
           const src = await imageStore.load(bannerRef.id);
           bannerEl.style.backgroundImage = `url('${src || DEFAULT_IMG}')`;
         } else {
@@ -1040,9 +1067,15 @@
   if (!isLoggedIn) {
     if (emailParam) {
       loadUserProfile(emailParam);
-      document.querySelectorAll('.edit-profile-section, .btn-update').forEach((el) => el.style.display = 'none');
-      document.querySelectorAll('dialog.edit-modal').forEach((modal) => modal.style.display = 'none');
-      document.getElementById('storyEditorArea')?.setAttribute('contenteditable', 'false');
+      document
+        .querySelectorAll('.edit-profile-section, .btn-update')
+        .forEach((el) => (el.style.display = 'none'));
+      document
+        .querySelectorAll('dialog.edit-modal')
+        .forEach((modal) => (modal.style.display = 'none'));
+      document
+        .getElementById('storyEditorArea')
+        ?.setAttribute('contenteditable', 'false');
       const uploadBtns = document.getElementById('btnUploadBanner');
       const avatarBtn = document.getElementById('btnUploadAvatar');
       if (uploadBtns) uploadBtns.style.display = 'none';
@@ -1052,8 +1085,12 @@
     }
   } else if (emailParam) {
     loadUserProfile(emailParam);
-    document.querySelectorAll('.edit-profile-section, .btn-update').forEach((el) => el.style.display = 'none');
-    document.querySelectorAll('dialog.edit-modal').forEach((modal) => modal.style.display = 'none');
+    document
+      .querySelectorAll('.edit-profile-section, .btn-update')
+      .forEach((el) => (el.style.display = 'none'));
+    document
+      .querySelectorAll('dialog.edit-modal')
+      .forEach((modal) => (modal.style.display = 'none'));
     const uploadBtns = document.getElementById('btnUploadBanner');
     const avatarBtn = document.getElementById('btnUploadAvatar');
     if (uploadBtns) uploadBtns.style.display = 'none';

@@ -172,6 +172,13 @@
   margin-bottom: 16px;
 }
 
+.community-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
 .story__content {
   display: flex;
   flex-direction: column;

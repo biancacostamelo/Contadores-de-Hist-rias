@@ -40,9 +40,6 @@
       <button type="button" class="btn-update" id="btnEditBio">
         <span aria-hidden="true">✏️</span> Editar Bio
       </button>
-      <button type="button" class="btn-update btn-create-community" id="btnCreateCommunity">
-        <span aria-hidden="true">🌐</span> Criar Comunidade
-      </button>
     </div>
 
     <dialog class="edit-modal" id="editModalBanner" aria-labelledby="editModalBannerTitle">
@@ -316,11 +313,11 @@
           </div>
 
           <div class="form-field">
-            <label class="form-label" for="communityImage">Imagem da Comunidade (opcional)</label>
-            <input type="file" class="form-input-file" id="communityImageInput" accept="image/png, image/jpeg, image/webp, image/gif" />
+            <label class="form-label" for="communityImage">Imagem da Comunidade</label>
+            <input type="file" class="form-input-file" id="communityImageInput" accept="image/png, image/jpeg, image/webp, image/gif" required />
           </div>
 
-          <div id="community-error" class="field-error" role="alert"></div>
+          <div id="community-image-error" class="field-error" role="alert"></div>
 
           <div class="modal-actions">
             <button type="button" class="btn-send btn-cancel-confirm" id="btnCancelCreateCommunity">Cancelar</button>
@@ -333,9 +330,11 @@
     <section class="perfil-gallery" aria-label="Conteúdo das histórias">
       <div id="storyContent" class="story__content"></div>
     </section>
-
     <section class="perfil-gallery" aria-label="Minhas comunidades">
       <h2 class="community-title">Minhas Comunidades</h2>
+         <button type="button" class="btn-update btn-create-community" id="btnCreateCommunity">
+        <span aria-hidden="true">🌐</span> Criar Comunidade
+      </button>
       <div id="communitiesList" class="story__content"></div>
     </section>
   </main>
