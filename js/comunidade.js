@@ -116,9 +116,23 @@ class CommunityService {
 }
 
 class CommunityCard {
-  static create(community, email) {
+  static create(community, email, isMember) {
     const safeName = Sanitizer.escape(community?.name || 'Comunidade');
-    const isMember = CommunityService.isMember(community.id, email);
+
+    // Identifica o campo de imagem (pode vir como 'image', 'avatar' ou 'img')
+    const rawImage = community?.image || community?.avatar || community?.img;
+
+    let communityImage = CONFIG.ASSETS.DEFAULT_AVATAR;
+    let imageId = null;
+
+    // Se for uma string Base64 ou URL padrão
+    if (typeof rawImage === 'string' && rawImage.trim() !== '') {
+      communityImage = rawImage;
+    }
+    // Se for o objeto retornado do IndexedDB { type: 'img', id: '...' }
+    else if (rawImage && typeof rawImage === 'object' && rawImage.id) {
+      imageId = rawImage.id;
+    }
 
     const queryParams = new URLSearchParams({
       name: community.name ?? '',
@@ -145,17 +159,26 @@ class CommunityCard {
 
     card.innerHTML = `
       <div class="cardComunidade">
-        <img src="${CONFIG.ASSETS.DEFAULT_AVATAR}" alt="${safeName}" />
+        <img ${imageId ? `data-image-id="${imageId}"` : ''} src="${communityImage}" alt="${safeName}" onerror="this.onerror=null; this.src='${CONFIG.ASSETS.DEFAULT_AVATAR}';" />
         <div class="contentCard">
           <div class="card-info">
             <h3>${safeName}</h3>
-            ${actionButtonHTML}
-            <p>+${community.memberCount ?? 0} seguidores</p>
+            <p>+${community.memberCount ?? 0} Membros</p>
           </div>
           <div class="card-actions">${actionButtonHTML}</div>
         </div>
       </div>
     `;
+
+    // Se possui referência de imagem no IndexedDB, carrega ela de forma assíncrona
+    if (imageId && window.imageStore?.load) {
+      window.imageStore.load(imageId).then((src) => {
+        if (src) {
+          const imgEl = card.querySelector(`img[data-image-id="${imageId}"]`);
+          if (imgEl) imgEl.src = src;
+        }
+      });
+    }
 
     return card;
   }
@@ -185,18 +208,19 @@ class CommunitiesGrid {
 
     if (Array.isArray(communities) && communities.length > 0) {
       try {
-        const cards = communities.map((community) =>
-          CommunityCard.create(community, email),
-        );
+        const cards = communities.map((community) => {
+          const isMember = CommunityService.isMember(community.id, email);
+          return CommunityCard.create(community, email, isMember);
+        });
         container.replaceChildren(...cards);
       } catch (err) {
         console.error('CommunitiesGrid: Error rendering cards', err);
         container.innerHTML =
-          '<p style="text-align:center;color:var(--color-error);padding:40px 0;">Erro ao renderizar comunidades.</p>';
+          '<p class="text-community">Erro ao renderizar comunidades.</p>';
       }
     } else {
       container.innerHTML = `
-        <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">
+        <p class="text-community">
           Nenhuma comunidade criada ainda. Vá ao seu perfil para criar uma nova.
         </p>
       `;

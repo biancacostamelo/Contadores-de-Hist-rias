@@ -1,0 +1,356 @@
+/*Header do site*/
+
+meu-header {
+  display: block;
+  width: 100%;
+}
+
+header.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100;
+  min-height: 90px;
+  background-color: var(--surface-2);
+  display: flex;
+  justify-content: center;
+}
+
+.header-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.logo {
+  padding: 11px 0 11px 55px;
+}
+
+.logo img {
+  width: 65px;
+  height: 68.53px;
+}
+
+.navbar {
+  display: flex;
+  gap: 17px;
+  padding: 0 60px;
+}
+
+.navbar a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 117px;
+  height: 73px;
+  border-radius: 20px;
+  background-color: transparent;
+  transition: 0.4s ease;
+}
+
+header.header .navbar a,
+header.header .navbar a:hover,
+header.header .navbar a:focus,
+header.header .navbar a .iconstxt {
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  background-color: var(--color-secundary);
+}
+
+.icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.icons img {
+  width: 40px;
+  height: 40px;
+}
+
+.iconstxt {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-header);
+  padding: 5px;
+}
+
+header.header .btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+header.header .btn .criar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding: 0 24px;
+  white-space: nowrap;
+  height: 50px;
+  border-radius: 30px;
+  background-color: var(--color-secundary);
+  color: var(--text-header);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+header.header .btn .criar:hover {
+  transform: var(--btn-transform);
+}
+
+header.header .btn .entrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 130px;
+  height: 50px;
+  border-radius: 30px;
+  background-color: var(--text-header);
+  color: var(--surface-2);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: 0.3s ease-in-out;
+}
+
+header.header .btn .entrar:hover {
+  transform: var(--btn-transform);
+}
+
+header.header .menu {
+  padding-left: 19px;
+  cursor: pointer;
+}
+
+/*Imagem do perfil logado*/
+
+.avatar-header {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.avatar-header:hover {
+  transform: var(--btn-transform);
+  box-shadow: 0 0 0 2px var(--color-primary-hover);
+}
+
+.avatar-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .avatar-header {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.btn .logout-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  background: var(--color-secundary);
+  color: var(--text-header);
+  border: 1px solid var(--border-color-two);
+  border-radius: 30px;
+  font-weight: bold;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.btn .logout-btn:hover {
+  transform: var(--btn-transform);
+}
+
+/*Ajuste do botão de mudar tema*/
+
+header.header .dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+header.header .dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+header.header .btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+header.header .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background-color: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: none;
+}
+
+header.header .dropdown-menu.active {
+  display: flex;
+  flex-direction: column;
+}
+
+header.header .dropdown-item {
+  color: var(--text-header);
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+header.header .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+header.header .menu-opcoes {
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-2);
+  border: 2px solid var(--color-secundary);
+  border-radius: 25px;
+  width: 200px;
+  height: 120px;
+  cursor: pointer;
+}
+
+header.header .menu-opcoes #btnTheme button {
+  text-align: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  background-color: var(--surface-2);
+  color: var(--text-header);
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--text-header);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Logout Modal */
+#logoutModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+#logoutModal.modal-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#logoutModal .modal-dialog {
+  background: var(--bg-main);
+  color: var(--text-color);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: transform 0.2s ease;
+}
+
+#logoutModal.modal-visible .modal-dialog {
+  transform: translateY(0);
+}
+
+#logoutModal .modal-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#logoutModal .modal-description {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+#logoutModal .modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+#logoutModal .modal-btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+#logoutModal .modal-btn:hover {
+  transform: var(--btn-transform);
+}
+
+#logoutModal .modal-btn--cancel {
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color-two);
+}
+
+#logoutModal .modal-btn--confirm {
+  background: var(--color-primary);
+  color: #fff;
+}

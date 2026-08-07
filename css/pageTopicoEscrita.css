@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+* {
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  overflow-x: hidden;
+}
+
+/*Inicio da tela*/
+
+.topico-img {
+  margin-top: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topico-img-container-escrita {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: url(../assets/img/escrita.avif) no-repeat center center/cover;
+  height: 500px;
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 0 0 100px 100px;
+  border: 5px solid var(--surface-2);
+  overflow: hidden;
+}
+
+.overlay-topicos {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.overlay-topicos .titulo-topico-img {
+  font-family: 'Merriweather', serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-header);
+  padding: 10px 0;
+}
+
+.txt-topico-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 0 20px;
+}
+
+.txt-topico-img a,
+b {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-header);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  transition: 0.3s ease;
+}
+
+.txt-topico-img a:hover {
+  text-decoration: underline 2px var(--text-header);
+  text-underline-offset: 4px;
+}
+
+/*Parte para as páginas sem conteúdo*/
+
+.conteudo-page-topicos-none {
+  margin-top: 100px;
+  background-color: var(--bg-home);
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conteudo-page-topicos-none .conteudo-page-topicos-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: var(--text-one);
+  text-align: center;
+}
+
+/*Posts histórias*/
+
+.historias-escrita {
+  margin-top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.historias-escrita-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo-topico-escrita {
+  font-family: 'Merriweather', serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-one);
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.hist-post {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: 30px;
+  margin: 0 75px;
+}
+
+.hist-post > *:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  max-width: 50%; 
+}
+
+.hist-post .posts-historia {
+  width: 600px;
+  height: 300px;
+}
+
+.hist-post .posts-historia {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  border: 2px solid var(--surface-2-escura);
+  transition: border-color 0.4s ease;
+}
+
+.hist-post .posts-historia:hover {
+  border-color: var(--text-header);
+}
+
+.hist-post .posts-historia a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
+.hist-post .imgpt {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hist-post .pt-img-fundo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.hist-post .posts-historia:hover .pt-img-fundo {
+  transform: scale(1.03);
+}
+
+.hist-post .overlay-historia {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 25px;
+  opacity: 0;
+  z-index: 5;
+  transition: opacity 0.35s ease-in-out;
+}
+
+.hist-post .detalhes-historia {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: left;
+  transform: translateY(20px);
+  transition: transform 0.35s ease-in-out;
+}
+
+.hist-post .detalhes-historia .genero {
+  color: #e2a053;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border-left: 3px solid #e2a053;
+  padding-left: 6px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hist-post .detalhes-historia .titulo-capa {
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.45rem;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.hist-post .detalhes-historia .andamento {
+  color: #f9f0ea;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.hist-post .detalhes-historia .sinopse {
+  color: #f2e4ca;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease-in-out;
+}
+
+.hist-post .posts-historia:hover .overlay-historia {
+  opacity: 1;
+}
+
+.hist-post .posts-historia:hover .detalhes-historia {
+  transform: translateY(0);
+}
+
+.hist-post .posts-historia:hover .sinopse {
+  opacity: 0.95;
+}

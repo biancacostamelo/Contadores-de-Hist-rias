@@ -144,11 +144,14 @@
 
       const fragment = document.createDocumentFragment();
       children.forEach((element) => {
+        const pElement = DOM.createElement('p', {
+          innerHTML: element.innerHTML || cleanHtml,
+        });
+
         fragment.appendChild(
-          DOM.createElement('section', {
-            className: 'paragrafo-secao',
-            innerHTML: element.innerHTML || cleanHtml,
-          }),
+          DOM.createElement('section', { className: 'paragrafo-secao' }, [
+            pElement,
+          ]),
         );
       });
 
@@ -222,17 +225,14 @@
             textContent: `— ${autor}`,
           }),
           showDeleteButton
-            ? DOM.createElement(
-                'button',
-                {
-                  className: 'btn-delete-feedback',
-                  'data-id': id,
-                  type: 'button',
-                  title: 'Excluir feedback',
-                  ariaLabel: 'Excluir feedback',
-                  textContent: 'Excluir',
-                },
-              )
+            ? DOM.createElement('button', {
+                className: 'btn-delete-feedback',
+                'data-id': id,
+                type: 'button',
+                title: 'Excluir feedback',
+                ariaLabel: 'Excluir feedback',
+                textContent: 'Excluir',
+              })
             : null,
         ].filter(Boolean),
       );

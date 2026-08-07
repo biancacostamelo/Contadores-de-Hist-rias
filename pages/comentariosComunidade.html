@@ -1,80 +1,117 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mangá Club | Contadores de Histórias</title>
+    <link rel="icon" href="../assets/Logo-principal.svg" />
+    <link rel="stylesheet" href="../css/global.css" />
+  </head>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comunidade Mangás</title>
-    <link rel="icon" href="../assets/Logo Principal.svg" />
-    <link rel="stylesheet" href="../css/global.css">
-</head>
-
-<body>
-    <div class="site-header-container"></div>
-
+  <body>
+    <meu-header assets-path="../assets" base-path="../"></meu-header>
+    <!--Inicio do conteúdo principal-->
     <main class="opened__forum">
-        <section class="community-banner">
-            <div class="banner-content">
-                <div class="community-banner-img" id="communityBannerImg"></div>
-                <h1 id="community-name"></h1>
-                <p class="stats" id="community-stats"></p>
-                <span class="category">Fanarts</span>
+      <section class="community-banner">
+        <div class="banner-content">
+          <h1 id="community-name">Mangá Club</h1>
+          <p id="community-stats" class="stats"></p>
+          <span id="community-category" class="category"></span>
+        </div>
+      </section>
+
+      <section class="feed" aria-label="Feed de publicações">
+        <nav class="feed-options" aria-label="Opções de ordenação">
+          <div class="dropdown">
+            <details>
+              <summary class="dropdown-btn">
+                Popular <span aria-hidden="true" class="arrow-down">↓</span
+                ><span aria-hidden="true" class="arrow-up">↑</span>
+              </summary>
+              <div id="dropdown-menu" class="dropdown-content" role="menu">
+                <a href="#comunidademanga" class="active" role="menuitem"
+                  >Popular</a
+                >
+                <a href="#comunidademanga" role="menuitem">Recente</a>
+              </div>
+            </details>
+          </div>
+        </nav>
+
+        <div class="edit-profile-section">
+          <button type="button" class="btn-update" id="create-new-post-btn">
+            <span aria-hidden="true"></span> Criar Publicação
+          </button>
+        </div>
+
+        <dialog id="modal-criar-post" class="create-post-modal">
+          <form method="dialog">
+            <h2>Criar Novo Post</h2>
+            <label for="input-novo-post">Publicação</label>
+            <textarea
+              id="input-novo-post"
+              placeholder="O que você quer publicar?"
+              rows="4"
+            ></textarea>
+            <div class="modal-actions">
+              <button type="submit" id="btn-submit-post" class="btn-save-edit">
+                Publicar
+              </button>
+              <button
+                type="submit"
+                value="cancel"
+                formnovalidate
+                class="btn-cancel-edit"
+              >
+                Cancelar
+              </button>
             </div>
-        </section>
-
-        <section class="feed" aria-label="Feed de publicações">
-
-            <nav class="feed-options" aria-label="Opções de ordenação">
-                <div class="dropdown">
-                    <details>
-                        <summary class="dropdown-btn">
-                            Popular <span aria-hidden="true" class="arrow-down">↓</span><span aria-hidden="true" class="arrow-up">↑</span>
-                        </summary>
-                        <div id="dropdown-menu" class="dropdown-content" role="menu">
-                            <a href="#comunidademanga" class="active" role="menuitem">Popular</a>
-                            <a href="#comunidademanga" role="menuitem">Recente</a>
-                        </div>
-                    </details>
-                </div>
-            </nav>
-
-            <div class="edit-profile-section">
-                <button type="button" class="btn-update" id="create-new-post-btn">
-                    <span aria-hidden="true"></span> Criar Publicação
-                </button>
-            </div>
-
-            <dialog id="modal-criar-post" class="create-post-modal">
-                <form method="dialog">
-                    <h2>Criar Novo Post</h2>
-                    <label for="input-novo-post">Publicação</label>
-                    <textarea id="input-novo-post" placeholder="O que você quer publicar?" rows="4"></textarea>
-                    <div class="modal-actions">
-                        <button type="submit" id="btn-submit-post" class="btn-save-edit">Publicar</button>
-                        <button type="submit" value="cancel" formnovalidate class="btn-cancel-edit">Cancelar</button>
-                    </div>
-                </form>
-            </dialog>
-
-        </section>
+          </form>
+        </dialog>
+      </section>
     </main>
 
-    <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" hidden>
+    <div
+      class="auth-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+      hidden
+    >
       <div class="auth-modal-backdrop" data-close></div>
       <div class="auth-modal-content">
         <h2 id="auth-modal-title">Faça login para comentar</h2>
-        <p>Para deixar seu comentário na comunidade, você precisa estar logado na sua conta.</p>
+        <p>
+          Para deixar seu comentário na comunidade, você precisa estar logado na
+          sua conta.
+        </p>
         <div class="auth-modal-actions">
           <a href="../pages/login.html" class="auth-modal-link">Fazer login</a>
-          <button type="button" class="auth-modal-close-btn" data-close aria-label="Fechar">✕</button>
+          <button
+            type="button"
+            class="auth-modal-close-btn"
+            data-close
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
         </div>
       </div>
     </div>
 
-    <div id="error-alert-container" role="alert" aria-live="assertive" hidden></div>
+    <div
+      id="error-alert-container"
+      role="alert"
+      aria-live="assertive"
+      hidden
+    ></div>
 
-    <dialog id="delete-confirmation-modal" class="delete-confirmation-modal" role="dialog" aria-labelledby="delete-modal-title">
+    <dialog
+      id="delete-confirmation-modal"
+      class="delete-confirmation-modal"
+      role="dialog"
+      aria-labelledby="delete-modal-title"
+    >
       <form method="dialog">
         <h2 id="delete-modal-title">Excluir comentário</h2>
         <p>Tem certeza que deseja excluir este comentário?</p>
@@ -89,8 +126,7 @@
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
     <script src="../js/comentariosComunidade.js"></script>
-     <script src="../js/header.js"></script>
-     <script src="../js/vlibras.js"></script>
-</body>
-
+    <script src="../js/header.js"></script>
+    <script src="../js/vlibras.js"></script>
+  </body>
 </html>

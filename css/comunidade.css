@@ -1,12 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 * {
-  padding: 0;
-  margin: 0;
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  border: none;
   text-decoration: none;
+  box-sizing: border-box;
 }
 
 body {
   background-color: var(--bg-main);
-  font-family: 'Plus Jakarta Sans', arial, sans-serif;
+  overflow-x: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/*Header dois*/
+
+section.bottom-header {
+  margin-top: 95px;
+  position: sticky;
+  background-color: var(--surface-2-escura);
+  width: 100%;
+  border-bottom: 2px solid var(--text-tertiary);
+  height: auto;
+  z-index: 90;
+}
+
+section.bottom-header .bottom-header-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+section.bottom-header .input-pesquisa {
+  position: relative;
+  width: 390px;
+  height: 36px;
+  margin: 10px 0;
+}
+
+section.bottom-header .input-pesquisa img {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  opacity: 45%;
+  color: var(--text-quartiary);
+}
+
+section.bottom-header .input-pesquisa input {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  border: 2px solid var(--text-header);
+  background-color: var(--surface-1);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-three);
+  text-indent: 45px; /* Move a barra de digitação '|'*/
+}
+
+section.bottom-header .input-pesquisa input::placeholder {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 450;
+  color: var(--text-three);
+  opacity: 45%;
+}
+
+section.bottom-header .navbar-bottom {
+  display: flex;
+  gap: 67px;
+  padding-right: 300px;
+}
+
+section.bottom-header .navbar-bottom a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-header);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 4px;
+  transition: 0.3s ease;
+}
+
+section.bottom-header .navbar-bottom .ativado {
+  text-decoration: underline 2px var(--text-header);
+  text-underline-offset: 4px;
+}
+
+section.bottom-header .navbar-bottom a:hover {
+  text-decoration: underline 2px var(--text-header);
+  text-underline-offset: 4px;
+}
+
+section.bottom-header .ofensiva {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: var(--bg-main);
+}
+
+section.bottom-header .icon-ofensiva {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+section.bottom-header .ofensivatxt {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #ca3500;
+}
+
+/*Inicio da página*/
+
+/* From Uiverse.io by gharsh11032000 */
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 3.5em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  border: 2px solid white;
+  border-radius: 50px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 1.4em;
+  width: 1.4em;
+  left: 0.2em;
+  bottom: 0.2em;
+  background-color: white;
+  border-radius: inherit;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.switch input:checked + .slider {
+  box-shadow: 0 0 20px #8b4513;
+  border: 2px solid wheat;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(1.5em);
 }
 
 #comunidades {
@@ -14,20 +177,21 @@ body {
 }
 
 #comunidades h2 {
-  color: var(--text-primary);
-  padding-top: 40px;
+  color: var(--color-primary);
+  font-size: 2rem;
+  padding-bottom: 30px;
 }
 
-.comunidades {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
-  margin-top: 50px;
+#comunidades .text-community {
+  color: var(--text-three);
+  text-align: center;
+  padding: 100px;
 }
 
 .cardComunidade img {
-  width: 85px;
-  border-radius: 100px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   margin-right: 30px;
 }
 
@@ -58,6 +222,7 @@ body {
   display: flex;
   align-items: center;
   padding: 20px 30px;
+  margin-bottom: 20px;
   box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.13);
 }
 

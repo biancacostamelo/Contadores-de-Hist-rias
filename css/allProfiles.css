@@ -135,7 +135,7 @@
   text-align: center;
   padding: 60px 20px;
   font-size: 1.1rem;
-  color: var(--color-text-muted);
+  color: var(--text-three);
 }
 
 @media (max-width: 768px) {
@@ -350,7 +350,7 @@
   text-align: center;
   padding: 60px 20px;
   font-size: 1.1rem;
-  color: var(--color-text-muted, #8f6c46);
+  color: var(--text-three, #8f6c46);
 }
 
 @media (max-width: 768px) {

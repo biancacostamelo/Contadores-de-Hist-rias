@@ -397,6 +397,8 @@
       if (errEl) errEl.textContent = '';
       if (imageErrorEl) imageErrorEl.textContent = '';
       if (getEl('communityImageInput')) getEl('communityImageInput').value = '';
+      if (getEl('communityCategory'))
+        getEl('communityCategory').value = 'Fanart';
       if (inputEl) setTimeout(() => inputEl.focus(), 100);
     });
 
@@ -455,8 +457,10 @@
         const imgId = await imageStore.save(imgFile);
         imageRef = { type: 'img', id: imgId };
 
+        const categoryInputEl = getEl('communityCategory');
         const communityData = {
           name: val,
+          category: categoryInputEl?.value || 'Fanart',
           createdAt: new Date().toLocaleDateString('pt-BR'),
           ...(imageRef && { image: imageRef }),
         };
@@ -933,6 +937,7 @@
       await restoreImagesInElement(DOM.storiesGrid);
       await restoreImagesInElement(DOM.draftsContainer);
       await restoreImagesInElement(getEl('communitiesList'));
+      await restoreCommunityBackgrounds(getEl('communitiesList'));
       return;
     }
 
@@ -983,6 +988,7 @@
     await restoreImagesInElement(DOM.storiesGrid);
     await restoreImagesInElement(DOM.draftsContainer);
     await restoreImagesInElement(getEl('communitiesList'));
+    await restoreCommunityBackgrounds(getEl('communitiesList'));
   }
 
   function renderDrafts(drafts, isReadOnly = false) {
@@ -1010,7 +1016,7 @@
   function renderStories(stories, isReadOnly = false) {
     if (!DOM.storiesGrid) return;
     if (!stories.length) {
-      DOM.storiesGrid.innerHTML = `<p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">Nenhuma história adicionada ainda.</p>`;
+      DOM.storiesGrid.innerHTML = `<p class="empty-message">Nenhuma história adicionada ainda.</p>`;
       return;
     }
 
@@ -1033,9 +1039,28 @@
     const communitiesList = getEl('communitiesList');
     if (!communitiesList) return;
     if (!communities.length) {
-      communitiesList.innerHTML = `<p class="empty-message" style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted);">Nenhuma comunidade criada ainda.</p>`;
+      communitiesList.innerHTML = `<p class="empty-message">Nenhuma comunidade criada ainda.</p>`;
       return;
     }
+
+    communitiesList.innerHTML = communities
+      .map((community, i) => {
+        const imgId =
+          community.image && typeof community.image === 'object'
+            ? community.image.id
+            : '';
+
+        return `
+      <div class="cardPerfil" data-community-index="${i}" ${imgId ? `data-bg-image-id="${imgId}"` : `style="background-image: url('${DEFAULT_IMG}');"`}>
+        <div class="contentCard">
+          <div>
+            <h3>${escapeHTML(community.name || 'Sem nome')}</h3>
+            <p>${escapeHTML(community.createdAt || 'Data não informada')}</p>
+          </div>${isReadOnly ? '' : `<button class="btn-delete-story" data-delete-community-index="${i}" aria-label="Excluir ${escapeHTML(community.name || 'comunidade')}">✕</button>`}
+        </div>
+      </div>`;
+      })
+      .join('');
 
     communitiesList.innerHTML = communities
       .map(
@@ -1058,6 +1083,18 @@
     for (const img of imgElements) {
       const src = await imageStore.load(img.dataset.imageId);
       if (src) img.src = src;
+    }
+  }
+
+  async function restoreCommunityBackgrounds(container) {
+    if (!container) return;
+    const cards = container.querySelectorAll('[data-bg-image-id]');
+    for (const card of cards) {
+      const imgId = card.dataset.bgImageId;
+      if (imgId) {
+        const src = await imageStore.load(imgId);
+        if (src) card.style.backgroundImage = `url('${src}')`;
+      }
     }
   }
 

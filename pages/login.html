@@ -1,37 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login — Comunidade de Escritores</title>
+    <title>Login</title>
     <link rel="stylesheet" href="../css/global.css" />
-    <link rel="icon" href="../assets/Logo Principal.svg" />
+    <link rel="icon" href="../assets/Logo-principal.svg" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.1/bcrypt.min.js"></script>
-
   </head>
   <body>
-    <div class="display">
-       <div class="box-switch">
-          <label class="switch">
-            <input type="checkbox" id="btnTheme">
-            <span class="slider"></span>
-          </label>
-       </div>
-      </div>
-    <main class="login-page"> 
-      <a href="../index.html">
-         <img
-          class="login-page__logo-img"
-          src="../assets/img/logo.svg"
-          alt="Comunidade de Escritores - Voltar para a página inicial"
-          width="70"
-          height="70"
-        /> 
-      </a>
-     
+    <meu-header
+      somente-btn
+      assets-path="../assets"
+      base-path="../"
+    ></meu-header>
 
-      <form class="login-card" id="loginForm" action="#" method="post" novalidate>
-        <div class="login-card__content">          
+    <main class="login-page">
+      <a href="../index.html" class="logo-signUp">
+        <img
+          class="img-clara"
+          src="../assets/livro logo variante 1.svg"
+          alt="Logo Contadores de Histórias"
+        />
+        <img
+          class="img-escura"
+          src="../assets/Logo (footer) Variante 2.svg"
+          alt="Logo Contadores de Histórias"
+        />
+      </a>
+
+      <form
+        class="login-card"
+        id="loginForm"
+        action="#"
+        method="post"
+        novalidate
+      >
+        <div class="login-card__content">
           <header class="login-card__header">
             <h1 class="login-card__title">Faça seu login</h1>
             <p class="login-card__subtitle">
@@ -39,7 +44,12 @@
             </p>
           </header>
 
-          <div class="login-form__error" id="global-login-error" role="alert" aria-live="polite"></div>
+          <div
+            class="login-form__error"
+            id="global-login-error"
+            role="alert"
+            aria-live="polite"
+          ></div>
 
           <div class="login-form">
             <div class="login-form__field-group">
@@ -54,11 +64,18 @@
                 placeholder="exemplo@gmail.com"
                 aria-describedby="email-login-error"
               />
-              <div class="login-form__error" id="email-login-error" role="alert" aria-live="polite"></div>
+              <div
+                class="login-form__error"
+                id="email-login-error"
+                role="alert"
+                aria-live="polite"
+              ></div>
             </div>
 
             <div class="login-form__field-group">
-              <label class="login-form__label" for="password-login">Senha</label>
+              <label class="login-form__label" for="password-login"
+                >Senha</label
+              >
               <input
                 class="login-form__input"
                 type="password"
@@ -70,26 +87,41 @@
                 placeholder="••••••••"
                 aria-describedby="password-login-error"
               />
-              <div class="login-form__error" id="password-login-error" role="alert" aria-live="polite"></div>
+              <div
+                class="login-form__error"
+                id="password-login-error"
+                role="alert"
+                aria-live="polite"
+              ></div>
             </div>
 
             <div class="login-form__actions">
               <a href="#" class="login-form__link">Esqueceu a senha?</a>
-              <button type="submit" class="login-form__btn login-form__btn--primary">
+              <button
+                type="submit"
+                class="login-form__btn login-form__btn--primary"
+              >
                 Entrar
               </button>
             </div>
 
             <div class="login-form__social-group">
               <p class="login-form__social-label">Ou:</p>
-              <google-button label="Continuar com Google" aria-label="Entrar com o Google"></google-button>
+              <google-button
+                label="Continuar com Google"
+                aria-label="Entrar com o Google"
+              ></google-button>
             </div>
 
-            <div class="login-form__divider" role="presentation">
-            </div>
+            <div class="login-form__divider" role="presentation"></div>
 
             <p class="login-form__register-text">
-              Não possui uma conta? <a href="../pages/signUp.html" class="login-form__link login-form__link--primary">Criar minha conta</a>
+              Não possui uma conta?
+              <a
+                href="../pages/signUp.html"
+                class="login-form__link login-form__link--primary"
+                >Criar minha conta</a
+              >
             </p>
           </div>
         </div>
@@ -101,6 +133,7 @@
     <script src="../js/form-validation.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
-     <script src="../js/vlibras.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/vlibras.js"></script>
   </body>
 </html>

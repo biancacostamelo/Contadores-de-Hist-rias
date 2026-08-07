@@ -3,51 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="../css/global.css" />
-    <link rel="icon" href="../assets/Logo principal.svg" />
+    <link rel="icon" href="../assets/Logo-principal.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contadores de Histórias | F.A.Q</title>
   </head>
   <body>
-    <header class="header">
-      <section class="header-container">
-        <div class="logo">
-          <a href="../index.html">
-            <img
-              src="../assets/Logo principal.svg"
-              alt="Logo Contadores de Histórias"
-            />
-          </a>
-        </div>
-
-        <nav class="navbar">
-          <a href="../index.html"
-            ><div class="icons">
-              <img src="../assets/home.svg" alt="Home" />
-              <p class="iconstxt">Inicio</p>
-            </div></a
-          >
-          <a href="../pages/topicos.html"
-            ><div class="icons">
-              <img src="../assets/galeria.svg" alt="Biblioteca" />
-              <p class="iconstxt">Biblioteca</p>
-            </div></a
-          >
-          <a href="#"
-            ><div class="icons">
-              <img src="../assets/comunidade.svg" alt="Comunidades" />
-              <p class="iconstxt">Comunidades</p>
-            </div></a
-          >
-        </nav>
-
-        <div class="btn">
-          <a href="#" class="criar">Comece a criar</a>
-          <a href="#" class="entrar">Entrar</a>
-          <div class="menu"><img src="../assets/menu.svg" alt="Menu" /></div>
-        </div>
-      </section>
-    </header>
-
+    <meu-header assets-path="../assets" base-path="../"></meu-header>
     <main class="faq">
       <!--Inicio do faq-->
       <section class="titulo-faq">
@@ -265,24 +226,26 @@
           <p class="politicatxt">
             <strong>1. Informações que Coletamos</strong><br />
             Dados de Cadastro: Coletamos seu nome, e-mail, nome de usuário,
-            senha e, para autores, a chave PIX de recebimento de repasses; <br> Dados
-            de Navegação: Podemos coletar informações de forma automatizada
-            (como endereço IP, tipo de navegador e páginas visitadas) por meio
-            de cookies, para melhorar a sua experiência de navegação e a
-            segurança da plataforma; <br>Dados de Pagamento: Nós não armazenamos
-            dados de cartões de crédito ou dados bancários sensíveis em nossos
-            servidores. Todas as transações financeiras via PIX são processadas
-            de forma segura e criptografada por um gateway de pagamento
-            especializado e homologado pelo Banco Central.
+            senha e, para autores, a chave PIX de recebimento de repasses;
+            <br />
+            Dados de Navegação: Podemos coletar informações de forma
+            automatizada (como endereço IP, tipo de navegador e páginas
+            visitadas) por meio de cookies, para melhorar a sua experiência de
+            navegação e a segurança da plataforma; <br />Dados de Pagamento: Nós
+            não armazenamos dados de cartões de crédito ou dados bancários
+            sensíveis em nossos servidores. Todas as transações financeiras via
+            PIX são processadas de forma segura e criptografada por um gateway
+            de pagamento especializado e homologado pelo Banco Central.
             <br />
             <br />
             <strong>2. Uso das Informações</strong><br />
-            Utilizamos os dados coletados estritamente para: <br>Viabilizar a
+            Utilizamos os dados coletados estritamente para: <br />Viabilizar a
             criação de conta, compra e publicação de obras. Processar pagamentos
-            e realizar o repasse automático de valores aos autores; <br> Enviar
-            notificações importantes do sistema (como confirmação de compras ou
-            avisos de segurança); <br> Fornecer suporte e responder a dúvidas através
-            do canal de atendimento.
+            e realizar o repasse automático de valores aos autores; <br />
+            Enviar notificações importantes do sistema (como confirmação de
+            compras ou avisos de segurança); <br />
+            Fornecer suporte e responder a dúvidas através do canal de
+            atendimento.
             <br />
             <br />
             <strong>3. Compartilhamento de Dados com Terceiros</strong><br />
@@ -296,16 +259,18 @@
             <br />
             <br />
             <strong>4. Direitos do Usuário (LGPD)</strong><br />
-            Você tem o direito de, a qualquer momento: <br>Confirmar a existência de
-            tratamento e acessar seus dados; <br>Solicitar a correção de dados
-            incompletos ou desatualizados;<br> Solicitar a exclusão definitiva de
-            sua conta e de todos os seus dados pessoais de nossa base de dados.
+            Você tem o direito de, a qualquer momento: <br />Confirmar a
+            existência de tratamento e acessar seus dados; <br />Solicitar a
+            correção de dados incompletos ou desatualizados;<br />
+            Solicitar a exclusão definitiva de sua conta e de todos os seus
+            dados pessoais de nossa base de dados.
             <br />
             <br />
-            <strong>5. Segurança</strong> <br> Adotamos medidas técnicas de
-            segurança da informação, como criptografia de conexões (HTTPS) e
-            controle estrito de acesso ao banco de dados, para proteger suas
-            informações contra acessos não autorizados ou perda de dados.
+            <strong>5. Segurança</strong> <br />
+            Adotamos medidas técnicas de segurança da informação, como
+            criptografia de conexões (HTTPS) e controle estrito de acesso ao
+            banco de dados, para proteger suas informações contra acessos não
+            autorizados ou perda de dados.
           </p>
         </div>
       </article>
@@ -322,10 +287,12 @@
               <a href="./contadoresOriginals.html"
                 >Contadores Originals</a
               >
-              <a href="../pages/sobre.html">Sobre</a>
-              <a href="#contatos">Contatos</a>
+              <a href="./sobre.html">Sobre</a>
               <a href="#">F.A.Q</a>
-              <a href="#politica">Politica de privacidade</a>
+              <a href="#contatos">Contatos</a>
+              <a href="#politica"
+                >Politica de privacidade</a
+              >
             </div>
             <div class="linkDois">
               <a href="#termos">Termos de uso</a>
@@ -352,6 +319,8 @@
         </div>
       </footer>
     </main>
-     <script src="../js/vlibras.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/vlibras.js"></script>
   </body>
 </html>

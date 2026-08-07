@@ -1,103 +1,209 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O Último Guardião da Floresta | Contadores de Histórias</title>
+    <link rel="icon" href="../assets/Logo-principal.svg" />
+    <link rel="stylesheet" href="../css/global.css" />
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Último Guardião da Floresta — Comunidade Mangás</title>
-    <link rel="icon" href="../assets/Logo Principal.svg" />
-    <link rel="stylesheet" href="../css/global.css">
-</head>
-
-<body>
-    <div class="display">
-        <div class="box-switch">
-            <label class="switch">
-                <input type="checkbox" id="btnTheme">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
+  <body>
+    <meu-header
+      somente-btn
+      assets-path="../assets"
+      base-path="../"
+    ></meu-header>
 
     <main class="page-historia">
-
-
-      
-        <header class="historia-header">
-            <a href="./galeria.html" class="btn-voltar" aria-label="Voltar para a comunidade">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M19 12H5" />
-                    <path d="M12 19l-7-7 7-7" />
-                </svg>
-                Voltar
-            </a>
-            <div class="header-actions">
-                <button id="btn-toggle-sidebar" class="btn-compartilhar" aria-label="Alternar painel de feedbacks" title="Mostrar/Ocultar sidebar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                    </svg>
-                </button>
-            </div>
-        </header>
-
-        <div class="historia-layout">
-            <article class="historia-content" aria-labelledby="titulo-historia">
-                <span id="historiaCategoria" class="categoria-label historiaCategoria">—</span>
-                <h1 id="titulo-historia" class="historia-titulo" hidden></h1>
-
-                <div id="historiaCorpoContainer" class="historia-corpo"></div>
-            </article>
-
-            <aside class="historia-sidebar" aria-labelledby="titulo-feedbacks">
-                <div class="sidebar-card feedback-card" id="feedback-form-section">
-                    <h2 id="titulo-feedbacks" class="feedback-titulo">Feedbacks</h2>
-                    <p class="feedback-descricao">Deixe uma crítica construtiva. Lembre-se: respeito mútuo é a base da nossa comunidade.</p>
-
-                    <div id="form-container">
-                        <div class="feedback-tabs" role="tablist" aria-label="Opções de feedback">
-                            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="painel-elogio" id="tab-elogio">Elogio</button>
-                            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="painel-comentarios" id="tab-comentarios">Comentários</button>
-                        </div>
-
-                        <section class="feedback-panel active" role="tabpanel" id="painel-elogio" aria-labelledby="tab-elogio">
-                            <label for="campo-feedback" class="feedback-label">Compartilhe o que você gostou:</label>
-                            <textarea id="campo-feedback" class="feedback-textarea" placeholder="Ex: Adorei a forma como você descreveu a Floresta dos Sussurros..." rows="4" aria-describedby="feedback-erro"></textarea>
-                            <div id="feedback-erro" class="feedback-erro" role="alert" aria-live="assertive"></div>
-                            <input type="hidden" class="feedback-autor-input" id="autor-elogio" />
-                            <button class="btn-enviar-feedback" type="button">Enviar Feedback</button>
-                        </section>
-
-                        <section class="feedback-panel" role="tabpanel" id="painel-comentarios" aria-labelledby="tab-comentarios" hidden>
-                            <label for="campo-comentario" class="feedback-label">Deixe seu comentário:</label>
-                            <textarea id="campo-comentario" class="feedback-textarea" placeholder="Compartilhe sua reflexão sobre a história..." rows="4" aria-describedby="comentario-erro"></textarea>
-                            <div id="comentario-erro" class="feedback-erro" role="alert" aria-live="assertive"></div>
-                            <input type="hidden" class="feedback-autor-input" id="autor-comentario" />
-                            <button class="btn-enviar-feedback" type="button">Enviar Comentário</button>
-                        </section>
-                    </div>
-
-                    <div id="login-required-message" class="login-required-hidden">
-                        <p class="feedback-login-msg">Faça login ou crie sua conta para deixar feedbacks e comentários.</p>
-                        <a href="../pages/login.html" class="btn-enviar-feedback btn-login-link">Fazer Login</a>
-                    </div>
-                </div>
-
-                <div class="sidebar-card feedback-recebidos">
-                    <h3 class="recebidos-titulo">Feedbacks Recebidos</h3>
-                    <ul class="feedback-list" aria-label="Lista de feedbacks recebidos">
-                    </ul>
-                </div>
-            </aside>
+      <header class="historia-header">
+        <a
+          href="./galeria.html"
+          class="btn-voltar"
+          aria-label="Voltar para a comunidade"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+          Voltar
+        </a>
+        <div class="header-actions">
+          <button
+            id="btn-toggle-sidebar"
+            class="btn-compartilhar"
+            aria-label="Alternar painel de feedbacks"
+            title="Mostrar/Ocultar sidebar"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </button>
         </div>
+      </header>
+
+      <div class="historia-layout">
+        <article class="historia-content" aria-labelledby="titulo-historia">
+          <span id="historiaCategoria" class="categoria-label historiaCategoria"
+            >—</span
+          >
+          <h1 id="titulo-historia" class="historia-titulo" hidden></h1>
+
+          <div id="historiaCorpoContainer" class="historia-corpo"></div>
+        </article>
+
+        <aside class="historia-sidebar" aria-labelledby="titulo-feedbacks">
+          <div class="sidebar-card feedback-card" id="feedback-form-section">
+            <h2 id="titulo-feedbacks" class="feedback-titulo">Feedbacks</h2>
+            <p class="feedback-descricao">
+              Deixe uma crítica construtiva. Lembre-se: respeito mútuo é a base
+              da nossa comunidade.
+            </p>
+
+            <div id="form-container">
+              <div
+                class="feedback-tabs"
+                role="tablist"
+                aria-label="Opções de feedback"
+              >
+                <button
+                  class="tab-btn active"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="painel-elogio"
+                  id="tab-elogio"
+                >
+                  Elogio
+                </button>
+                <button
+                  class="tab-btn"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="painel-comentarios"
+                  id="tab-comentarios"
+                >
+                  Comentários
+                </button>
+              </div>
+
+              <section
+                class="feedback-panel active"
+                role="tabpanel"
+                id="painel-elogio"
+                aria-labelledby="tab-elogio"
+              >
+                <label for="campo-feedback" class="feedback-label"
+                  >Compartilhe o que você gostou:</label
+                >
+                <textarea
+                  id="campo-feedback"
+                  class="feedback-textarea"
+                  placeholder="Ex: Adorei a forma como você descreveu a Floresta dos Sussurros..."
+                  rows="4"
+                  aria-describedby="feedback-erro"
+                ></textarea>
+                <div
+                  id="feedback-erro"
+                  class="feedback-erro"
+                  role="alert"
+                  aria-live="assertive"
+                ></div>
+                <input
+                  type="hidden"
+                  class="feedback-autor-input"
+                  id="autor-elogio"
+                />
+                <button class="btn-enviar-feedback" type="button">
+                  Enviar Feedback
+                </button>
+              </section>
+
+              <section
+                class="feedback-panel"
+                role="tabpanel"
+                id="painel-comentarios"
+                aria-labelledby="tab-comentarios"
+                hidden
+              >
+                <label for="campo-comentario" class="feedback-label"
+                  >Deixe seu comentário:</label
+                >
+                <textarea
+                  id="campo-comentario"
+                  class="feedback-textarea"
+                  placeholder="Compartilhe sua reflexão sobre a história..."
+                  rows="4"
+                  aria-describedby="comentario-erro"
+                ></textarea>
+                <div
+                  id="comentario-erro"
+                  class="feedback-erro"
+                  role="alert"
+                  aria-live="assertive"
+                ></div>
+                <input
+                  type="hidden"
+                  class="feedback-autor-input"
+                  id="autor-comentario"
+                />
+                <button class="btn-enviar-feedback" type="button">
+                  Enviar Comentário
+                </button>
+              </section>
+            </div>
+
+            <div id="login-required-message" class="login-required-hidden">
+              <p class="feedback-login-msg">
+                Faça login ou crie sua conta para deixar feedbacks e
+                comentários.
+              </p>
+              <a
+                href="../pages/login.html"
+                class="btn-enviar-feedback btn-login-link"
+                >Fazer Login</a
+              >
+            </div>
+          </div>
+
+          <div class="sidebar-card feedback-recebidos">
+            <h3 class="recebidos-titulo">Feedbacks Recebidos</h3>
+            <ul
+              class="feedback-list"
+              aria-label="Lista de feedbacks recebidos"
+            ></ul>
+          </div>
+        </aside>
+      </div>
     </main>
 
     <script src="../js/auth.js"></script>
     <script src="../js/historia.js"></script>
     <script src="../js/script.js"></script>
-     <script src="../js/vlibras.js"></script>
-</body>
-
+    <script src="../js/header.js"></script>
+    <script src="../js/btn-historia.js"></script>
+    <script src="../js/vlibras.js"></script>
+  </body>
 </html>

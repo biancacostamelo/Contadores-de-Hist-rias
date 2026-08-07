@@ -274,7 +274,7 @@ class LikeService {
 
 class FeedUI {
   static async loadCommunityBanner() {
-    const bannerEl = document.getElementById('communityBannerImg');
+    const bannerEl = document.querySelector('.community-banner');
     if (!bannerEl) return;
 
     const community = CommunityService.getCommunity(
@@ -410,7 +410,7 @@ class FeedUI {
         const isOwner = isLoggedIn && currentUser?.email === c.emailHash;
         const actionsHtml = isOwner
           ? `<button class="btn-edit-comment" data-action="edit-comment" aria-label="Editar">✏️ Editar</button>
-             <button class="btn-delete-comment" data-action="delete-comment" aria-label="Excluir">🗑️ Excluir</button>`
+             <button class="btn-delete-comment-comunity" data-action="delete-comment" aria-label="Excluir">🗑️ Excluir</button>`
           : '';
 
         li.innerHTML = `
@@ -680,17 +680,22 @@ class AppController {
   static init() {
     const params = new URLSearchParams(window.location.search);
     CommunityService.setActiveCommunity(params.get('name'));
-    const memberCount = params.get('memberCount');
 
     if (CommunityService.activeCommunity) {
+      const community = CommunityService.getCommunity(
+        CommunityService.activeCommunity,
+      );
       const nameEl = document.getElementById('community-name');
-      if (nameEl) nameEl.textContent = CommunityService.activeCommunity;
-    }
-
-    if (memberCount) {
       const statsEl = document.getElementById('community-stats');
-      if (statsEl)
-        statsEl.textContent = `${Number(memberCount).toLocaleString('pt-BR')} participantes`;
+      const categoryEl = document.getElementById('community-category');
+
+      if (nameEl) nameEl.textContent = CommunityService.activeCommunity;
+      if (statsEl && community?.memberCount)
+        statsEl.textContent = `${Number(community.memberCount).toLocaleString(
+          'pt-BR',
+        )} Membros`;
+      if (categoryEl && community?.category)
+        categoryEl.textContent = community.category;
     }
 
     FeedUI.loadCommunityBanner();

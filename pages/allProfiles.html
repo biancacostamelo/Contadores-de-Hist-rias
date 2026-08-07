@@ -1,29 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfis | Contadores de Histórias</title>
+    <link rel="icon" href="../assets/Logo-principal.svg" />
+    <link rel="stylesheet" href="../css/global.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Todos os Perfis — Comunidade de Escritores</title>
-  <link rel="icon" href="../assets/Logo Principal.svg" />
-  <link rel="stylesheet" href="../css/global.css" />
-  <link rel="stylesheet" href="../css/allProfiles.css" />
-</head>
+  <body>
+    <meu-header assets-path="../assets" base-path="../"></meu-header>
+    <section class="submenu-galeria">
+      <div class="submenu-container">
+        <nav class="sub-menu">
+          <a href="./galeria.html">Explorar</a>
+          <a href="./destaques.html">Destaques</a>
+          <a href="./topicos.html">Tópicos</a>
+          <a href="#" class="active">Membros</a>
+        </nav>
+      </div>
+    </section>
 
-<body>
-  <div class="site-header-container"></div>
-
-  <main class="all-profiles-page">
-    <section class="members-section">
+    <main class="all-profiles-page">
+      <section class="members-section">
         <div id="profilesContainer" class="profiles-container"></div>
-      </section> 
-  </main>
+      </section>
+    </main>
 
-  <script src="../js/auth.js"></script>
-  <script src="../js/header.js"></script>
-  <script src="../js/script.js"></script>
-  <script src="../js/allProfiles.js"></script>
-  <script src="../js/vlibras.js"></script>
-</body>
-
+    <script src="../js/auth.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/allProfiles.js"></script>
+    <script src="../js/vLibras.js"></script>
+  </body>
 </html>
