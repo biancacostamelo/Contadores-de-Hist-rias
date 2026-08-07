@@ -123,24 +123,21 @@ section.bottom-header .ofensivatxt {
 /*Inicio do sobre*/
 
 .txt-sobre {
-  margin-top: 150px;
+  margin-top: 90px;
 }
 
 .txt-sobre-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .textos-sobre {
-  display: grid;
-  align-content: start;
-  justify-content: center;
-  gap: 20px;
-  margin-left: 50px;
-  max-width: 600px;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    gap: 20px;
 }
 
 .titulo-sobre {
@@ -155,6 +152,10 @@ section.bottom-header .ofensivatxt {
   font-size: 3.125rem;
   font-weight: normal;
   color: var(--text-one);
+}
+
+.sobre {
+    margin: 0px 40px;
 }
 
 .terceiro-titulo {
@@ -187,24 +188,24 @@ section.bottom-header .ofensivatxt {
   display: block;
   width: 100%;
   height: 80px;
+  margin: 60px 0;
   background-color: var(--surface-2);
 }
 
 /*Sobre nós*/
 
 .sobre-nos {
-  margin-top: 137px;
-  display: grid;
-  position: relative;
+    display: flex;
+    position: relative;
 }
 
 .sobre-nos-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 90px;
+    max-width: 1440px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
 }
 
 .logo-sobre {
@@ -225,21 +226,20 @@ section.bottom-header .ofensivatxt {
 }
 
 .nos {
-  font-family: 'Merriweather', serif;
-  font-size: 1.5625rem;
-  font-weight: 500;
-  text-align: justify;
-  color: var(--text-four);
-  line-height: 1.44;
-  margin-right: 55px;
-  border-bottom: 5px solid var(--text-one);
-  padding-bottom: 40px;
+    font-family: 'Merriweather', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-align: justify;
+    color: var(--color-primary);
+    line-height: 1.44;
+    border-bottom: 5px solid var(--color-primary);
+    padding-bottom: 40px;
 }
 
 /*Principios e valores*/
 
 .principios {
-  margin: 100px 0 140px;
+    margin: 100px 0px;
 }
 
 .principios-container {
@@ -248,17 +248,14 @@ section.bottom-header .ofensivatxt {
 }
 
 .titulos-sobre {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    align-items: center;
 }
 
 .missao-visao {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 255px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 255px;
 }
 
 .missao-img {
@@ -289,11 +286,11 @@ section.bottom-header .ofensivatxt {
 }
 
 .missaotxt {
-  font-family: 'Merriweather', serif;
-  font-size: 1.5625rem;
-  font-weight: 500;
-  color: var(--text-four);
-  text-align: justify;
+    font-family: 'Merriweather', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-align: justify;
 }
 
 .visao-img {
@@ -324,22 +321,21 @@ section.bottom-header .ofensivatxt {
 }
 
 .visaotxt {
-  font-family: 'Merriweather', serif;
-  font-size: 1.5625rem;
-  font-weight: 500;
-  color: var(--text-four);
-  text-align: justify;
+    font-family: 'Merriweather', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-align: justify;
 }
 
 .valores-img {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 25px;
-  position: relative;
-  width: 1220px;
-  margin-top: 80px;
+display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
+    position: relative;
+    margin-top: 80px;
 }
 
 .valores {
@@ -363,11 +359,11 @@ section.bottom-header .ofensivatxt {
 }
 
 .valorestxt {
-  font-family: 'Merriweather', serif;
-  font-size: 1.5625rem;
-  font-weight: 500;
-  color: var(--text-four);
-  text-align: justify;
+    font-family: 'Merriweather', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-align: justify;
 }
 
 .img-clara {
@@ -493,3 +489,101 @@ body.dark-theme .img-escura {
   padding: 0 20px;
 }
 
+@media (max-width: 1000px) {
+  .txt-sobre-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 400px;
+  }
+
+  .img-sobre {
+    height: 100%;
+  }
+
+  .sobre-nos-container {
+    display: flex;
+    flex-direction: column;
+    flex-direction: column-reverse;
+  }
+
+  .logo-sobre {
+    width: 100%;
+    height: 300px;
+    background-color: #F2E4CA;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .logo-sobre img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .missao-visao {
+    flex-wrap: wrap;
+    gap: 60px;
+  }
+
+  .missao-img,
+  .visao-img {
+    width: 100%;
+  }
+
+  .sobre {
+    overflow: hidden;
+  }
+
+  .navbar2 {
+    display: none;
+  }
+
+  .btn .criar {
+    display: none;
+  }
+
+  .header .header-container .btn {
+    justify-content: end;
+  }
+
+  .input-pesquisa {
+    display: none;
+  }
+
+  .navbar-bottom {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .bottom-header {
+    padding: 0;
+  }
+
+  .menu-opcoes {
+    margin-right: 20px;
+    bottom: -310px;
+  }
+
+  .menu-opcoes div {
+    display: contents;
+  }
+}
+
+@media (max-width: 521px) {
+  .logo-sobre {
+    display: none;
+  }
+
+  .sobre {
+    margin: 0 40px;
+  }
+
+  .linkUm {
+    display: grid;
+    justify-content: start;
+  }
+
+  .linkDois {
+    justify-content: start;
+  }
+}
