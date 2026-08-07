@@ -19,21 +19,20 @@ body {
 /*Header dois*/
 
 section.bottom-header {
-  margin-top: 95px;
-  position: sticky;
-  background-color: var(--surface-2-escura);
-  width: 100%;
-  border-bottom: 2px solid var(--text-tertiary);
-  height: auto;
-  z-index: 90;
+    position: sticky;
+    margin-top: 90px;
+    background-color: var(--surface-2);
+    width: 100%;
+    height: 56px;
 }
 
 section.bottom-header .bottom-header-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
 }
 
 section.bottom-header .input-pesquisa {
@@ -74,9 +73,8 @@ section.bottom-header .input-pesquisa input::placeholder {
 }
 
 section.bottom-header .navbar-bottom {
-  display: flex;
-  gap: 67px;
-  padding-right: 300px;
+    display: flex;
+    gap: 67px;
 }
 
 section.bottom-header .navbar-bottom a {
@@ -494,3 +492,4 @@ body.dark-theme .img-escura {
   color: var(--text-header);
   padding: 0 20px;
 }
+
