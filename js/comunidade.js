@@ -9,6 +9,9 @@ const CONFIG = Object.freeze({
   },
 });
 
+// Shared ImageStore instance for loading community images from IndexedDB
+const imageStore = new ImageStore();
+
 class Sanitizer {
   static #replacements = Object.freeze({
     '&': '&amp;',
@@ -171,11 +174,11 @@ class CommunityCard {
     `;
 
     // Se possui referência de imagem no IndexedDB, carrega ela de forma assíncrona
-    if (imageId && window.imageStore?.load) {
-      window.imageStore.load(imageId).then((src) => {
-        if (src) {
-          const imgEl = card.querySelector(`img[data-image-id="${imageId}"]`);
-          if (imgEl) imgEl.src = src;
+    if (imageId) {
+      const imgEl = card.querySelector(`img[data-image-id="${imageId}"]`);
+      imageStore.load(imageId).then((src) => {
+        if (src && imgEl) {
+          imgEl.src = src;
         }
       });
     }
