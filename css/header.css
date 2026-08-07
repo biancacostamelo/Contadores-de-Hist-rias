@@ -276,6 +276,34 @@ header.header .menu-opcoes #btnTheme button {
   cursor: pointer;
 }
 
+.menu-opcoes p {
+  color: white;
+  cursor: pointer;
+  padding: 20px 40px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0px 1px 10px var(--text-quartiary);
+  font-weight: 500;
+  text-align: end;
+}
+
+.menu-opcoes a {
+    color: var(--text-header);
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.menu-opcoes-active {
+  display: flex;
+}
+
 /* Logout Modal */
 #logoutModal {
   position: fixed;
@@ -432,6 +460,7 @@ header.header .menu-opcoes #btnTheme button {
   .menu-opcoes {
     margin-right: 20px;
     bottom: -310px;
+    display: contents !important;
   }
 
   .menu-opcoes div {

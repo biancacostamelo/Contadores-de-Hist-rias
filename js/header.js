@@ -174,6 +174,13 @@ class HeaderComponent extends HTMLElement {
         </button>
 
         <div id="dropdown-menu" class="dropdown-menu">
+         <div class="menu-opcoes" id="menu-opcoes">
+          <div>
+            <a href="/index.html">Início</a>
+            <a href="/pages/topicos.html">Biblioteca</a>
+            <a href="/pages/comunidade.html">Comunidades</a>
+          </div>
+           </div>
           <button type="button" id="btn-theme" class="dropdown-item">
             Mudar tema
           </button>
