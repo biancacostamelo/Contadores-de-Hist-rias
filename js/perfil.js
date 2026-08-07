@@ -5,64 +5,7 @@
   const DEFAULT_PLACEHOLDER = '<p>Comece a escrever sua história aqui...</p>';
   const DEFAULT_IMG = '../assets/img/capaPadraoHistorias.png';
 
-  const DB_NAME = 'writersCommunityImages';
-  const STORE_NAME = 'images';
-
-  const imageStore = {
-    db: null,
-
-    async open() {
-      if (this.db) return this.db;
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
-        request.onupgradeneeded = () => {
-          request.result.createObjectStore(STORE_NAME, { keyPath: 'id' });
-        };
-        request.onsuccess = () => {
-          this.db = request.result;
-          resolve(this.db);
-        };
-        request.onerror = () => reject(request.error);
-      });
-    },
-
-    async save(file) {
-      await this.open();
-      const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      const base64 =
-        typeof file === 'string' ? file : await convertToBase64(file);
-      return new Promise((resolve, reject) => {
-        const tx = this.db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.put({ id, data: base64 });
-        req.onsuccess = () => resolve(id);
-        req.onerror = () => reject(req.error);
-      });
-    },
-
-    async load(id) {
-      if (!id) return null;
-      await this.open();
-      return new Promise((resolve) => {
-        const store = this.db.transaction(STORE_NAME).objectStore(STORE_NAME);
-        const request = store.get(id);
-        request.onsuccess = () => resolve(request.result?.data || null);
-        request.onerror = () => resolve(null);
-      });
-    },
-
-    async remove(id) {
-      if (!id) return;
-      await this.open();
-      return new Promise((resolve) => {
-        const store = this.db
-          .transaction(STORE_NAME, 'readwrite')
-          .objectStore(STORE_NAME);
-        store.delete(id);
-        resolve();
-      });
-    },
-  };
+  const imageStore = new ImageStore();
 
   const state = {
     title: '',
@@ -124,14 +67,6 @@
       ? 'A imagem excede o limite de 5 MB.'
       : null;
   };
-
-  const convertToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
 
   const sanitizeHTML = (html) => {
     if (!html || typeof html !== 'string') return '';
@@ -828,7 +763,28 @@
 
         const session = auth.getSession();
         const communities = [...(getCurrentUser()?.communities || [])];
-        communities.splice(+delBtn.dataset.deleteCommunityIndex, 1);
+        const deletedCommunity = communities.splice(
+          +delBtn.dataset.deleteCommunityIndex,
+          1,
+        )[0];
+
+        if (deletedCommunity?.id) {
+          try {
+            const globalCommunities = JSON.parse(
+              localStorage.getItem('writersCommunity_communities') || '[]',
+            );
+            const updatedGlobal = globalCommunities.filter(
+              (c) => c.id !== deletedCommunity.id,
+            );
+            localStorage.setItem(
+              'writersCommunity_communities',
+              JSON.stringify(updatedGlobal),
+            );
+          } catch {
+            console.error('Erro ao atualizar lista global de comunidades');
+          }
+        }
+
         if (
           (await auth.updateProfile(session.email, { communities })).success
         ) {
@@ -1061,20 +1017,6 @@
       </div>`;
       })
       .join('');
-
-    communitiesList.innerHTML = communities
-      .map(
-        (community, i) => `
-        <div class="cardPerfil" data-community-index="${i}" style="background-image: url('${DEFAULT_IMG}');">
-          <div class="contentCard">
-            <div>
-              <h3>${escapeHTML(community.name || 'Sem nome')}</h3>
-              <p>${escapeHTML(community.createdAt || 'Data não informada')}</p>
-            </div>${isReadOnly ? '' : `<button class="btn-delete-story" data-delete-community-index="${i}" aria-label="Excluir ${escapeHTML(community.name || 'comunidade')}">✕</button>`}
-          </div>
-        </div>`,
-      )
-      .join('');
   }
 
   async function restoreImagesInElement(element) {
@@ -1136,4 +1078,6 @@
     loadUserProfile();
     initStoryEditor();
   }
+
+  window.imageStore = imageStore;
 })();
