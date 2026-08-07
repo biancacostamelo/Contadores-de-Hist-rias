@@ -27,14 +27,6 @@ section.bottom-header {
   z-index: 90;
 }
 
-section.bottom-header .bottom-header-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
 section.bottom-header .input-pesquisa {
   position: relative;
   width: 390px;
@@ -70,12 +62,6 @@ section.bottom-header .input-pesquisa input::placeholder {
   font-weight: 450;
   color: var(--text-three);
   opacity: 45%;
-}
-
-section.bottom-header .navbar-bottom {
-  display: flex;
-  gap: 67px;
-  padding-right: 300px;
 }
 
 section.bottom-header .navbar-bottom a {
@@ -1698,9 +1684,15 @@ section.home .livro img {
     max-height: 95vh;
     overflow-y: auto;
   }
-  .post-media {
+  .post-megitdia {
     min-height: 280px;
   }
+}
+
+@media (max-width: 1000px) {
+    .pena-light, .penaDois-light {
+        display: none;
+    }
 }
 
 /*Footer*/

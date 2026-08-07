@@ -75,16 +75,17 @@ section.submenu-galeria .sub-menu a:hover {
 }
 
 .postsHome {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  margin: 0 75px;
-  gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 0 40px;
+    gap: 20px;  
 }
 
 .posts {
-  width: 300px;
+  width: 279px;
   height: 400px;
-  border: 2px solid var(--surface-2-escura);
+  border: 2px solid var(--surface-2);
   border-radius: 40px;
   overflow: hidden;
   position: relative;
