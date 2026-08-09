@@ -10,6 +10,7 @@
   const state = {
     title: '',
     category: 'Conto',
+    status: 'em-andamento',
     content: '',
     activeDraftIndex: null,
     activeStoryIndex: null,
@@ -20,7 +21,10 @@
   const DOM = {
     writingArea: getEl('writingArea'),
     titleInput: getEl('storyTitleInput'),
-    categorySelect: getEl('storyCategorySelect'),
+    categoryDropdownBtn: getEl('categoryDropdownBtn'),
+    categoryDropdownMenu: getEl('categoryDropdownMenu'),
+    storyCoverInput: getEl('storyCoverInput'),
+    storyCoverFileInput: getEl('storyCoverFileInput'),
     styleSelect: getEl('paragraphStyle'),
     fontSizeSelect: getEl('fontSizeSelect'),
     toolbar: document.querySelector('.editor-toolbar'),
@@ -41,6 +45,15 @@
     btnCloseConfirmDeleteStory: getEl('btnCloseConfirmDeleteStory'),
     btnCancelConfirmDeleteStory: getEl('btnCancelConfirmDeleteStory'),
     btnOverrideConfirmDeleteStory: getEl('btnOverrideConfirmDeleteStory'),
+
+    statusDropdownBtn: getEl('btnStatusDropdown'),
+    statusDropdownMenu: getEl('statusDropdownMenu'),
+    coverStatusBadge: getEl('coverStatusBadge'),
+  };
+
+  const STATUS_LABELS = {
+    'em-andamento': { icon: '📝', label: 'Em andamento' },
+    'finalizado': { icon: '✅', label: 'Finalizado' },
   };
 
   const getCurrentUser = () => auth.getUsers()?.[auth.getSession()?.email];
@@ -57,6 +70,35 @@
           "'": '&#39;',
         })[m],
     );
+
+  const updateStatusUI = (status) => {
+    Object.assign(state, { status });
+    const config = STATUS_LABELS[status] || STATUS_LABELS['em-andamento'];
+
+    if (DOM.statusDropdownBtn) {
+      DOM.statusDropdownBtn.querySelector('#statusIcon').textContent = config.icon;
+      DOM.statusDropdownBtn.querySelector('#statusText').textContent = config.label;
+    }
+
+    if (DOM.coverStatusBadge) {
+      DOM.coverStatusBadge.textContent = config.label;
+      DOM.coverStatusBadge.setAttribute('data-status', status);
+    }
+  };
+
+  const updateCategoryUI = (category) => {
+    Object.assign(state, { category });
+
+    if (DOM.categoryDropdownBtn) {
+      const iconEl = DOM.categoryDropdownBtn.querySelector('#categoryIcon');
+      const textEl = DOM.categoryDropdownBtn.querySelector('#categoryText');
+      if (iconEl && textEl) {
+        const icons = { Conto: '📖', Manga: '🎌', Romance: '💕', Crônica: '⏳' };
+        iconEl.textContent = icons[category] || '📖';
+        textEl.textContent = category;
+      }
+    }
+  };
 
   const validateImage = (file) => {
     if (!file?.name) return null;
@@ -115,11 +157,13 @@
   const updateEditorDOM = async (
     title = '',
     category = 'Conto',
+    status = 'em-andamento',
     content = '',
   ) => {
-    Object.assign(state, { title, category, content });
+    Object.assign(state, { title, category, status, content });
     if (DOM.titleInput) DOM.titleInput.value = title;
-    if (DOM.categorySelect) DOM.categorySelect.value = category;
+    updateCategoryUI(category);
+    updateStatusUI(status);
     if (DOM.writingArea) {
       DOM.writingArea.innerHTML = content || DEFAULT_PLACEHOLDER;
       await restoreImagesInElement(DOM.writingArea);
@@ -454,10 +498,73 @@
       'input',
       () => (state.title = DOM.titleInput.value.trim()),
     );
-    DOM.categorySelect?.addEventListener(
-      'change',
-      () => (state.category = DOM.categorySelect.value),
-    );
+    if (DOM.categoryDropdownBtn && DOM.categoryDropdownMenu) {
+      const categoryItems = DOM.categoryDropdownMenu.querySelectorAll('.dropdown-item');
+
+      DOM.categoryDropdownBtn.addEventListener('click', () => {
+        const isOpen = !DOM.categoryDropdownMenu.hidden;
+        if (isOpen) {
+          DOM.categoryDropdownMenu.hidden = true;
+          DOM.categoryDropdownBtn.setAttribute('aria-expanded', 'false');
+        } else {
+          DOM.categoryDropdownMenu.hidden = false;
+          DOM.categoryDropdownBtn.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      categoryItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          const cat = item.dataset.category;
+          if (!cat) return;
+
+          updateCategoryUI(cat);
+
+          categoryItems.forEach((i) => {
+            i.classList.remove('dropdown-item--active');
+            i.setAttribute('aria-selected', 'false');
+          });
+          item.classList.add('dropdown-item--active');
+          item.setAttribute('aria-selected', 'true');
+
+          DOM.categoryDropdownMenu.hidden = true;
+          DOM.categoryDropdownBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    if (DOM.statusDropdownBtn && DOM.statusDropdownMenu) {
+      const dropdownItems = DOM.statusDropdownMenu.querySelectorAll('.dropdown-item');
+
+      DOM.statusDropdownBtn.addEventListener('click', () => {
+        const isOpen = !DOM.statusDropdownMenu.hidden;
+        if (isOpen) {
+          DOM.statusDropdownMenu.hidden = true;
+          DOM.statusDropdownBtn.setAttribute('aria-expanded', 'false');
+        } else {
+          DOM.statusDropdownMenu.hidden = false;
+          DOM.statusDropdownBtn.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      dropdownItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          const status = item.dataset.status;
+          if (!status) return;
+
+          updateStatusUI(status);
+
+          dropdownItems.forEach((i) => {
+            i.classList.remove('dropdown-item--active');
+            i.setAttribute('aria-selected', 'false');
+          });
+          item.classList.add('dropdown-item--active');
+          item.setAttribute('aria-selected', 'true');
+
+          DOM.statusDropdownMenu.hidden = true;
+          DOM.statusDropdownBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
 
     DOM.styleSelect?.addEventListener('change', () => {
       const tag = DOM.styleSelect.value.toLowerCase();
@@ -497,10 +604,12 @@
       const action = btn.dataset.action;
       const sel = window.getSelection();
 
-      if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
-        return;
+      if (action === 'insertUnorderedList' || action === 'insertOrderedList') {
+        document.execCommand(action, false, null);
+      } else if (action.toLowerCase().includes('tack') || action === 'strikeThrough') {
+        if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
+          return;
 
-      if (action.toLowerCase().includes('tack') || action === 'strikeThrough') {
         const range = sel.getRangeAt(0);
         if (!range.collapsed) {
           const strikeNode = document.createElement('s');
@@ -508,6 +617,9 @@
           range.insertNode(strikeNode);
         }
       } else {
+        if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
+          return;
+
         document.execCommand(action, false, null);
       }
 
@@ -571,6 +683,16 @@
       });
     }
 
+    if (DOM.storyCoverFileInput) {
+      DOM.storyCoverFileInput.addEventListener('change', () => {
+        const file = DOM.storyCoverFileInput.files[0];
+        if (!file) return;
+
+        const err = validateImage(file);
+        if (err) return showToast(err, 'error');
+      });
+    }
+
     DOM.titleInput?.addEventListener(
       'keydown',
       (e) =>
@@ -586,14 +708,27 @@
     const session = auth.getSession();
     if (!session) return;
 
+    let coverRef = null;
+    const coverFile = DOM.storyCoverInput?.files?.[0];
+    if (coverFile) {
+      try {
+        const id = await imageStore.save(coverFile);
+        coverRef = { type: 'img', id };
+      } catch (err) {
+        console.error('Erro ao salvar capa do rascunho:', err);
+      }
+    }
+
     const drafts = [...(getCurrentUser()?.drafts || [])];
     const extracted = await extractAndStoreImages(
       DOM.writingArea?.innerHTML || '',
     );
     const payload = {
       title: DOM.titleInput?.value.trim() || 'Rascunho Sem Título',
-      type: DOM.categorySelect?.value || 'Conto',
+      type: state.category || 'Conto',
+      status: state.status || 'em-andamento',
       content: sanitizeHTML(extracted.content),
+      cover: coverRef,
       updatedAt: new Date().toLocaleTimeString('pt-BR', {
         hour: '2-digit',
         minute: '2-digit',
@@ -623,6 +758,17 @@
     const session = auth.getSession();
     if (!session) return;
 
+    let coverRef = null;
+    const coverFile = DOM.storyCoverInput?.files?.[0];
+    if (coverFile) {
+      try {
+        const id = await imageStore.save(coverFile);
+        coverRef = { type: 'img', id };
+      } catch (err) {
+        console.error('Erro ao salvar capa da história:', err);
+      }
+    }
+
     const user = getCurrentUser();
     const stories = [...(user?.stories || [])];
     const drafts = [...(user?.drafts || [])];
@@ -632,9 +778,10 @@
     );
     const payload = {
       title: DOM.titleInput?.value.trim() || 'Sem título',
-      type: DOM.categorySelect?.value || 'Conto',
+      type: state.category || 'Conto',
+      status: state.status || 'em-andamento',
       content: sanitizeHTML(extracted.content),
-      cover: DEFAULT_IMG,
+      cover: coverRef,
     };
 
     if (state.activeStoryIndex !== null) {
@@ -696,7 +843,7 @@
     state.activeStoryIndex = index;
     state.activeDraftIndex = null;
     getEl('editModalStory')?.showModal();
-    await updateEditorDOM(story.title, story.type, story.content);
+    await updateEditorDOM(story.title, story.type, story.status || 'em-andamento', story.content);
   });
 
   DOM.draftsContainer?.addEventListener('click', async (e) => {
@@ -737,7 +884,7 @@
     state.activeDraftIndex = index;
     state.activeStoryIndex = null;
     getEl('editModalStory')?.showModal();
-    await updateEditorDOM(draft.title, draft.type, draft.content);
+    await updateEditorDOM(draft.title, draft.type, draft.status || 'em-andamento', draft.content);
   });
 
   const communitiesList = getEl('communitiesList');
@@ -894,6 +1041,7 @@
       await restoreImagesInElement(DOM.draftsContainer);
       await restoreImagesInElement(getEl('communitiesList'));
       await restoreCommunityBackgrounds(getEl('communitiesList'));
+      await restoreStoryCovers(DOM.storiesGrid);
       return;
     }
 
@@ -945,6 +1093,7 @@
     await restoreImagesInElement(DOM.draftsContainer);
     await restoreImagesInElement(getEl('communitiesList'));
     await restoreCommunityBackgrounds(getEl('communitiesList'));
+    await restoreStoryCovers(DOM.storiesGrid);
   }
 
   function renderDrafts(drafts, isReadOnly = false) {
@@ -977,17 +1126,27 @@
     }
 
     DOM.storiesGrid.innerHTML = stories
-      .map(
-        (story, i) => `
-        <div class="cardPerfil" data-story-index="${i}" style="background-image: url('${DEFAULT_IMG}');">
+      .map((story, i) => {
+        const coverRef = story?.cover;
+        let bgStyle = `background-image: url('${DEFAULT_IMG}');`;
+        if (coverRef && typeof coverRef === 'object' && coverRef.type === 'img') {
+          bgStyle = '';
+        } else if (
+          typeof coverRef === 'string' &&
+          coverRef !== DEFAULT_IMG
+        ) {
+          bgStyle = `background-image: url('${coverRef}');`;
+        }
+        return `
+        <div class="cardPerfil" data-story-index="${i}" ${bgStyle ? '' : `data-cover-id="${story.cover?.id || ''}"`} style="${bgStyle}">
           <div class="contentCard">
             <div>
               <h3>${escapeHTML(story.title || 'Sem título')}</h3>
               <p>${escapeHTML(story.type || 'Gênero')}</p>
             </div>${isReadOnly ? '' : `<button class="btn-delete-story" data-delete-story-index="${i}" aria-label="Excluir ${escapeHTML(story.title || 'história')}">✕</button>`}
           </div>
-        </div>`,
-      )
+        </div>`;
+      })
       .join('');
   }
 
@@ -1040,6 +1199,18 @@
     }
   }
 
+  async function restoreStoryCovers(container) {
+    if (!container) return;
+    const cards = container.querySelectorAll('[data-cover-id]');
+    for (const card of cards) {
+      const imgId = card.dataset.coverId;
+      if (imgId) {
+        const src = await imageStore.load(imgId);
+        if (src) card.style.backgroundImage = `url('${src}')`;
+      }
+    }
+  }
+
   const emailParam = new URLSearchParams(window.location.search).get('view');
   const isLoggedIn = auth.isLoggedIn();
 
@@ -1077,6 +1248,16 @@
   } else {
     loadUserProfile();
     initStoryEditor();
+
+    if (DOM.storyCoverInput) {
+      DOM.storyCoverInput.addEventListener('change', () => {
+        const file = DOM.storyCoverInput.files[0];
+        if (!file) return;
+
+        const err = validateImage(file);
+        if (err) showToast(err, 'error');
+      });
+    }
   }
 
   window.imageStore = imageStore;

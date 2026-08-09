@@ -1,6 +1,16 @@
 (() => {
   'use strict';
 
+  // Ensure imageStore is available
+  if (typeof ImageStore !== 'function') {
+    console.warn('[Galeria] ImageStore não disponível, usando fallback');
+    window.imageStore = {
+      load: async () => null,
+    };
+  } else if (!window.imageStore) {
+    window.imageStore = new ImageStore();
+  }
+
   const CONFIG = {
     USERS_KEY: 'writersCommunity_users',
     COVER_FALLBACK: '../assets/img/capaPadraoHistorias.png',
@@ -8,20 +18,37 @@
 
   const state = { stories: [] };
 
-  function createCard(story) {
+  async function resolveCover(coverRef) {
+    if (!coverRef) return CONFIG.COVER_FALLBACK;
+    if (typeof coverRef === 'string') return coverRef;
+    if (coverRef && typeof coverRef === 'object' && coverRef.type === 'img') {
+      try {
+        const src = await imageStore.load(coverRef.id);
+        if (src) return src;
+      } catch {}
+    }
+    return CONFIG.COVER_FALLBACK;
+  }
+
+  async function createCard(story) {
     const wrapper = document.createElement('a');
     wrapper.href = `../pages/historia.html?story=${story.index}`;
     wrapper.setAttribute('role', 'article');
     wrapper.setAttribute('aria-labelledby', `titulo-${story.id}`);
 
+    const coverSrc = await resolveCover(story.cover);
     const generoLabel = (story.type || 'Conto').toUpperCase();
-    const statusLabel = story.status || 'Em desenvolvimento';
+    const statusMap = {
+      'em-andamento': 'Em andamento',
+      'finalizado': 'Finalizado',
+    };
+    const statusLabel = statusMap[story.status] || story.status || 'Em desenvolvimento';
     const sinopseText = story.synopsis || '';
 
     wrapper.innerHTML = `
       <div class="posts-historia">
         <div class="imgpt">
-          <img src="${story.cover || CONFIG.COVER_FALLBACK}" alt="${story.title}" class="pt-img-fundo" />
+          <img src="${coverSrc}" alt="${story.title}" class="pt-img-fundo" />
           <div class="overlay-historia">
             <div class="iconStats"></div>
             <div class="detalhes-historia">
@@ -38,7 +65,7 @@
     return wrapper;
   }
 
-  function renderStories(container) {
+  async function renderStories(container) {
     if (!container) return;
 
     if (!state.stories.length) {
@@ -47,7 +74,8 @@
       return;
     }
 
-    container.replaceChildren(...state.stories.map(createCard));
+    const cards = await Promise.all(state.stories.map(createCard));
+    container.replaceChildren(...cards);
   }
 
   function loadStories() {
@@ -76,14 +104,14 @@
     }
   }
 
-  function init(container) {
+  async function init(container) {
     loadStories();
-    renderStories(container || document.querySelector('#hist-post'));
+    await renderStories(container || document.querySelector('#hist-post'));
   }
 
   window.DestaqueList = {
-    loadDestaqueStories(container) {
-      if (container) renderStories(container);
+    async loadDestaqueStories(container) {
+      if (container) await renderStories(container);
       else init();
     },
   };
