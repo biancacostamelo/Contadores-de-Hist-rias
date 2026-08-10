@@ -173,9 +173,8 @@ section.bottom-header .ofensivatxt {
   margin-right: 50px;
 }
 
-.livro-sobre {
-  transform: rotate(22deg);
-  position: relative;
+.img-sobre img{
+  width: 100%;
 }
 
 .pena-sobre {
