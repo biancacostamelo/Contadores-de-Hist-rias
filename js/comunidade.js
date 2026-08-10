@@ -5,7 +5,7 @@ const CONFIG = Object.freeze({
     MEMBERS: 'writersCommunity_members',
   },
   ASSETS: {
-    DEFAULT_AVATAR: '../assets/img/perfilComunidade.png',
+    DEFAULT_AVATAR: '../assets/Logo Variante 1.svg',
   },
 });
 
@@ -121,19 +121,14 @@ class CommunityService {
 class CommunityCard {
   static create(community, email, isMember) {
     const safeName = Sanitizer.escape(community?.name || 'Comunidade');
-
-    // Identifica o campo de imagem (pode vir como 'image', 'avatar' ou 'img')
     const rawImage = community?.image || community?.avatar || community?.img;
 
-    let communityImage = CONFIG.ASSETS.DEFAULT_AVATAR;
+    let communityImage = '';
     let imageId = null;
 
-    // Se for uma string Base64 ou URL padrão
     if (typeof rawImage === 'string' && rawImage.trim() !== '') {
       communityImage = rawImage;
-    }
-    // Se for o objeto retornado do IndexedDB { type: 'img', id: '...' }
-    else if (rawImage && typeof rawImage === 'object' && rawImage.id) {
+    } else if (rawImage && typeof rawImage === 'object' && rawImage.id) {
       imageId = rawImage.id;
     }
 
@@ -160,9 +155,13 @@ class CommunityCard {
     card.className = 'cardComunidade-link';
     card.dataset.communityId = community.id;
 
+    // Se tiver imageId, não coloca src inicial (carrega via JS para não piscar)
+    // O onerror só entra em ação se a imagem de fato falhar em carregar
     card.innerHTML = `
       <div class="cardComunidade">
-        <img ${imageId ? `data-image-id="${imageId}"` : ''} src="${communityImage}" alt="${safeName}" onerror="this.onerror=null; this.src='${CONFIG.ASSETS.DEFAULT_AVATAR}';" />
+        <img ${imageId ? `data-image-id="${imageId}"` : `src="${communityImage}"`} 
+             alt="${safeName}" 
+             onerror="this.onerror=null; this.src='${CONFIG.ASSETS.DEFAULT_AVATAR}';" />
         <div class="contentCard">
           <div class="card-info">
             <h3>${safeName}</h3>
@@ -173,12 +172,14 @@ class CommunityCard {
       </div>
     `;
 
-    // Se possui referência de imagem no IndexedDB, carrega ela de forma assíncrona
     if (imageId) {
       const imgEl = card.querySelector(`img[data-image-id="${imageId}"]`);
       imageStore.load(imageId).then((src) => {
         if (src && imgEl) {
           imgEl.src = src;
+        } else if (imgEl) {
+          // Se não achar no IndexedDB, usa a fallback
+          imgEl.src = CONFIG.ASSETS.DEFAULT_AVATAR;
         }
       });
     }
@@ -189,20 +190,24 @@ class CommunityCard {
 
 class CommunitiesGrid {
   #containerId = 'communitiesList';
+  #container = null;
 
   render() {
-    const container = document.getElementById(this.#containerId);
-    if (!container) {
-      console.warn('CommunitiesGrid: Container not found.');
-      return;
+    if (!this.#container) {
+      this.#container = document.getElementById(this.#containerId);
+      if (!this.#container) {
+        console.warn('CommunitiesGrid: Container não encontrado.');
+        return;
+      }
+      this.#bindEventDelegation(this.#container);
     }
 
     let communities;
     try {
       communities = CommunityService.getCommunities();
     } catch (err) {
-      console.error('CommunitiesGrid: Error fetching communities', err);
-      container.innerHTML =
+      console.error('CommunitiesGrid: Erro ao buscar comunidades', err);
+      this.#container.innerHTML =
         '<p style="text-align:center;color:var(--color-error);padding:40px 0;">Erro ao carregar comunidades.</p>';
       return;
     }
@@ -215,24 +220,25 @@ class CommunitiesGrid {
           const isMember = CommunityService.isMember(community.id, email);
           return CommunityCard.create(community, email, isMember);
         });
-        container.replaceChildren(...cards);
+        this.#container.replaceChildren(...cards);
       } catch (err) {
-        console.error('CommunitiesGrid: Error rendering cards', err);
-        container.innerHTML =
+        console.error('CommunitiesGrid: Erro ao renderizar cards', err);
+        this.#container.innerHTML =
           '<p class="text-community">Erro ao renderizar comunidades.</p>';
       }
     } else {
-      container.innerHTML = `
+      this.#container.innerHTML = `
         <p class="text-community">
           Nenhuma comunidade criada ainda. Vá ao seu perfil para criar uma nova.
         </p>
       `;
     }
-
-    this.#bindEventDelegation(container);
   }
 
   #bindEventDelegation(container) {
+    if (container.dataset.eventsBound) return;
+    container.dataset.eventsBound = 'true';
+
     container.addEventListener('click', (event) => this.#handleAction(event));
 
     container.addEventListener('keydown', (event) => {
@@ -250,14 +256,44 @@ class CommunitiesGrid {
     event.stopPropagation();
 
     const communityId = button.dataset.communityId;
-    const action = button.classList.contains('btn-leave') ? 'leave' : 'join';
+    const isLeave = button.classList.contains('btn-leave');
+    const action = isLeave ? 'leave' : 'join';
 
     try {
       if (CommunityService.updateMembership(communityId, action)) {
-        this.render();
+        this.#updateCardUI(communityId, action === 'join');
       }
     } catch (err) {
-      console.error('CommunitiesGrid: Error updating membership', err);
+      console.error('CommunitiesGrid: Erro ao atualizar membresia', err);
+    }
+  }
+
+  #updateCardUI(communityId, isNowMember) {
+    const card = this.#container.querySelector(
+      `[data-community-id="${communityId}"]`,
+    );
+    if (!card) return;
+
+    // 1. Atualiza botão
+    const btn = card.querySelector('.btn-card-comunidade');
+    if (btn) {
+      const safeName = card.querySelector('h3')?.textContent || 'Comunidade';
+      btn.className = `btn-card-comunidade btn-${isNowMember ? 'leave' : 'join'}`;
+      btn.setAttribute(
+        'aria-label',
+        `${isNowMember ? 'Sair de' : 'Participar de'} ${safeName}`,
+      );
+      btn.textContent = isNowMember ? 'Sair' : 'Participar';
+    }
+
+    // 2. Atualiza contagem
+    const countEl = card.querySelector('.card-info p');
+    if (countEl) {
+      const communities = CommunityService.getCommunities();
+      const targetCommunity = communities.find((c) => c.id === communityId);
+      if (targetCommunity) {
+        countEl.textContent = `+${targetCommunity.memberCount ?? 0} Membros`;
+      }
     }
   }
 }

@@ -1,3 +1,7 @@
+'use strict';
+
+const imageStore = new ImageStore();
+
 const CONFIG = Object.freeze({
   AUTH_MODAL_SELECTOR: '.auth-modal',
   STORAGE_KEYS: {
@@ -280,19 +284,31 @@ class FeedUI {
     const community = CommunityService.getCommunity(
       CommunityService.activeCommunity,
     );
-    if (!community?.banner) return;
+    if (!community) return;
+
+    // Busca a chave de imagem da comunidade
+    const rawImage = community.image || community.avatar || community.banner;
+    if (!rawImage) return;
 
     let src = null;
-    if (
-      typeof community.banner === 'object' &&
-      community.banner.type === 'img'
-    ) {
-      src = await imageRepository.load(community.banner.id);
-    } else if (typeof community.banner === 'string') {
-      src = community.banner;
+
+    // Extrai o ID se for um objeto ou usa a própria string
+    const imageId = typeof rawImage === 'object' ? rawImage?.id : rawImage;
+
+    if (imageId && typeof imageId === 'string') {
+      // Verifica se o ID bate com o padrão gerado pelo ImageStore (ex: 1710000000_abc123)
+      if (/^\d+_[a-z0-9]+$/i.test(imageId)) {
+        src = await imageStore.load(imageId);
+      } else {
+        // Se já for Base64 (dataURL) ou caminho de arquivo local
+        src = imageId;
+      }
     }
 
-    if (src) bannerEl.style.backgroundImage = `url('${src}')`;
+    // Aplica a imagem mantendo o degradê escuro no fundo
+    if (src) {
+      bannerEl.style.backgroundImage = `linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0) 100%), url("${src}")`;
+    }
   }
 
   static checkAuth() {
@@ -654,9 +670,7 @@ class FeedUI {
 
     const preview = modal.querySelector('.delete-preview');
     if (preview) {
-      const p = document.createElement('p');
-      p.textContent = post.content;
-      preview.replaceWith(p);
+      preview.textContent = post.content;
     }
 
     modal.addEventListener(
