@@ -541,19 +541,6 @@ textarea.form-input {
   font-weight: 500;
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  min-width: 160px;
-  background: var(--bg-main);
-  border: 1.5px solid var(--color-border-light);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  z-index: 10;
-  overflow: hidden;
-}
-
 .dropdown-item {
   display: flex;
   align-items: center;
