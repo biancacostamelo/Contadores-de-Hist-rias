@@ -53,7 +53,7 @@
 
   const STATUS_LABELS = {
     'em-andamento': { icon: '📝', label: 'Em andamento' },
-    'finalizado': { icon: '✅', label: 'Finalizado' },
+    finalizado: { icon: '✅', label: 'Finalizado' },
   };
 
   const getCurrentUser = () => auth.getUsers()?.[auth.getSession()?.email];
@@ -76,8 +76,10 @@
     const config = STATUS_LABELS[status] || STATUS_LABELS['em-andamento'];
 
     if (DOM.statusDropdownBtn) {
-      DOM.statusDropdownBtn.querySelector('#statusIcon').textContent = config.icon;
-      DOM.statusDropdownBtn.querySelector('#statusText').textContent = config.label;
+      DOM.statusDropdownBtn.querySelector('#statusIcon').textContent =
+        config.icon;
+      DOM.statusDropdownBtn.querySelector('#statusText').textContent =
+        config.label;
     }
 
     if (DOM.coverStatusBadge) {
@@ -93,7 +95,12 @@
       const iconEl = DOM.categoryDropdownBtn.querySelector('#categoryIcon');
       const textEl = DOM.categoryDropdownBtn.querySelector('#categoryText');
       if (iconEl && textEl) {
-        const icons = { Conto: '📖', Manga: '🎌', Romance: '💕', Crônica: '⏳' };
+        const icons = {
+          Conto: '📖',
+          Manga: '🎌',
+          Romance: '💕',
+          Crônica: '⏳',
+        };
         iconEl.textContent = icons[category] || '📖';
         textEl.textContent = category;
       }
@@ -499,7 +506,8 @@
       () => (state.title = DOM.titleInput.value.trim()),
     );
     if (DOM.categoryDropdownBtn && DOM.categoryDropdownMenu) {
-      const categoryItems = DOM.categoryDropdownMenu.querySelectorAll('.dropdown-item');
+      const categoryItems =
+        DOM.categoryDropdownMenu.querySelectorAll('.dropdown-item');
 
       DOM.categoryDropdownBtn.addEventListener('click', () => {
         const isOpen = !DOM.categoryDropdownMenu.hidden;
@@ -533,7 +541,8 @@
     }
 
     if (DOM.statusDropdownBtn && DOM.statusDropdownMenu) {
-      const dropdownItems = DOM.statusDropdownMenu.querySelectorAll('.dropdown-item');
+      const dropdownItems =
+        DOM.statusDropdownMenu.querySelectorAll('.dropdown-item');
 
       DOM.statusDropdownBtn.addEventListener('click', () => {
         const isOpen = !DOM.statusDropdownMenu.hidden;
@@ -606,18 +615,24 @@
 
       if (action === 'insertUnorderedList' || action === 'insertOrderedList') {
         document.execCommand(action, false, null);
-      } else if (action.toLowerCase().includes('tack') || action === 'strikeThrough') {
-        if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
+      } else if (action.toLowerCase().includes('strike')) {
+        if (
+          !sel ||
+          !sel.rangeCount ||
+          !DOM.writingArea?.contains(sel.anchorNode)
+        )
           return;
 
         const range = sel.getRangeAt(0);
         if (!range.collapsed) {
-          const strikeNode = document.createElement('s');
-          strikeNode.appendChild(range.extractContents());
-          range.insertNode(strikeNode);
+          document.execCommand('strikeThrough', false, null);
         }
       } else {
-        if (!sel || !sel.rangeCount || !DOM.writingArea?.contains(sel.anchorNode))
+        if (
+          !sel ||
+          !sel.rangeCount ||
+          !DOM.writingArea?.contains(sel.anchorNode)
+        )
           return;
 
         document.execCommand(action, false, null);
@@ -843,7 +858,12 @@
     state.activeStoryIndex = index;
     state.activeDraftIndex = null;
     getEl('editModalStory')?.showModal();
-    await updateEditorDOM(story.title, story.type, story.status || 'em-andamento', story.content);
+    await updateEditorDOM(
+      story.title,
+      story.type,
+      story.status || 'em-andamento',
+      story.content,
+    );
   });
 
   DOM.draftsContainer?.addEventListener('click', async (e) => {
@@ -884,7 +904,12 @@
     state.activeDraftIndex = index;
     state.activeStoryIndex = null;
     getEl('editModalStory')?.showModal();
-    await updateEditorDOM(draft.title, draft.type, draft.status || 'em-andamento', draft.content);
+    await updateEditorDOM(
+      draft.title,
+      draft.type,
+      draft.status || 'em-andamento',
+      draft.content,
+    );
   });
 
   const communitiesList = getEl('communitiesList');
@@ -1129,12 +1154,13 @@
       .map((story, i) => {
         const coverRef = story?.cover;
         let bgStyle = `background-image: url('${DEFAULT_IMG}');`;
-        if (coverRef && typeof coverRef === 'object' && coverRef.type === 'img') {
-          bgStyle = '';
-        } else if (
-          typeof coverRef === 'string' &&
-          coverRef !== DEFAULT_IMG
+        if (
+          coverRef &&
+          typeof coverRef === 'object' &&
+          coverRef.type === 'img'
         ) {
+          bgStyle = '';
+        } else if (typeof coverRef === 'string' && coverRef !== DEFAULT_IMG) {
           bgStyle = `background-image: url('${coverRef}');`;
         }
         return `

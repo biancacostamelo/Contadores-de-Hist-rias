@@ -710,6 +710,17 @@ textarea.form-input {
   box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
 }
 
+.writing-area strong,
+.writing-area b {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.writing-area s,
+.writing-area strike {
+  text-decoration: line-through;
+}
+
 .cardDraft {
   border: 1px dashed #ccc;
   padding: 15px;
