@@ -285,8 +285,6 @@
 .modal-content {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  min-height: 0;
   background: var(--bg-main);
 }
 
@@ -399,7 +397,13 @@ textarea.form-input {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  margin-top: 1.5rem;
+  align-items: center;
+  overflow: hidden;
+  margin: 0;
+  height: 100px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 25px;
 }
 
 .btn:focus-visible {
@@ -909,7 +913,7 @@ textarea.form-input {
 }
 
 .confirm-body {
-  padding: 24px;
+  padding: 30px;
   text-align: center;
 }
 
