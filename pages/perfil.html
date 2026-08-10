@@ -257,11 +257,22 @@
                   <option value="6">32px</option>
                 </select>
               </div>
+
+              <hr class="toolbar-separator" />
+
+
             </div>
 
             <input
               type="file"
               id="imageFileInput"
+              accept="image/png, image/jpeg, image/webp, image/gif"
+              style="display: none"
+            />
+
+            <input
+              type="file"
+              id="storyCoverFileInput"
               accept="image/png, image/jpeg, image/webp, image/gif"
               style="display: none"
             />
@@ -277,17 +288,141 @@
                   aria-label="Título da história"
                 />
               </div>
-              <div class="category-select-wrapper">
-                <select
-                  class="story-category-select"
-                  id="storyCategorySelect"
-                  aria-label="Categoria da história"
+              <div class="editor-controls">
+                <div class="toolbar-group toolbar-group--status">
+                  <button
+                    type="button"
+                    class="btn-tool btn-tool--status"
+                    id="categoryDropdownBtn"
+                    title="Categoria da história"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                  >
+                    <span id="categoryIcon">📖</span>
+                    <span id="categoryText" class="status-label">Conto</span>
+                    <svg
+                      class="dropdown-arrow"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 5l3 3 3-3" />
+                    </svg>
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    id="categoryDropdownMenu"
+                    role="listbox"
+                    aria-label="Categoria da história"
+                    hidden
+                  >
+                    <div
+                      class="dropdown-item dropdown-item--active"
+                      data-category="Conto"
+                      role="option"
+                      aria-selected="true"
+                    >
+                      📖 Conto
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Manga"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      🎌 Manga
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Romance"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      💕 Romance
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Crônica"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      ⏳ Crônica
+                    </div>
+                  </div>
+                </div>
+
+                <div class="toolbar-group toolbar-group--status">
+                  <button
+                    type="button"
+                    class="btn-tool btn-tool--status"
+                    id="btnStatusDropdown"
+                    title="Status da história"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                  >
+                    <span id="statusIcon">📝</span>
+                    <span id="statusText" class="status-label">Em andamento</span>
+                    <svg
+                      class="dropdown-arrow"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 5l3 3 3-3" />
+                    </svg>
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    id="statusDropdownMenu"
+                    role="listbox"
+                    aria-label="Status da história"
+                    hidden
+                  >
+                    <div
+                      class="dropdown-item dropdown-item--active"
+                      data-status="em-andamento"
+                      role="option"
+                      aria-selected="true"
+                    >
+                      📝 Em andamento
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-status="finalizado"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      ✅ Finalizado
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-field story-cover-field">
+                <span
+                  class="cover-status-badge"
+                  id="coverStatusBadge"
                 >
-                  <option value="Conto">📖 Conto</option>
-                  <option value="Manga">🎌 Manga</option>
-                  <option value="Romance">💕 Romance</option>
-                  <option value="Crônica">⏳ Crônica</option>
-                </select>
+                  Em andamento
+                </span>
+                <label class="form-label" for="storyCoverInput"
+                  >Capa da história (opcional)</label
+                >
+                <input
+                  type="file"
+                  class="form-input-file"
+                  id="storyCoverInput"
+                  accept="image/png, image/jpeg, image/webp, image/gif"
+                  aria-label="Selecionar imagem de capa"
+                />
               </div>
               <div
                 class="writing-area"
