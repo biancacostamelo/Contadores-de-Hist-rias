@@ -248,6 +248,20 @@ body {
   margin-block-end: 0;
 }
 
+.historia-corpo strong,
+.historia-corpo b {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.historia-corpo s,
+.historia-corpo strike,
+.historia-corpo [style*='line-through'] {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 2px;
+}
+
 .paragrafo-secao p {
   font-size: 16px;
   line-height: 1.8;
