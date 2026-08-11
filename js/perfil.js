@@ -490,9 +490,10 @@
 
   function initStoryEditor() {
     const storyModal = getEl('editModalStory');
-    getEl('btnAddStory')?.addEventListener('click', () =>
-      storyModal?.showModal(),
-    );
+    getEl('btnAddStory')?.addEventListener('click', () => {
+      state.activeDraftIndex = null;
+      storyModal?.showModal();
+    });
     getEl('btnBackEditor')?.addEventListener('click', () =>
       storyModal?.close(),
     );
