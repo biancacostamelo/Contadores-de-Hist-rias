@@ -1238,6 +1238,61 @@
     }
   }
 
+  const confirmDeleteAccountModal = getEl('editModalConfirmDeleteAccount');
+
+  if (confirmDeleteAccountModal) {
+    getEl('btnDeleteAccount')?.addEventListener('click', () => {
+      confirmDeleteAccountModal.showModal();
+    });
+
+    ['btnCloseConfirmDeleteAccount', 'btnCancelConfirmDeleteAccount'].forEach(
+      (id) => getEl(id)?.addEventListener('click', () => confirmDeleteAccountModal.close()),
+    );
+
+    confirmDeleteAccountModal.addEventListener('click', (e) => {
+      const content = confirmDeleteAccountModal.querySelector('.modal-content');
+      if (!content || e.target !== confirmDeleteAccountModal) return;
+      confirmDeleteAccountModal.close();
+    });
+
+    getEl('btnOverrideConfirmDeleteAccount')?.addEventListener(
+      'click',
+      async () => {
+        const session = auth.getSession();
+        if (!session) return;
+
+        try {
+          const users = auth.getUsers();
+          const userKey = Object.keys(users).find(
+            (k) => users[k].emailHash === session.email,
+          );
+
+          if (!userKey) {
+            showToast('Usuário não encontrado.', 'error');
+            confirmDeleteAccountModal.close();
+            return;
+          }
+
+          const updatedUser = { ...users[userKey] };
+          delete updatedUser.emailHash;
+          delete updatedUser.emailSaltHex;
+          delete updatedUser.passwordHash;
+          delete updatedUser.saltHex;
+
+          users[userKey] = updatedUser;
+          localStorage.setItem('writersCommunity_users', JSON.stringify(users));
+
+          auth.logoutUser();
+          showToast('Credenciais removidas com sucesso.');
+          confirmDeleteAccountModal.close();
+        } catch {
+          showToast('Erro ao remover credenciais.', 'error');
+          confirmDeleteAccountModal.close();
+        }
+      },
+    );
+  }
+
   const emailParam = new URLSearchParams(window.location.search).get('view');
   const isLoggedIn = auth.isLoggedIn();
 
@@ -1257,6 +1312,8 @@
       const avatarBtn = document.getElementById('btnUploadAvatar');
       if (uploadBtns) uploadBtns.style.display = 'none';
       if (avatarBtn) avatarBtn.style.display = 'none';
+      const deleteAccountBtn = document.getElementById('btnDeleteAccount');
+      if (deleteAccountBtn) deleteAccountBtn.style.display = 'none';
     } else {
       window.location.href = '../pages/login.html';
     }
@@ -1272,6 +1329,8 @@
     const avatarBtn = document.getElementById('btnUploadAvatar');
     if (uploadBtns) uploadBtns.style.display = 'none';
     if (avatarBtn) avatarBtn.style.display = 'none';
+    const deleteAccountBtn = document.getElementById('btnDeleteAccount');
+    if (deleteAccountBtn) deleteAccountBtn.style.display = 'none';
   } else {
     loadUserProfile();
     initStoryEditor();
