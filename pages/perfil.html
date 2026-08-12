@@ -100,7 +100,17 @@
           </form>
         </div>
       </dialog>
-
+ <div class="danger-trigger-wrapper">
+        <button
+          type="button"
+          class="btn-danger-icon"
+          id="btnDeleteAccount"
+          title="Remover Conta"
+          aria-label="Remover conta"
+        >
+          🗑️
+        </button>
+      </div>
       <section class="perfil-gallery" aria-label="Galeria de histórias">
         <h2 class="gallery-title">Minhas Histórias</h2>
         <button type="button" class="btn-update" id="btnAddStory">
@@ -766,6 +776,60 @@
               </button>
             </div>
           </form>
+        </div>
+      </dialog>
+    <dialog
+        class="edit-modal danger-modal"
+        id="editModalConfirmDeleteAccount"
+        aria-labelledby="confirmDeleteAccountTitle"
+      >
+        <div class="modal-content">
+          <header class="modal-header">
+            <h2 class="modal-title" id="confirmDeleteAccountTitle">
+              Zona de Perigo
+            </h2>
+            <button
+              type="button"
+              class="btn-close-modal"
+              id="btnCloseConfirmDeleteAccount"
+              aria-label="Fechar"
+            >
+              &times;
+            </button>
+          </header>
+
+          <div class="danger-zone-content">
+            <h3 class="danger-title">Remover Conta</h3>
+            <p class="danger-description">
+              Ao remover sua conta, seu nome e dados relacionados ao perfil serão mantidos,
+              mas você perderá o acesso à conta.
+            </p>
+          </div>
+
+          <div class="confirm-body">
+            <p class="confirm-message" id="confirmDeleteAccountMessage">
+              Tem certeza que deseja remover suas credenciais? Seu e-mail e senha
+              serão excluídos, mas seus dados de perfil (nome, bio, avatar, comunidade e histórias) serão
+              mantidos.
+            </p>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-send btn-cancel-confirm"
+              id="btnCancelConfirmDeleteAccount"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn-send btn-override-confirm"
+              id="btnOverrideConfirmDeleteAccount"
+            >
+              Remover Conta
+            </button>
+          </div>
         </div>
       </dialog>
 
