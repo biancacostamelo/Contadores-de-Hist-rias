@@ -188,6 +188,9 @@ article header nav.context-menu.show {
 }
 
 article header nav button {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
   display: block;
   width: 100%;
   background: none;
@@ -195,13 +198,13 @@ article header nav button {
   padding: 8px 12px;
   font-size: 0.75rem;
   text-align: left;
-  color: var(--text-primary);
+  color: var(--text-four);
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
 
 article header nav button:hover {
-  background-color: var(--surface-2);
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
 }
 
 article header nav button.active {
@@ -262,6 +265,21 @@ article footer.post-actions button.liked .heart-icon {
   transition: transform 0.15s ease;
 }
 
+.btn-cancel-edit {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+  color: var(--text-four);
+  width: 75px;
+  height: 27px;
+  border-radius: 8px;
+}
+
+.btn-cancel-edit:hover {
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
 /* ==========================================================================
    Seção de Comentários
    ========================================================================== */
@@ -307,8 +325,10 @@ article footer.post-actions button.liked .heart-icon {
 }
 
 .comment-form button {
-  background-color: var(--color-primary);
-  color: var(--bg-main);
+  background-color: var(--text-one);
+  color: var(--text-header);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
   border: none;
   padding: 8px 14px;
   border-radius: var(--radius-pill);
@@ -409,6 +429,8 @@ article footer.post-actions button.liked .heart-icon {
   margin-left: auto;
   padding: 4px 12px;
   border-radius: var(--radius-sm);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
   font-size: 0.8rem;
   cursor: pointer;
   background-color: transparent;
@@ -420,7 +442,7 @@ article footer.post-actions button.liked .heart-icon {
 }
 
 .btn-edit-comment:hover {
-  background-color: var(--surface-2);
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
   color: var(--color-primary);
   border-color: var(--color-primary);
   transform: scale(1.03);
@@ -431,6 +453,8 @@ article footer.post-actions button.liked .heart-icon {
   padding: 4px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
   cursor: pointer;
   background-color: transparent;
   color: var(--color-error);
@@ -442,7 +466,7 @@ article footer.post-actions button.liked .heart-icon {
 
 .btn-delete-comment-comunity:hover {
   background-color: var(--color-error);
-  color: var(--bg-main);
+  color: var(--text-header);
   border-color: var(--color-error);
   transform: scale(1.03);
 }
@@ -461,6 +485,7 @@ article footer.post-actions button.liked .heart-icon {
   width: 100%;
   min-height: 80px;
   padding: 10px;
+  margin-top: 15px;
   border: 2px solid var(--color-primary);
   border-radius: var(--radius-sm);
   font-family: inherit;
@@ -496,8 +521,10 @@ article footer.post-actions button.liked .heart-icon {
 }
 
 .edit-inline-form .btn-save {
-  background-color: var(--color-primary);
-  color: var(--bg-main);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
+  background-color: var(--text-one);
+  color: var(--text-header);
 }
 
 .edit-inline-form .btn-save:hover {
@@ -507,12 +534,14 @@ article footer.post-actions button.liked .heart-icon {
 
 .edit-inline-form .btn-cancel {
   background-color: transparent;
-  color: var(--text-secondary);
+  color: var(--text-four);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
   border: 1px solid var(--border-color-two);
 }
 
 .edit-inline-form .btn-cancel:hover {
-  background-color: var(--surface-2);
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
   transform: scale(1.03);
 }
 
@@ -612,6 +641,13 @@ article footer.post-actions button.liked .heart-icon {
   transform: scale(1.1);
 }
 
+.feed .edit-profile-section .btn-update {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  gap: 0;
+}
+
 /* Modal Criar Post */
 .create-post-modal {
   border: none;
@@ -702,9 +738,10 @@ article footer.post-actions button.liked .heart-icon {
   margin-block: 16px;
   font-size: 0.85rem;
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--text-header);
   border-radius: var(--radius-sm);
   word-break: break-word;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .delete-confirmation-modal .modal-actions {
@@ -727,7 +764,9 @@ article footer.post-actions button.liked .heart-icon {
 
 .delete-confirmation-modal button[type='submit'][value='confirm'] {
   background-color: var(--color-error);
-  color: var(--bg-main);
+  color: var(--text-header);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
 }
 
 .delete-confirmation-modal button[type='submit'][value='confirm']:hover {
@@ -737,12 +776,14 @@ article footer.post-actions button.liked .heart-icon {
 
 .delete-confirmation-modal .modal-actions button:not([value='confirm']) {
   background-color: transparent;
-  color: var(--text-secondary);
+  color: var(--text-four);
   border: 1px solid var(--border-color-two);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
 }
 
 .delete-confirmation-modal .modal-actions button:not([value='confirm']):hover {
-  background-color: var(--surface-2);
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
   transform: scale(1.03);
 }
 
@@ -758,11 +799,18 @@ details summary::-webkit-details-marker {
 details summary {
   list-style: none;
   background: var(--surface-4);
-  border: 1px solid var(--border-color-two);
+  border: 1px solid var(--text-four);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-size: 1rem;
   cursor: pointer;
+}
+
+summary {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: bold;
+  font-size: 0.875rem;
+  color: var(--text-four);
 }
 
 details summary:focus-visible {

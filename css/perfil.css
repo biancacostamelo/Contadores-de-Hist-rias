@@ -374,9 +374,28 @@ textarea.form-input {
 
 .form-input-file {
   padding: 8px 0;
-  font-size: 14px;
-  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  color: var(--text-three);
 }
+
+input[type='file']::file-selector-button {
+  background-color: var(--text-one);
+  color: var(--text-header);
+  border: none;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+  height: 25px;
+  transition: filter 0.3s ease;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+input[type='file']::file-selector-button:hover {
+  filter: brightness(1.15);
+}
+
 
 .form-hint {
   font-size: 13px;
@@ -597,6 +616,11 @@ textarea.form-input {
   border-color: var(--color-border-light);
 }
 
+.editor-controls .toolbar-group .btn-tool {
+  width: 150px;
+  height: 36px;
+}
+
 .btn-tool--format {
   font-weight: 700;
 }
@@ -671,8 +695,8 @@ textarea.form-input {
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-  background-color: var(--color-primary);
+  color: var(--text-header);
+  background-color: var(--text-one);
   margin-bottom: 8px;
   transition:
     background-color 0.2s,

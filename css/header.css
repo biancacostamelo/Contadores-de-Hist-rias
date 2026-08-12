@@ -359,6 +359,7 @@ header.header .menu-opcoes #btnTheme button {
   margin-bottom: 1.5rem;
   text-align: center;
   line-height: 1.5;
+  color: var(--text-one);
 }
 
 #logoutModal .modal-actions {
@@ -384,13 +385,13 @@ header.header .menu-opcoes #btnTheme button {
 
 #logoutModal .modal-btn--cancel {
   background: transparent;
-  color: var(--text-color);
+  color: var(--text-three);
   border: 1px solid var(--border-color-two);
 }
 
 #logoutModal .modal-btn--confirm {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--text-one);
+  color: var(--text-header);
 }
 
 /* Responsividade */

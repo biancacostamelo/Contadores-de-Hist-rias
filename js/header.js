@@ -42,7 +42,7 @@ class HeaderComponent extends HTMLElement {
   connectedCallback() {
     this.assetsPath = this.getAttribute('assets-path') || '../assets';
     this.basePath = this.getAttribute('base-path') || '../';
-    this.defaultAvatar = `${this.assetsPath}/img/avatar-miguel.jpg`;
+    this.defaultAvatar = `${this.assetsPath}/Logo-principal.svg`;
     this.somenteBtn = this.hasAttribute('somente-btn');
 
     this.render();

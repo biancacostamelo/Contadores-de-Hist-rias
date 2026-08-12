@@ -226,11 +226,7 @@
 .profiles-hero {
   text-align: center;
   padding: 40px 20px;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    rgba(139, 69, 19, 0.7) 100%
-  );
+  background: linear-gradient(135deg, #532822 0%, rgba(139, 69, 19, 0.7) 100%);
   border-radius: var(--radius-lg, 16px);
   margin-bottom: 40px;
   color: #ffffff;
@@ -315,7 +311,7 @@
 .profile-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--text-primary, #331d05);
+  color: #331d05;
   margin: 0 0 8px;
 }
 
@@ -335,7 +331,7 @@
   justify-content: center;
   gap: 16px;
   font-size: 0.85rem;
-  color: var(--color-primary, #8b4513);
+  color: #8b4513;
   font-weight: 600;
 }
 

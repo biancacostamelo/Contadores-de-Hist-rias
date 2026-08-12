@@ -13,13 +13,6 @@ const termsPopup = (() => {
         </header>
         <div class="terms-popup__body">
           <div class="terms-popup__text">
-            <p>
-              Bem-vindo à nossa plataforma. Ao acessar, navegar ou utilizar nosso
-              site, você concorda em cumprir e estar vinculado aos seguintes
-              Termos de Uso. Se você não concordar com qualquer parte destes
-              termos, não deverá utilizar nossos serviços.
-            </p>
-
             <p><strong>1. Objeto do Serviço</strong></p>
             <p>
               A plataforma atua como um ecossistema de facilitação e intermediação
