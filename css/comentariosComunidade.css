@@ -793,6 +793,35 @@ article footer.post-actions button.liked .heart-icon {
   display: inline-block;
 }
 
+.custom-select-container {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--bg-main);
+  color: var(--text-four);
+  border: 1.5px solid var(--text-four);
+  border-radius: 8px;
+  padding: 6px 32px 6px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  height: 50px;
+  cursor: pointer;
+  outline: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.custom-select:focus {
+  border-color: var(--text-one);
+}
+
 details summary::-webkit-details-marker {
   display: none;
 }

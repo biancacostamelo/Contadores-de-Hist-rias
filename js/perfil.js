@@ -97,9 +97,12 @@
       if (iconEl && textEl) {
         const icons = {
           Conto: '📖',
-          Manga: '🎌',
           Romance: '💕',
           Crônica: '⏳',
+          Drama: '🎭',
+          Ação: '⚔️',
+          Terror: '👻',
+          Manga: '🎌',
         };
         iconEl.textContent = icons[category] || '📖';
         textEl.textContent = category;
@@ -1246,7 +1249,10 @@
     });
 
     ['btnCloseConfirmDeleteAccount', 'btnCancelConfirmDeleteAccount'].forEach(
-      (id) => getEl(id)?.addEventListener('click', () => confirmDeleteAccountModal.close()),
+      (id) =>
+        getEl(id)?.addEventListener('click', () =>
+          confirmDeleteAccountModal.close(),
+        ),
     );
 
     confirmDeleteAccountModal.addEventListener('click', (e) => {

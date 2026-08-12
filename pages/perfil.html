@@ -100,7 +100,7 @@
           </form>
         </div>
       </dialog>
- <div class="danger-trigger-wrapper">
+      <div class="danger-trigger-wrapper">
         <button
           type="button"
           class="btn-danger-icon"
@@ -269,8 +269,6 @@
               </div>
 
               <hr class="toolbar-separator" />
-
-
             </div>
 
             <input
@@ -340,14 +338,6 @@
                     </div>
                     <div
                       class="dropdown-item"
-                      data-category="Manga"
-                      role="option"
-                      aria-selected="false"
-                    >
-                      🎌 Manga
-                    </div>
-                    <div
-                      class="dropdown-item"
                       data-category="Romance"
                       role="option"
                       aria-selected="false"
@@ -362,6 +352,38 @@
                     >
                       ⏳ Crônica
                     </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Drama"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      🎭 Drama
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Ação"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      ⚔️ Ação
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Terror"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      👻 Terror
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      data-category="Manga"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      🎌 Manga
+                    </div>
                   </div>
                 </div>
 
@@ -375,7 +397,9 @@
                     aria-haspopup="listbox"
                   >
                     <span id="statusIcon">📝</span>
-                    <span id="statusText" class="status-label">Em andamento</span>
+                    <span id="statusText" class="status-label"
+                      >Em andamento</span
+                    >
                     <svg
                       class="dropdown-arrow"
                       width="12"
@@ -417,10 +441,7 @@
               </div>
 
               <div class="form-field story-cover-field">
-                <span
-                  class="cover-status-badge"
-                  id="coverStatusBadge"
-                >
+                <span class="cover-status-badge" id="coverStatusBadge">
                   Em andamento
                 </span>
                 <label class="form-label" for="storyCoverInput"
@@ -778,7 +799,7 @@
           </form>
         </div>
       </dialog>
-    <dialog
+      <dialog
         class="edit-modal danger-modal"
         id="editModalConfirmDeleteAccount"
         aria-labelledby="confirmDeleteAccountTitle"
@@ -801,16 +822,16 @@
           <div class="danger-zone-content">
             <h3 class="danger-title">Remover Conta</h3>
             <p class="danger-description">
-              Ao remover sua conta, seu nome e dados relacionados ao perfil serão mantidos,
-              mas você perderá o acesso à conta.
+              Ao remover sua conta, seu nome e dados relacionados ao perfil
+              serão mantidos, mas você perderá o acesso à conta.
             </p>
           </div>
 
           <div class="confirm-body">
             <p class="confirm-message" id="confirmDeleteAccountMessage">
-              Tem certeza que deseja remover suas credenciais? Seu e-mail e senha
-              serão excluídos, mas seus dados de perfil (nome, bio, avatar, comunidade e histórias) serão
-              mantidos.
+              Tem certeza que deseja remover suas credenciais? Seu e-mail e
+              senha serão excluídos, mas seus dados de perfil (nome, bio,
+              avatar, comunidade e histórias) serão mantidos.
             </p>
           </div>
 

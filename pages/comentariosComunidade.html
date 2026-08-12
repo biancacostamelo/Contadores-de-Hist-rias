@@ -23,18 +23,12 @@
       <section class="feed" aria-label="Feed de publicações">
         <nav class="feed-options" aria-label="Opções de ordenação">
           <div class="dropdown">
-            <details>
-              <summary class="dropdown-btn">
-                Popular <span aria-hidden="true" class="arrow-down">↓</span
-                ><span aria-hidden="true" class="arrow-up">↑</span>
-              </summary>
-              <div id="dropdown-menu" class="dropdown-content" role="menu">
-                <a href="#comunidademanga" class="active" role="menuitem"
-                  >Popular</a
-                >
-                <a href="#comunidademanga" role="menuitem">Recente</a>
-              </div>
-            </details>
+            <div class="custom-select-container">
+              <select class="custom-select" id="sortFilter">
+                <option value="popular" selected>Popular</option>
+                <option value="recente">Recente</option>
+              </select>
+            </div>
           </div>
         </nav>
 

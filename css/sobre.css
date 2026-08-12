@@ -154,10 +154,6 @@ section.bottom-header .ofensivatxt {
   color: var(--text-one);
 }
 
-.sobre {
-    margin: 0px 40px;
-}
-
 .terceiro-titulo {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.5625rem;
@@ -195,10 +191,10 @@ section.bottom-header .ofensivatxt {
 
 .sobre-nos {
     display: flex;
-    position: relative;
 }
 
 .sobre-nos-container {
+    margin: 0 auto;
     max-width: 1440px;
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -349,7 +345,7 @@ display: flex;
 .img-valores {
   position: absolute;
   top: -11.5%;
-  left: 695px;
+  left: 770px;
 }
 
 .img-valores img {

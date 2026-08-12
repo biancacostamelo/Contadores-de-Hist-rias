@@ -180,6 +180,7 @@
 }
 
 .story__content {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -396,7 +397,6 @@ input[type='file']::file-selector-button:hover {
   filter: brightness(1.15);
 }
 
-
 .form-hint {
   font-size: 13px;
   color: var(--color-text-muted);
@@ -525,6 +525,26 @@ input[type='file']::file-selector-button:hover {
 
 .toolbar-group--status {
   position: relative;
+}
+
+/*Ajuste no modal da criação de histórias*/
+.toolbar-group--status .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  background-color: var(--bg-main, #fff);
+  border: 1.5px solid var(--border-color, #ccc);
+  border-radius: var(--radius-sm, 6px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  min-width: 160px;
+  max-height: 200px;
+  overflow-y: auto;
+  flex-direction: column;
+}
+
+.toolbar-group--status .dropdown-menu:not([hidden]) {
+  display: flex;
 }
 
 .btn-tool--status {
@@ -776,8 +796,12 @@ input[type='file']::file-selector-button:hover {
 }
 
 .btn-delete-story {
+  position: absolute;
+  top: -10px;
+  left: 0;
   align-self: flex-end;
   margin-top: 8px;
+  border-radius: 2.5px;
 }
 
 .btn-delete-draft:hover,
@@ -1150,7 +1174,7 @@ input[type='file']::file-selector-button:hover {
   font-size: 13px;
   border-radius: 50%;
   display: flex;
-  align-items: center;
+  align-self: center;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(211, 47, 47, 0.3);
 }
