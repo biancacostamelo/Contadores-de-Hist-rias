@@ -2,6 +2,11 @@
   margin: 90px 40px;
 }
 
+.perfil-page-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 .perfil-banner {
   position: relative;
   min-height: 250px;

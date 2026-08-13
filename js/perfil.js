@@ -100,10 +100,12 @@
           Conto: '📖',
           Romance: '💕',
           Crônica: '⏳',
+          Manga: '🎌',
           Drama: '🎭',
           Ação: '⚔️',
           Terror: '👻',
-          Manga: '🎌',
+          Mistério: '🔍',
+          Aventura: '🗺️'
         };
         iconEl.textContent = icons[category] || '📖';
         textEl.textContent = category;
