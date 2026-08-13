@@ -24,10 +24,10 @@ body {
   justify-content: center;
 }
 
-.topico-img-container-animais {
+.topico-img-container-grafite {
   max-width: 1440px;
   margin: 0 auto;
-  background: url(../assets/img/animais.jpg) no-repeat center center/cover;
+  background: url(../assets/img/grafite.jpg) no-repeat center center/cover;
   height: 500px;
   width: 95%;
   display: flex;

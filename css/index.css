@@ -261,7 +261,7 @@ section.home .btn2 {
   display: flex;
   width: 320px;
   height: 50px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 section.home .btn2 .criar {
