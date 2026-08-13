@@ -683,6 +683,31 @@ input[type='file']::file-selector-button:hover {
   outline: none;
 }
 
+.synopsis-field {
+  margin-top: 16px;
+  padding: 12px 0;
+}
+
+.synopsis-field .form-label {
+  font-size: 14px;
+  color: var(--color-text-dark);
+}
+
+.synopsis-field textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.synopsis-field textarea.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+}
+
 .story-category-select {
   margin-top: 12px;
   padding: 6px 12px;

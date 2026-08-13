@@ -9,6 +9,7 @@
 
   const state = {
     title: '',
+    synopsis: '',
     category: 'Conto',
     status: 'em-andamento',
     content: '',
@@ -166,11 +167,12 @@
 
   const updateEditorDOM = async (
     title = '',
+    synopsis = '',
     category = 'Conto',
     status = 'em-andamento',
     content = '',
   ) => {
-    Object.assign(state, { title, category, status, content });
+    Object.assign(state, { title, synopsis, category, status, content });
     if (DOM.titleInput) DOM.titleInput.value = title;
     updateCategoryUI(category);
     updateStatusUI(status);
@@ -509,6 +511,12 @@
       'input',
       () => (state.title = DOM.titleInput.value.trim()),
     );
+
+    const synopsisInput = getEl('storySynopsisInput');
+    synopsisInput?.addEventListener(
+      'input',
+      () => (state.synopsis = synopsisInput.value.trim()),
+    );
     if (DOM.categoryDropdownBtn && DOM.categoryDropdownMenu) {
       const categoryItems =
         DOM.categoryDropdownMenu.querySelectorAll('.dropdown-item');
@@ -744,6 +752,7 @@
     );
     const payload = {
       title: DOM.titleInput?.value.trim() || 'Rascunho Sem Título',
+      synopsis: state.synopsis || '',
       type: state.category || 'Conto',
       status: state.status || 'em-andamento',
       content: sanitizeHTML(extracted.content),
@@ -797,6 +806,7 @@
     );
     const payload = {
       title: DOM.titleInput?.value.trim() || 'Sem título',
+      synopsis: state.synopsis || '',
       type: state.category || 'Conto',
       status: state.status || 'em-andamento',
       content: sanitizeHTML(extracted.content),
@@ -864,6 +874,7 @@
     getEl('editModalStory')?.showModal();
     await updateEditorDOM(
       story.title,
+      story.synopsis || '',
       story.type,
       story.status || 'em-andamento',
       story.content,
@@ -910,6 +921,7 @@
     getEl('editModalStory')?.showModal();
     await updateEditorDOM(
       draft.title,
+      draft.synopsis || '',
       draft.type,
       draft.status || 'em-andamento',
       draft.content,
