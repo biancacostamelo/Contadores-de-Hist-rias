@@ -64,7 +64,8 @@ section.submenu-galeria .sub-menu a:hover {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--color-primary);
-  margin: 50px 0px 30px 75px;
+  margin: 50px 50px;
+  text-align: center;
 }
 
 .posts-container {
@@ -196,7 +197,6 @@ section.submenu-galeria .sub-menu a:hover {
 .galeria-container {
   max-width: 1440px;
   margin: 0 auto;
-  display: grid;
   align-items: center;
   justify-content: center;
 }
@@ -207,7 +207,6 @@ section.submenu-galeria .sub-menu a:hover {
   align-items: center;
   justify-content: space-around;
   gap: 30px;
-  margin: 0 75px;
 }
 
 .hist-post .posts-historia {

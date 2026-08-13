@@ -133,23 +133,19 @@ b {
   margin-bottom: 60px;
 }
 
-.hist-post {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: center;
-  gap: 30px;
-  margin: 0 75px;
-}
-
 .hist-post > *:last-child:nth-child(odd) {
   grid-column: 1 / -1;
-  max-width: 50%; 
 }
 
 .hist-post .posts-historia {
   width: 600px;
   height: 300px;
+}
+
+@media (max-width: 651px){
+  .hist-post .posts-historia {
+  width: 100%;
+}
 }
 
 .hist-post .posts-historia {
