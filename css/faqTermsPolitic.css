@@ -15,7 +15,6 @@
 }
 
 .titulo-faq-container {
-  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -45,10 +44,10 @@
 }
 
 .perguntas-faq-container {
-  max-width: 950px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  padding: 20px 100px;
   gap: 20px;
 }
 
@@ -108,6 +107,7 @@
 
 .contatos-container {
   max-width: 1440px;
+  padding: 20px 100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -125,6 +125,7 @@
 
 .contatostxt {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1rem;
@@ -145,9 +146,8 @@
 }
 
 .termos-container {
-  max-width: 1440px;
   margin: 0 auto;
-  padding: 20px 20px;
+  padding: 20px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -164,7 +164,6 @@
 
 .termos-uso {
   margin-top: 25px;
-  width: 900px;
   border-top: 3px solid var(--text-one);
   padding-top: 20px;
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -190,13 +189,22 @@
 }
 
 .politica-container {
-  max-width: 1440px;
   margin: 0 auto;
-  padding: 20px 20px;
+  padding: 20px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 700px) {
+
+  .politica-container,
+  .perguntas-faq-container,
+  .contatos-container,
+  .termos-container {
+    padding: 20px 20px;
+  }
 }
 
 .titulo-politica {
@@ -209,7 +217,6 @@
 
 .politicatxt {
   margin-top: 25px;
-  width: 900px;
   border-bottom: 3px solid var(--text-one);
   padding-bottom: 20px;
   font-family: 'Plus Jakarta Sans', sans-serif;
