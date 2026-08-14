@@ -9,7 +9,6 @@ const CONFIG = Object.freeze({
   },
 });
 
-// Shared ImageStore instance for loading community images from IndexedDB
 const imageStore = new ImageStore();
 
 class Sanitizer {
@@ -155,8 +154,6 @@ class CommunityCard {
     card.className = 'cardComunidade-link';
     card.dataset.communityId = community.id;
 
-    // Se tiver imageId, não coloca src inicial (carrega via JS para não piscar)
-    // O onerror só entra em ação se a imagem de fato falhar em carregar
     card.innerHTML = `
       <div class="cardComunidade">
         <img ${imageId ? `data-image-id="${imageId}"` : `src="${communityImage}"`} 

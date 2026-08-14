@@ -76,11 +76,11 @@ section.submenu-galeria .sub-menu a:hover {
 }
 
 .postsHome {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin: 0 40px;
-    gap: 20px;  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 0 40px;
+  gap: 20px;
 }
 
 .posts {
@@ -1421,6 +1421,57 @@ section.submenu-galeria .sub-menu a:hover {
 
 .btn-confirm-redirect:hover {
   filter: brightness(1.15);
+}
+
+/* Card container de aviso de login */
+.login-prompt-card {
+  width: 100%;
+  margin: auto 0;
+}
+
+.login-prompt-inner {
+  background-color: var(--bg-main);
+  border: 1px solid var(--text-one);
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.login-prompt-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-four);
+}
+
+.login-prompt-text {
+  font-size: 14px;
+  color: var(--text-three);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.login-prompt-btn {
+  width: 100%;
+  background-color: var(--surface-2);
+  color: var(--text-header);
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    filter 0.2s ease,
+    transform 0.1s ease;
+}
+
+.login-prompt-btn:hover {
+  filter: brightness(1.2);
+}
+
+.login-prompt-btn:active {
+  transform: scale(0.98);
 }
 
 @media (max-width: 850px) {

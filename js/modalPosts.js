@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elementos de Interação
   const reactBtn = document.getElementById('reactBtn');
   const heartIcon = reactBtn ? reactBtn.querySelector('.heart-icon') : null;
-  const sharePostBtn = document.getElementById('sharePostBtn'); // Botão Divulgar (Livro)
-  const quickShareBtn = document.getElementById('quickShareBtn'); // Botão Compartilhar (Ícone de Nós)
+  const sharePostBtn = document.getElementById('sharePostBtn');
+  const quickShareBtn = document.getElementById('quickShareBtn');
   const commentForm = document.getElementById('commentForm');
   const commentInput = document.getElementById('commentInput');
   const commentsList = document.getElementById('commentsList');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnShareTikTok = document.getElementById('btnShareTikTok');
   const btnShareNative = document.getElementById('btnShareNative');
 
-  // Elementos do Modal de Redirecionamento (Novo Modal que substitui os alerts)
+  // Elementos do Modal de Redirecionamento
   const redirectModal = document.getElementById('redirectNoticeModal');
   const redirectMessage = document.getElementById('redirectMessage');
   const btnCancelRedirect = document.getElementById('btnCancelRedirect');
@@ -55,7 +55,74 @@ document.addEventListener('DOMContentLoaded', () => {
   // Bancos de dados em memória
   const postCommentsStore = {};
   const postLikesStore = {};
-  const postSharesStore = {}; // Guarda se a publicação foi divulgada
+  const postSharesStore = {};
+
+  function isUserLoggedIn() {
+    const sessionData = localStorage.getItem('writersCommunity_session');
+
+    if (!sessionData) return false;
+
+    try {
+      const session = JSON.parse(sessionData);
+      return Boolean(session && session.token);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function updateModalAuthUI() {
+    const sidebar = document.querySelector('.modal-sidebar');
+    if (!sidebar) return;
+
+    const interactionBar = sidebar.querySelector('.interaction-bar');
+    const commentsFilter = sidebar.querySelector('.comments-filter');
+    const commentsList = sidebar.querySelector('#commentsList');
+    const existingPrompt = sidebar.querySelector('.login-prompt-card');
+    if (existingPrompt) existingPrompt.remove();
+
+    const loggedIn = isUserLoggedIn();
+
+    if (loggedIn) {
+      // Logado
+      if (interactionBar) interactionBar.style.display = '';
+      if (commentsFilter) commentsFilter.style.display = '';
+      if (commentsList) commentsList.style.display = '';
+    } else {
+      // Deslogado
+      if (interactionBar) interactionBar.style.display = 'none';
+      if (commentsFilter) commentsFilter.style.display = 'none';
+      if (commentsList) commentsList.style.display = 'none';
+
+      const loginCard = document.createElement('div');
+      loginCard.className = 'login-prompt-card';
+
+      loginCard.innerHTML = `
+      <div class="login-prompt-inner">
+        <h3 class="login-prompt-title">
+          Não fique de fora
+        </h3>
+        <p class="login-prompt-text">
+          Faça login ou crie sua conta para reagir, comentar e interagir com a comunidade.
+        </p>
+        <button id="modalLoginBtn" class="login-prompt-btn">
+          Fazer Login
+        </button>
+      </div>
+    `;
+
+      sidebar.appendChild(loginCard);
+
+      const modalLoginBtn = document.getElementById('modalLoginBtn');
+      if (modalLoginBtn) {
+        modalLoginBtn.addEventListener('click', () => {
+          const isInsidePages = window.location.pathname.includes('/pages/');
+          window.location.href = isInsidePages
+            ? './login.html'
+            : './pages/login.html';
+        });
+      }
+    }
+  }
 
   // 1. ABRIR MODAL PRINCIPAL
   const postElements = Array.from(
@@ -97,8 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
           postSharesStore[currentPostId] = false;
         }
 
+        updateModalAuthUI();
         updateLikeUI();
-        updateShareUI(); // Atualiza estado do botão divulgar
+        updateShareUI();
         resetModalState();
         renderComments();
 
@@ -117,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reactBtn) reactBtn.classList.toggle('active', isLiked);
   }
 
-  // Atualiza a aparência do botão "Divulgar" caso o post já tenha sido divulgado
+  // Botão de divulgar
   function updateShareUI() {
     if (!sharePostBtn) return;
     const isShared = !!postSharesStore[currentPostId];
@@ -437,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 7. LÓGICA DO MODAL DE CONFIRMAÇÃO DE DIVULGAÇÃO (BOTÃO "DIVULGAR")
+  // 7. MODAL DE CONFIRMAÇÃO DE DIVULGAÇÃO
   function openShareModal() {
     if (postSharesStore[currentPostId]) return;
 
